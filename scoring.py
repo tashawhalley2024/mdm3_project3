@@ -104,5 +104,36 @@ pension_score = scoring(pension)
 political_rep_score = scoring(political_rep)
 workplace_score = scoring(workplace)
 
-print(mobility_score.head())
-print(parenthood_score.tail(20))
+# --- Combine all group scores into one overall score ---
+
+group_scores = [
+    ("assets",        assets_score),
+    ("econ_rights",   econ_rights_score),
+    ("fam_safety",    fam_safety_score),
+    ("health",        health_score),
+    ("mobility",      mobility_score),
+    ("parenthood",    parenthood_score),
+    ("pay",           pay_score),
+    ("pension",       pension_score),
+    ("political_rep", political_rep_score),
+    ("workplace",     workplace_score),
+]
+
+merge_keys = ["Economy", "ISO Code", "Year"]
+
+combined = group_scores[0][1][merge_keys + ["score"]].rename(columns={"score": group_scores[0][0]})
+for name, df in group_scores[1:]:
+    combined = combined.merge(
+        df[merge_keys + ["score"]].rename(columns={"score": name}),
+        on=merge_keys,
+        how="outer"
+    )
+
+score_cols = [name for name, _ in group_scores]
+combined["overall_score"] = combined[score_cols].mean(axis=1)
+
+overall = combined[merge_keys + ["overall_score"]].dropna(subset=["overall_score"])
+overall = overall.sort_values(["Economy", "Year"]).reset_index(drop=True)
+overall.to_csv("output/overall_score.csv", index=False)
+print(overall.head(10))
+print(f"\nRows: {len(overall)}, Countries: {overall['Economy'].nunique()}, Years: {overall['Year'].nunique()}")
