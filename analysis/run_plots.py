@@ -34,31 +34,31 @@ from config import REGION_MAP, FOCAL_PRED
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
-RESULTS_PATH = os.path.join(ROOT, "results/secularism_women_results.csv")
-COMP_PATH    = os.path.join(ROOT, "data/secularism_composition_normalised.csv")
-WOMEN_PATH   = os.path.join(ROOT, "data/women_secularism_normalised.csv")
-OUT_COEF     = os.path.join(ROOT, "figures/secularism_women_coefplot.png")
-OUT_COEF_SUB = os.path.join(ROOT, "figures/secularism_women_coefplot_suboutcomes.png")
-OUT_SCATTER  = os.path.join(ROOT, "figures/secularism_women_scatter.png")
-OUT_TREND    = os.path.join(ROOT, "figures/secularism_women_trend.png")
-OUT_LOO      = os.path.join(ROOT, "figures/secularism_women_loo.png")
-OUT_PLACEBO  = os.path.join(ROOT, "figures/secularism_women_placebo.png")
-OUT_SPEC     = os.path.join(ROOT, "figures/secularism_women_spec_stability.png")
+RESULTS_PATH = os.path.join(ROOT, "results/results.csv")
+COMP_PATH    = os.path.join(ROOT, "data/predictors.csv")
+WOMEN_PATH   = os.path.join(ROOT, "data/outcome_composite.csv")
+OUT_COEF     = os.path.join(ROOT, "figures/02_coefplot.png")
+OUT_COEF_SUB = os.path.join(ROOT, "figures/03_coefplot_suboutcomes.png")
+OUT_SCATTER  = os.path.join(ROOT, "figures/01_scatter.png")
+OUT_TREND    = os.path.join(ROOT, "figures/04_trend.png")
+OUT_LOO      = os.path.join(ROOT, "figures/05_loo_jackknife.png")
+OUT_PLACEBO  = os.path.join(ROOT, "figures/06_placebo.png")
+OUT_SPEC     = os.path.join(ROOT, "figures/07_spec_ladder.png")
 
-LOO_CSV      = os.path.join(ROOT, "results/secularism_women_loo.csv")
-PLACEBO_CSV  = os.path.join(ROOT, "results/secularism_women_placebo.csv")
-RESULTS_CSV  = os.path.join(ROOT, "results/secularism_women_results.csv")
-SPEC_CSV     = os.path.join(ROOT, "results/secularism_women_spec_stability.csv")
+LOO_CSV      = os.path.join(ROOT, "results/loo_jackknife.csv")
+PLACEBO_CSV  = os.path.join(ROOT, "results/placebo.csv")
+RESULTS_CSV  = os.path.join(ROOT, "results/results.csv")
+SPEC_CSV     = os.path.join(ROOT, "results/spec_ladder.csv")
 
 # Phase 9 paths
-EVENTSTUDY_CSV = os.path.join(ROOT, "results/secularism_women_event_study.csv")
-EVENTSTUDY_PNG = os.path.join(ROOT, "figures/secularism_women_event_study.png")
-OSTER_SENS_CSV = os.path.join(ROOT, "results/secularism_women_oster_sensitivity.csv")
-OSTER_SENS_PNG = os.path.join(ROOT, "figures/secularism_women_oster_sensitivity.png")
+EVENTSTUDY_CSV = os.path.join(ROOT, "results/event_study.csv")
+EVENTSTUDY_PNG = os.path.join(ROOT, "figures/08_event_study.png")
+OSTER_SENS_CSV = os.path.join(ROOT, "results/oster_sensitivity.csv")
+OSTER_SENS_PNG = os.path.join(ROOT, "figures/09_oster_sensitivity.png")
 
 # Phase 10 paths
-WBL_RESULTS_CSV = os.path.join(ROOT, "results/secularism_women_results_wbl.csv")
-OUT_ALT_OUTCOMES = os.path.join(ROOT, "figures/secularism_women_alt_outcomes.png")
+WBL_RESULTS_CSV = os.path.join(ROOT, "results/results_wbl.csv")
+OUT_ALT_OUTCOMES = os.path.join(ROOT, "figures/10_alt_outcomes.png")
 
 # FOCAL_PRED and REGION_MAP imported from src.config above
 

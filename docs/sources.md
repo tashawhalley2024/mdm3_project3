@@ -70,10 +70,10 @@ All raw data files are **not included in this repository** due to redistribution
 
 | File | Derived from |
 |---|---|
-| `data/wbl_treatment_index.csv` | WBL 2024 (10 domain scores) + UNDP life expectancy bounds |
-| `data/secularism_composition_normalised.csv` | Pew GRI + V-Dem (`v2clrelig`) + QoG (`log_gdppc`) + WVS religiosity |
-| `data/gender_gap_panel.csv` | UNDP HDI (GII, GDI) + WEF Global Gender Gap Report (via QoG) |
-| `data/women_secularism_normalised.csv` | V-Dem, QoG/WDI, WHO, governance datasets (13-component composite) |
+| `data/outcome_wbl.csv` | WBL 2024 (10 domain scores) + UNDP life expectancy bounds |
+| `data/predictors.csv` | Pew GRI + V-Dem (`v2clrelig`) + QoG (`log_gdppc`) + WVS religiosity |
+| `data/robustness_outcomes.csv` | UNDP HDI (GII, GDI) + WEF Global Gender Gap Report (via QoG) |
+| `data/outcome_composite.csv` | V-Dem, QoG/WDI, WHO, governance datasets (13-component composite) |
 
-All processed files use **robust min-max normalisation** (1%/99% winsorisation, then scale to [0,1]). Life expectancy uses UNDP HDI fixed goalposts (min = 20, max = 85). See [`DATA_HANDLING_METHODS_LOG.md`](DATA_HANDLING_METHODS_LOG.md) for full decisions.
+All processed files use **robust min-max normalisation** (1%/99% winsorisation, then scale to [0,1]). Life expectancy uses UNDP HDI fixed goalposts (min = 20, max = 85). See [`methods_log.md`](methods_log.md) for full decisions.
 

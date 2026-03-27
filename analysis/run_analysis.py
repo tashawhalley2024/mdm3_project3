@@ -39,15 +39,15 @@ from utils import robust_minmax
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
-COMP_PATH   = os.path.join(ROOT, "data/secularism_composition_normalised.csv")
-WOMEN_PATH  = os.path.join(ROOT, "data/wbl_treatment_index.csv")
+COMP_PATH   = os.path.join(ROOT, "data/predictors.csv")
+WOMEN_PATH  = os.path.join(ROOT, "data/outcome_wbl.csv")
 QOG_RAW     = os.path.join(ROOT, "data/raw/qog/qog_std_ts_jan25.csv")   # needed for placebo male vars
-OUT_PATH    = os.path.join(ROOT, "results/secularism_women_results.csv")
-LOG_PATH    = os.path.join(ROOT, "results/secularism_women_log.txt")
+OUT_PATH    = os.path.join(ROOT, "results/results.csv")
+LOG_PATH    = os.path.join(ROOT, "results/analysis.log")
 
 # Phase 9 outputs
-EVENTSTUDY_PATH = os.path.join(ROOT, "results/secularism_women_event_study.csv")
-OSTER_SENS_PATH = os.path.join(ROOT, "results/secularism_women_oster_sensitivity.csv")
+EVENTSTUDY_PATH = os.path.join(ROOT, "results/event_study.csv")
+OSTER_SENS_PATH = os.path.join(ROOT, "results/oster_sensitivity.csv")
 
 # ── Column groups ──────────────────────────────────────────────────────────────
 GRI_PANEL_COLS = [
@@ -93,7 +93,7 @@ def load_and_merge() -> pd.DataFrame:
     ]
     needed = [c for c in aux_cols if c not in merged.columns]
     if needed:
-        old_path = os.path.join(ROOT, "data/women_secularism_normalised.csv")
+        old_path = os.path.join(ROOT, "data/outcome_composite.csv")
         if os.path.exists(old_path):
             aux = pd.read_csv(old_path)[["iso3", "year"] + needed]
             merged = merged.merge(aux, on=["iso3", "year"], how="left")
@@ -789,8 +789,8 @@ def vif_check(df: pd.DataFrame):
 # PHASE 6 — ADVANCED ROBUSTNESS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-LOO_PATH     = os.path.join(ROOT, "results/secularism_women_loo.csv")
-PLACEBO_PATH = os.path.join(ROOT, "results/secularism_women_placebo.csv")
+LOO_PATH     = os.path.join(ROOT, "results/loo_jackknife.csv")
+PLACEBO_PATH = os.path.join(ROOT, "results/placebo.csv")
 # FOCAL_PRED imported from config
 
 
@@ -1040,7 +1040,7 @@ def phase6_placebo_outcomes(df: pd.DataFrame) -> list[dict]:
 # PHASE 7 — CEDAW CONTROL, SUB-PERIOD / CHANGERS, OSTER DELTA
 # ═══════════════════════════════════════════════════════════════════════════════
 
-SPEC_PATH = os.path.join(ROOT, "results/secularism_women_spec_stability.csv")
+SPEC_PATH = os.path.join(ROOT, "results/spec_ladder.csv")
 
 # Extended controls including CEDAW
 CONTROLS_CEDAW = CONTROLS_GDP + ["cedaw_years_since_norm"]
@@ -2179,7 +2179,7 @@ def phase10_regional_heterogeneity(df: pd.DataFrame) -> list[dict]:
 # ═══════════════════════════════════════════════════════════════════════════════
 # PHASE 10 – GENDER GAP AND ALTERNATIVE EXTERNAL OUTCOMES
 # ═══════════════════════════════════════════════════════════════════════════════
-GENDER_GAP_PATH = os.path.join(ROOT, "data/gender_gap_panel.csv")
+GENDER_GAP_PATH = os.path.join(ROOT, "data/robustness_outcomes.csv")
 
 def phase10_gender_gap_outcomes(df: pd.DataFrame) -> list[dict]:
     """

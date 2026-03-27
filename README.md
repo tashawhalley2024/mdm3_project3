@@ -54,10 +54,10 @@ pip install -r requirements.txt
 
 ```bash
 # 1. Run all regressions (Tiers 1–2, Phases 3–10) — writes to results/
-python analysis/analyse_secularism_women.py
+python analysis/run_analysis.py
 
 # 2. Generate all 10 figures — writes to figures/
-python analysis/plot_secularism_women.py
+python analysis/run_plots.py
 
 # 3. Compare composite vs WBL index — overwrites results/index_comparison.*
 python analysis/compare_indices.py
@@ -74,12 +74,12 @@ python verify.py
 
 | Dataset | File | Rows | Years | Purpose |
 |---|---|---|---|---|
-| WBL 2024 + health | `data/wbl_treatment_index.csv` | 2,222 | 2013–2022 | **Active** outcome index |
-| Composite (13-component) | `data/women_secularism_normalised.csv` | 3,164 | 2007–2022 | Alternative outcome index |
-| Secularism predictors | `data/secularism_composition_normalised.csv` | 3,164 | 2007–2022 | GRI vars, WVS religiosity, V-Dem, GDP |
-| Gender gap robustness | `data/gender_gap_panel.csv` | 3,164 | 2007–2022 | GII, GDI, WEF GGG |
+| WBL 2024 + health | `data/outcome_wbl.csv` | 2,222 | 2013–2022 | **Active** outcome index |
+| Composite (13-component) | `data/outcome_composite.csv` | 3,164 | 2007–2022 | Alternative outcome index |
+| Secularism predictors | `data/predictors.csv` | 3,164 | 2007–2022 | GRI vars, WVS religiosity, V-Dem, GDP |
+| Gender gap robustness | `data/robustness_outcomes.csv` | 3,164 | 2007–2022 | GII, GDI, WEF GGG |
 
-All input data are normalised and analysis-ready. Raw source files are not included (not redistributable / too large). See [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) for provenance.
+All input data are normalised and analysis-ready. Raw source files are not included (not redistributable / too large). See [`docs/sources.md`](docs/sources.md) for provenance.
 
 ---
 
@@ -95,10 +95,10 @@ Checks: all required files exist, CSV schemas, key regression coefficient (β �
 
 ## Data Sources
 
-Pew Research Center (GRI), V-Dem v15, QoG Standard TS Jan 2025, World Bank WBL 2024, UNDP HDI, OECD SIGI 2019, EPR 2021, WHO, CEDAW. See [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md).
+Pew Research Center (GRI), V-Dem v15, QoG Standard TS Jan 2025, World Bank WBL 2024, UNDP HDI, OECD SIGI 2019, EPR 2021, WHO, CEDAW. See [`docs/sources.md`](docs/sources.md).
 
 ---
 
 ## Notes
 
-- Data handling decisions: [`docs/DATA_HANDLING_METHODS_LOG.md`](docs/DATA_HANDLING_METHODS_LOG.md)
+- Data handling decisions: [`docs/methods_log.md`](docs/methods_log.md)

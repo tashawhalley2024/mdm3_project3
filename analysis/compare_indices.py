@@ -16,8 +16,8 @@ import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-composite = pd.read_csv(os.path.join(ROOT, "results/secularism_women_results_composite.csv"))
-wbl       = pd.read_csv(os.path.join(ROOT, "results/secularism_women_results_wbl.csv"))
+composite = pd.read_csv(os.path.join(ROOT, "results/results_composite.csv"))
+wbl       = pd.read_csv(os.path.join(ROOT, "results/results_wbl.csv"))
 
 FOCAL = "gri_religious_courts_norm"
 

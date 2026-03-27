@@ -30,42 +30,42 @@ REQUIRED_FILES = [
     "requirements.txt",
     ".gitignore",
     # data/
-    "data/wbl_treatment_index.csv",
-    "data/secularism_composition_normalised.csv",
-    "data/gender_gap_panel.csv",
-    "data/women_secularism_normalised.csv",
+    "data/outcome_wbl.csv",
+    "data/outcome_composite.csv",
+    "data/predictors.csv",
+    "data/robustness_outcomes.csv",
     "data/README.md",
     # analysis/
-    "analysis/analyse_secularism_women.py",
-    "analysis/plot_secularism_women.py",
+    "analysis/run_analysis.py",
+    "analysis/run_plots.py",
     "analysis/compare_indices.py",
-    "analysis/run_sanity_check.py",
+    "analysis/sanity_check.py",
     "analysis/utils.py",
     "analysis/config.py",
     "analysis/README.md",
     # results/
-    "results/secularism_women_results.csv",
-    "results/secularism_women_results_composite.csv",
-    "results/secularism_women_results_wbl.csv",
+    "results/results.csv",
+    "results/results_composite.csv",
+    "results/results_wbl.csv",
     "results/index_comparison.csv",
     "results/index_comparison.md",
-    "results/secularism_women_event_study.csv",
-    "results/secularism_women_loo.csv",
-    "results/secularism_women_oster_sensitivity.csv",
-    "results/secularism_women_placebo.csv",
-    "results/secularism_women_spec_stability.csv",
+    "results/event_study.csv",
+    "results/loo_jackknife.csv",
+    "results/oster_sensitivity.csv",
+    "results/placebo.csv",
+    "results/spec_ladder.csv",
     "results/README.md",
     # figures/
-    "figures/secularism_women_scatter.png",
-    "figures/secularism_women_coefplot.png",
-    "figures/secularism_women_coefplot_suboutcomes.png",
-    "figures/secularism_women_trend.png",
-    "figures/secularism_women_loo.png",
-    "figures/secularism_women_placebo.png",
-    "figures/secularism_women_spec_stability.png",
-    "figures/secularism_women_event_study.png",
-    "figures/secularism_women_oster_sensitivity.png",
-    "figures/secularism_women_alt_outcomes.png",
+    "figures/01_scatter.png",
+    "figures/02_coefplot.png",
+    "figures/03_coefplot_suboutcomes.png",
+    "figures/04_trend.png",
+    "figures/05_loo_jackknife.png",
+    "figures/06_placebo.png",
+    "figures/07_spec_ladder.png",
+    "figures/08_event_study.png",
+    "figures/09_oster_sensitivity.png",
+    "figures/10_alt_outcomes.png",
     "figures/README.md",
     # sanity_check/
     "sanity_check/sanity_check_report.md",
@@ -74,8 +74,8 @@ REQUIRED_FILES = [
     "sanity_check/actual_histogram.png",
     "sanity_check/README.md",
     # docs/
-    "docs/DATA_HANDLING_METHODS_LOG.md",
-    "docs/DATA_SOURCES.md",
+    "docs/methods_log.md",
+    "docs/sources.md",
 ]
 
 print("\n=== 1. Required files ===")
@@ -90,37 +90,37 @@ try:
     import pandas as pd
 
     CSV_CHECKS = {
-        "data/wbl_treatment_index.csv": {
+        "data/outcome_wbl.csv": {
             "min_rows": 2200,
             "required_cols": ["iso3", "country", "year", "wbl_treatment_index"],
         },
-        "data/secularism_composition_normalised.csv": {
+        "data/predictors.csv": {
             "min_rows": 3100,
             "required_cols": ["iso3", "country", "year",
                               "gri_religious_courts_norm", "gri_state_religion_norm",
                               "log_gdppc_norm", "wvs_imprel_norm"],
         },
-        "data/gender_gap_panel.csv": {
+        "data/outcome_composite.csv": {
             "min_rows": 3100,
             "required_cols": ["iso3", "country", "year"],
         },
-        "data/women_secularism_normalised.csv": {
+        "data/robustness_outcomes.csv": {
             "min_rows": 3100,
             "required_cols": ["iso3", "country", "year", "women_treatment_index"],
         },
-        "results/secularism_women_results.csv": {
+        "results/results.csv": {
             "min_rows": 320,
             "required_cols": ["tier", "predictor", "coef", "se", "pval", "n"],
         },
-        "results/secularism_women_results_composite.csv": {
+        "results/results_composite.csv": {
             "min_rows": 540,
             "required_cols": ["tier", "predictor", "coef", "se", "pval", "n"],
         },
-        "results/secularism_women_loo.csv": {
+        "results/loo_jackknife.csv": {
             "min_rows": 160,
             "required_cols": ["iso3", "coef", "se", "pval"],
         },
-        "results/secularism_women_event_study.csv": {
+        "results/event_study.csv": {
             "min_rows": 7,
             "required_cols": ["event_time", "coef", "se", "pval"],
         },
@@ -149,7 +149,7 @@ try:
     # ── 3. Key regression result ───────────────────────────────────────────────
     print("\n=== 3. Key regression result ===")
     try:
-        composite_path = os.path.join(ROOT, "results/secularism_women_results_composite.csv")
+        composite_path = os.path.join(ROOT, "results/results_composite.csv")
         df_comp = pd.read_csv(composite_path)
         row = df_comp[
             (df_comp["tier"] == "T2_no_gdp") &
@@ -171,16 +171,16 @@ except ImportError:
 # ── 4. Figure file sizes ───────────────────────────────────────────────────────
 print("\n=== 4. Figure file sizes ===")
 FIGURES = [
-    "figures/secularism_women_scatter.png",
-    "figures/secularism_women_coefplot.png",
-    "figures/secularism_women_coefplot_suboutcomes.png",
-    "figures/secularism_women_trend.png",
-    "figures/secularism_women_loo.png",
-    "figures/secularism_women_placebo.png",
-    "figures/secularism_women_spec_stability.png",
-    "figures/secularism_women_event_study.png",
-    "figures/secularism_women_oster_sensitivity.png",
-    "figures/secularism_women_alt_outcomes.png",
+    "figures/01_scatter.png",
+    "figures/02_coefplot.png",
+    "figures/03_coefplot_suboutcomes.png",
+    "figures/04_trend.png",
+    "figures/05_loo_jackknife.png",
+    "figures/06_placebo.png",
+    "figures/07_spec_ladder.png",
+    "figures/08_event_study.png",
+    "figures/09_oster_sensitivity.png",
+    "figures/10_alt_outcomes.png",
 ]
 MIN_PNG_BYTES = 50_000
 for fig in FIGURES:
