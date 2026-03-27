@@ -2261,122 +2261,6 @@ def phase10_gender_gap_outcomes(df: pd.DataFrame) -> list[dict]:
     return results
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# PHASE 10 – MUSLIM-MAJORITY HETEROGENEITY
-# ═══════════════════════════════════════════════════════════════════════════════
-def phase10_muslim_majority(df: pd.DataFrame) -> list[dict]:
-    """
-    Tests whether the courts effect is concentrated in Muslim-majority countries
-    (country-mean pct_muslim > 0.5) vs. the rest.
-    Three tiers:
-      P10_courts_x_muslim_maj  - interaction model (PanelOLS, entity+time FE)
-      P10_muslim_maj_only      - panel FE restricted to Muslim-majority countries
-      P10_non_muslim_only      - panel FE restricted to non-Muslim-majority countries
-    """
-    results = []
-
-    print(f"\n{'='*60}")
-    print("PHASE 10 -- MUSLIM-MAJORITY HETEROGENEITY")
-    print(f"{'='*60}")
-
-    COURTS = FOCAL_PRED
-
-    # Load pct_muslim_norm from composition file and compute country-mean.
-    # pct_muslim_norm is robust min-max scaled; >0.5 approximates majority-Muslim
-    # (raw pct_muslim is fraction 0-1, so normed midpoint ~= 50% share).
-    try:
-        comp = pd.read_csv(COMP_PATH, usecols=["iso3", "year", "pct_muslim_norm"])
-        country_mean_muslim = (
-            comp.groupby("iso3")["pct_muslim_norm"].mean().rename("mean_pct_muslim")
-        )
-        majority_flag = (country_mean_muslim > 0.5).astype(int).rename("muslim_maj")
-    except Exception as e:
-        print(f"  Could not load pct_muslim from COMP_PATH: {e}")
-        return results
-
-    work = df[["iso3", "year"] + GRI_PANEL_COLS + CONTROLS_GDP + [OUTCOME]].dropna().copy()
-    work = work.join(majority_flag, on="iso3")
-    work = work.dropna(subset=["muslim_maj"])
-    work["courts_x_muslim"] = work[COURTS] * work["muslim_maj"]
-
-    n_maj = work[work["muslim_maj"] == 1]["iso3"].nunique()
-    n_non = work[work["muslim_maj"] == 0]["iso3"].nunique()
-    print(f"  Muslim-majority countries: {n_maj}  |  Non-majority: {n_non}")
-
-    # ── A: Interaction model ───────────────────────────────────────────────────
-    print(f"\n  [A] Interaction: courts x muslim_majority (PanelOLS + entity/time FE)")
-    panel_a = work[["iso3", "year"] + GRI_PANEL_COLS + CONTROLS_GDP +
-                   ["courts_x_muslim", OUTCOME]].dropna().copy()
-    print(f"    N = {len(panel_a):,} obs, {panel_a['iso3'].nunique()} countries")
-
-    try:
-        panel_a_idx = panel_a.set_index(["iso3", "year"])
-        pred_cols_a = GRI_PANEL_COLS + CONTROLS_GDP + ["courts_x_muslim"]
-        y_a = panel_a_idx[OUTCOME]
-        X_a = sm.add_constant(panel_a_idx[pred_cols_a])
-        mod_a = PanelOLS(y_a, X_a, entity_effects=True, time_effects=True)
-        res_a = mod_a.fit(cov_type="clustered", cluster_entity=True)
-        for var in pred_cols_a:
-            if var in res_a.params.index:
-                results.append({
-                    "tier": "P10_courts_x_muslim_maj",
-                    "year": "all",
-                    "predictor": var,
-                    "coef": res_a.params[var],
-                    "se": res_a.std_errors[var],
-                    "pval": res_a.pvalues[var],
-                    "n": res_a.nobs,
-                    "r2": res_a.rsquared,
-                })
-        c_main = res_a.params.get(COURTS, float("nan"))
-        c_int  = res_a.params.get("courts_x_muslim", float("nan"))
-        p_int  = res_a.pvalues.get("courts_x_muslim", float("nan"))
-        print(f"    courts (non-majority baseline): {c_main:.4f}")
-        print(f"    courts x muslim_maj interaction: {c_int:.4f}  (p={p_int:.3f})")
-        print(f"    Muslim-majority total effect:   {c_main + c_int:.4f}")
-    except Exception as e:
-        print(f"    Interaction model failed: {e}")
-
-    # ── B: Stratified panel FE ─────────────────────────────────────────────────
-    # Use focal predictor + GDP only (not all GRI vars) to avoid perfect collinearity
-    # from zero-variation GRI controls in the non-Muslim subsample.
-    strat_preds = [COURTS] + CONTROLS_GDP
-    for label, mask in [("muslim_maj_only", work["muslim_maj"] == 1),
-                        ("non_muslim_only",  work["muslim_maj"] == 0)]:
-        sub = work[mask].copy()
-        print(f"\n  [{label}]  N = {len(sub):,} obs, {sub['iso3'].nunique()} countries")
-
-        if len(sub) < 100 or sub["iso3"].nunique() < 5:
-            print(f"    Too few obs/countries -- skipping {label}.")
-            continue
-
-        panel_b = sub[["iso3", "year"] + strat_preds + [OUTCOME]].dropna()
-        panel_b = panel_b.set_index(["iso3", "year"])
-        y_b = panel_b[OUTCOME]
-        X_b = sm.add_constant(panel_b[strat_preds])
-
-        try:
-            model_b = PanelOLS(y_b, X_b, entity_effects=True, time_effects=True)
-            res_b   = model_b.fit(cov_type="clustered", cluster_entity=True)
-            for var in res_b.params.index:
-                results.append({
-                    "tier": f"P10_{label}",
-                    "year": "all",
-                    "predictor": var,
-                    "coef": res_b.params[var],
-                    "se": res_b.std_errors[var],
-                    "pval": res_b.pvalues[var],
-                    "n": res_b.nobs,
-                    "r2": res_b.rsquared,
-                })
-            c_val = res_b.params.get(COURTS, float("nan"))
-            p_val = res_b.pvalues.get(COURTS, float("nan"))
-            print(f"    courts coef = {c_val:.4f}  (p={p_val:.3f})")
-        except Exception as e:
-            print(f"    Panel FE failed for {label}: {e}")
-
-    return results
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SAVE RESULTS
@@ -2475,7 +2359,6 @@ def main():
             print(f"{'='*60}")
             all_results.extend(phase10_regional_heterogeneity(df))
             all_results.extend(phase10_gender_gap_outcomes(df))
-            all_results.extend(phase10_muslim_majority(df))
 
             print(f"\n{'='*60}")
             print("RESULTS SUMMARY")

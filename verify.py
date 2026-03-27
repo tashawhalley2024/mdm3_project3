@@ -34,8 +34,6 @@ REQUIRED_FILES = [
     "data/secularism_composition_normalised.csv",
     "data/gender_gap_panel.csv",
     "data/women_secularism_normalised.csv",
-    "data/women_religion_normalised.csv",
-    "data/religion_composition_normalised.csv",
     "data/README.md",
     # analysis/
     "analysis/analyse_secularism_women.py",
@@ -100,7 +98,7 @@ try:
             "min_rows": 3100,
             "required_cols": ["iso3", "country", "year",
                               "gri_religious_courts_norm", "gri_state_religion_norm",
-                              "log_gdppc_norm"],
+                              "log_gdppc_norm", "wvs_imprel_norm"],
         },
         "data/gender_gap_panel.csv": {
             "min_rows": 3100,
@@ -111,7 +109,7 @@ try:
             "required_cols": ["iso3", "country", "year", "women_treatment_index"],
         },
         "results/secularism_women_results.csv": {
-            "min_rows": 340,
+            "min_rows": 320,
             "required_cols": ["tier", "predictor", "coef", "se", "pval", "n"],
         },
         "results/secularism_women_results_composite.csv": {

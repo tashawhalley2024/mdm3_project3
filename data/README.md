@@ -14,8 +14,6 @@ All normalisation uses **robust min-max** (1%/99% winsorisation, then scale to [
 | `women_secularism_normalised.csv` | 3,164 | ~198 | 2007-2022 | Alternative outcome -- 13-component composite |
 | `secularism_composition_normalised.csv` | 3,164 | ~198 | 2007-2022 | Secularism predictor variables |
 | `gender_gap_panel.csv` | 3,164 | ~198 | 2007-2022 | Robustness outcomes (GII, GDI, WEF GGG, gaps) |
-| `women_religion_normalised.csv` | -- | -- | -- | Early composite outcome (group project provenance) |
-| `religion_composition_normalised.csv` | -- | -- | -- | Early composition predictor (group project provenance) |
 
 ---
 
@@ -48,17 +46,11 @@ All normalisation uses **robust min-max** (1%/99% winsorisation, then scale to [
 - **Coverage:** GII 80%, GDI 88%, WEF GGG 67% of country-years
 - See `gender_gap_panel_README.md`
 
-### `women_religion_normalised.csv` and `religion_composition_normalised.csv`
-- **Provenance:** Early-pipeline versions produced during the MDM3 group project (before the dissertation pipeline was built). Kept for reproducibility reference.
-- The final analysis uses `wbl_treatment_index.csv` and `secularism_composition_normalised.csv` instead.
-- These files describe the same underlying constructs but were built with an earlier, simpler normalisation approach.
-
 ---
 
 ## Interpolation Flags
 
-- `pct_interpolated = 1` in `secularism_composition_normalised.csv` indicates that the `pct_*` (religious composition) values for that row were linearly interpolated between the 2010 and 2020 WRP cross-sections, or forward/back-filled (<=3 years back-fill, <=2 years forward-fill).
-- `wvs_interpolated = 1` indicates WVS religiosity values were similarly imputed.
+- `wvs_interpolated = 1` in `secularism_composition_normalised.csv` indicates WVS religiosity values were linearly interpolated or forward/back-filled for that country-year.
 
 ---
 

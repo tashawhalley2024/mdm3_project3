@@ -17,27 +17,7 @@ religion / less secular**. For `v2clrelig_norm`: **higher = more secular freedom
 
 ---
 
-## Sub-group 1: Composition -- who belongs to each religion
-
-Source: Pew Global Religious Futures (2010 & 2020 estimates) with WRP
-national dataset as fallback for countries Pew does not cover.
-Linear interpolation applied between 2010 and 2020; backward-filled 3 years
-(2007-2009) and forward-filled 2 years (2021-2022). Flagged in `pct_interpolated`.
-
-| Column | What it measures |
-|--------|-----------------|
-| `pct_christian_norm` | Christian share of population |
-| `pct_muslim_norm` | Muslim share |
-| `pct_hindu_norm` | Hindu share |
-| `pct_buddhist_norm` | Buddhist share |
-| `pct_jewish_norm` | Jewish share |
-| `pct_unaffiliated_norm` | Religiously unaffiliated share |
-| `pct_other_norm` | All other religions combined |
-| `pct_interpolated` | 0=original data, 1=interpolated/filled, NaN=missing |
-
----
-
-## Sub-group 2: Religious intensity -- how religion is practiced or valued
+## Sub-group 1: Religious intensity -- how religious societies are
 
 Source: World Values Survey (WVS), accessed via QoG Standard TS Jan 2025.
 Survey-based -- only available in WVS wave years (typically every 5 years).
@@ -103,9 +83,7 @@ Missing values preserved as NaN -- not imputed.
 
 | Dataset | Version | Notes |
 |---------|---------|-------|
-| Pew Global Religious Futures | 2010 & 2020 | Religious composition % |
-| World Religion Project (WRP) | National, ~2010 | Fallback composition |
-| World Values Survey (WVS) | Via QoG Jan 2025 | Religious intensity |
+| World Values Survey (WVS) | Via QoG Jan 2025 | Societal religious strength |
 | Pew Global Restrictions on Religion | 2007-2022 | State institution sub-questions |
 | V-Dem Core | v15, 2007-2022 | Freedom of religion (v2clrelig) |
 | World Bank WDI | Via QoG Jan 2025 | GDP per capita |
@@ -116,7 +94,7 @@ Missing values preserved as NaN -- not imputed.
 
 ```python
 import pandas as pd
-comp = pd.read_csv("data/secularism_composition/secularism_composition_normalised.csv")
-women = pd.read_csv("data/women_secularism/women_secularism_normalised.csv")
+comp = pd.read_csv("data/secularism_composition_normalised.csv")
+women = pd.read_csv("data/women_secularism_normalised.csv")
 merged = women.merge(comp, on=["iso3", "year"], how="left")
 ```

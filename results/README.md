@@ -24,7 +24,7 @@ LOO jackknife: 170 country-drop runs, range [−0.01199, −0.00935], **0 sign f
 
 | File | Contents | Rows | Key columns |
 |---|---|---|---|
-| `secularism_women_results.csv` | All model tiers (T1–T2, P3–P10) — **WBL index** | ~347 | `tier`, `predictor`, `coef`, `se`, `pval`, `n` |
+| `secularism_women_results.csv` | All model tiers (T1–T2, P3–P10) — **WBL index** | ~325 | `tier`, `predictor`, `coef`, `se`, `pval`, `n` |
 | `secularism_women_results_composite.csv` | All model tiers — **composite index** | ~550 | same |
 | `secularism_women_results_wbl.csv` | WBL index results (backup copy) | ~347 | same |
 | `index_comparison.csv` | Side-by-side coefficients, both indices | ~10 | `tier`, `coef_composite`, `coef_wbl`, `pval_composite`, `pval_wbl` |

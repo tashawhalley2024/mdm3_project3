@@ -71,18 +71,9 @@ All raw data files are **not included in this repository** due to redistribution
 | File | Derived from |
 |---|---|
 | `data/wbl_treatment_index.csv` | WBL 2024 (10 domain scores) + UNDP life expectancy bounds |
-| `data/secularism_composition_normalised.csv` | Pew GRI + V-Dem (`v2clrelig`) + QoG (`log_gdppc`) + WRP religious composition |
+| `data/secularism_composition_normalised.csv` | Pew GRI + V-Dem (`v2clrelig`) + QoG (`log_gdppc`) + WVS religiosity |
 | `data/gender_gap_panel.csv` | UNDP HDI (GII, GDI) + WEF Global Gender Gap Report (via QoG) |
 | `data/women_secularism_normalised.csv` | V-Dem, QoG/WDI, WHO, governance datasets (13-component composite) |
-| `data/women_religion_normalised.csv` | Early version of composite outcome (group project pipeline) |
-| `data/religion_composition_normalised.csv` | Early version of secularism predictors (group project pipeline) |
 
 All processed files use **robust min-max normalisation** (1%/99% winsorisation, then scale to [0,1]). Life expectancy uses UNDP HDI fixed goalposts (min = 20, max = 85). See [`DATA_HANDLING_METHODS_LOG.md`](DATA_HANDLING_METHODS_LOG.md) for full decisions.
 
----
-
-## World Religion Project (WRP)
-- **Variables used:** `pct_muslim`, `pct_christian`, `pct_other` — religious composition shares
-- **Coverage:** ~200 countries, 2010 and 2020 cross-sections (linearly interpolated and forward/back-filled for panel)
-- **Access:** [https://thearda.com/data-archive?fid=WRP](https://thearda.com/data-archive?fid=WRP)
-- **Citation:** Correlates of War Project. World Religion Project 1945–2010.

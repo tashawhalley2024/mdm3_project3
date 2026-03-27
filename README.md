@@ -76,10 +76,8 @@ python verify.py
 |---|---|---|---|---|
 | WBL 2024 + health | `data/wbl_treatment_index.csv` | 2,222 | 2013–2022 | **Active** outcome index |
 | Composite (13-component) | `data/women_secularism_normalised.csv` | 3,164 | 2007–2022 | Alternative outcome index |
-| Secularism predictors | `data/secularism_composition_normalised.csv` | 3,164 | 2007–2022 | GRI vars, V-Dem, GDP |
+| Secularism predictors | `data/secularism_composition_normalised.csv` | 3,164 | 2007–2022 | GRI vars, WVS religiosity, V-Dem, GDP |
 | Gender gap robustness | `data/gender_gap_panel.csv` | 3,164 | 2007–2022 | GII, GDI, WEF GGG |
-| Early composite (group project) | `data/women_religion_normalised.csv` | — | — | Provenance reference |
-| Early composition (group project) | `data/religion_composition_normalised.csv` | — | — | Provenance reference |
 
 All input data are normalised and analysis-ready. Raw source files are not included (not redistributable / too large). See [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) for provenance.
 
@@ -101,7 +99,6 @@ Pew Research Center (GRI), V-Dem v15, QoG Standard TS Jan 2025, World Bank WBL 2
 
 ---
 
-## Related
+## Notes
 
-- Early WBL scoring pipeline: `data/women_religion_normalised.csv` and `data/religion_composition_normalised.csv` are the group-project precursors to the final analysis datasets.
 - Data handling decisions: [`docs/DATA_HANDLING_METHODS_LOG.md`](docs/DATA_HANDLING_METHODS_LOG.md)
