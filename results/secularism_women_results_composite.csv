@@ -1,0 +1,544 @@
+tier,year,predictor,coef,se,pval,n,r2,dv_label,sig
+T1_no_gdp,2010,const,0.292470,0.036011,0.000000,170,0.739721,,***
+T1_no_gdp,2010,gri_state_religion_norm,-0.064177,0.038365,0.094364,170,0.739721,,*
+T1_no_gdp,2010,gri_religious_law_norm,0.017700,0.038048,0.641776,170,0.739721,,
+T1_no_gdp,2010,gri_blasphemy_norm,-0.016551,0.019331,0.391897,170,0.739721,,
+T1_no_gdp,2010,gri_apostasy_norm,-0.122017,0.032479,0.000172,170,0.739721,,***
+T1_no_gdp,2010,gri_religious_courts_norm,0.041462,0.021789,0.057052,170,0.739721,,*
+T1_no_gdp,2010,v2x_rule_norm,0.063532,0.048310,0.188478,170,0.739721,,
+T1_no_gdp,2010,v2x_civlib_norm,0.137981,0.058894,0.019136,170,0.739721,,**
+T1_no_gdp,2010,v2x_egal_norm,0.308501,0.065583,0.000003,170,0.739721,,***
+T1_with_gdp,2010,const,0.291689,0.039447,0.000000,168,0.758131,,***
+T1_with_gdp,2010,gri_state_religion_norm,-0.080134,0.037345,0.031892,168,0.758131,,**
+T1_with_gdp,2010,gri_religious_law_norm,0.008219,0.038251,0.829872,168,0.758131,,
+T1_with_gdp,2010,gri_blasphemy_norm,-0.026234,0.018766,0.162127,168,0.758131,,
+T1_with_gdp,2010,gri_apostasy_norm,-0.127179,0.031812,0.000064,168,0.758131,,***
+T1_with_gdp,2010,gri_religious_courts_norm,0.037478,0.021410,0.080038,168,0.758131,,*
+T1_with_gdp,2010,v2x_rule_norm,0.012689,0.054544,0.816046,168,0.758131,,
+T1_with_gdp,2010,v2x_civlib_norm,0.142536,0.065745,0.030159,168,0.758131,,**
+T1_with_gdp,2010,v2x_egal_norm,0.268541,0.064139,0.000028,168,0.758131,,***
+T1_with_gdp,2010,log_gdppc_norm,0.128395,0.045273,0.004568,168,0.758131,,***
+T1_with_lo,2010,const,0.304311,0.040537,0.000000,168,0.781951,,***
+T1_with_lo,2010,gri_state_religion_norm,-0.085898,0.034710,0.013334,168,0.781951,,**
+T1_with_lo,2010,gri_religious_law_norm,-0.003635,0.040071,0.927725,168,0.781951,,
+T1_with_lo,2010,gri_blasphemy_norm,-0.011096,0.018118,0.540257,168,0.781951,,
+T1_with_lo,2010,gri_apostasy_norm,-0.116656,0.030049,0.000104,168,0.781951,,***
+T1_with_lo,2010,gri_religious_courts_norm,0.036177,0.020879,0.083151,168,0.781951,,*
+T1_with_lo,2010,v2x_rule_norm,0.063599,0.056913,0.263791,168,0.781951,,
+T1_with_lo,2010,v2x_civlib_norm,0.149665,0.065777,0.022885,168,0.781951,,**
+T1_with_lo,2010,v2x_egal_norm,0.208822,0.067002,0.001829,168,0.781951,,***
+T1_with_lo,2010,log_gdppc_norm,0.086985,0.044950,0.052975,168,0.781951,,*
+T1_with_lo,2010,lo_english,-0.012194,0.019137,0.523991,168,0.781951,,
+T1_with_lo,2010,lo_german,0.014312,0.020161,0.477774,168,0.781951,,
+T1_with_lo,2010,lo_scandinavian,0.136288,0.023861,0.000000,168,0.781951,,***
+T1_with_lo,2010,lo_socialist,0.065599,0.030086,0.029228,168,0.781951,,**
+T1_no_gdp,2020,const,0.405741,0.040057,0.000000,170,0.694854,,***
+T1_no_gdp,2020,gri_state_religion_norm,-0.087580,0.035898,0.014701,170,0.694854,,**
+T1_no_gdp,2020,gri_religious_law_norm,0.020456,0.048601,0.673831,170,0.694854,,
+T1_no_gdp,2020,gri_blasphemy_norm,-0.026890,0.016961,0.112874,170,0.694854,,
+T1_no_gdp,2020,gri_apostasy_norm,-0.119805,0.040281,0.002937,170,0.694854,,***
+T1_no_gdp,2020,gri_religious_courts_norm,0.050933,0.022735,0.025075,170,0.694854,,**
+T1_no_gdp,2020,v2x_rule_norm,0.146055,0.057714,0.011384,170,0.694854,,**
+T1_no_gdp,2020,v2x_civlib_norm,0.061902,0.066453,0.351586,170,0.694854,,
+T1_no_gdp,2020,v2x_egal_norm,0.241665,0.057818,0.000029,170,0.694854,,***
+T1_with_gdp,2020,const,0.374045,0.043646,0.000000,166,0.692912,,***
+T1_with_gdp,2020,gri_state_religion_norm,-0.087746,0.035613,0.013743,166,0.692912,,**
+T1_with_gdp,2020,gri_religious_law_norm,0.044396,0.047831,0.353311,166,0.692912,,
+T1_with_gdp,2020,gri_blasphemy_norm,-0.023215,0.017089,0.174313,166,0.692912,,
+T1_with_gdp,2020,gri_apostasy_norm,-0.122459,0.041501,0.003170,166,0.692912,,***
+T1_with_gdp,2020,gri_religious_courts_norm,0.036096,0.022754,0.112649,166,0.692912,,
+T1_with_gdp,2020,v2x_rule_norm,0.101437,0.064696,0.116904,166,0.692912,,
+T1_with_gdp,2020,v2x_civlib_norm,0.092868,0.074433,0.212149,166,0.692912,,
+T1_with_gdp,2020,v2x_egal_norm,0.214296,0.060115,0.000364,166,0.692912,,***
+T1_with_gdp,2020,log_gdppc_norm,0.094129,0.045946,0.040492,166,0.692912,,**
+T1_with_lo,2020,const,0.384263,0.044332,0.000000,166,0.705775,,***
+T1_with_lo,2020,gri_state_religion_norm,-0.101629,0.037617,0.006899,166,0.705775,,***
+T1_with_lo,2020,gri_religious_law_norm,0.043760,0.048125,0.363189,166,0.705775,,
+T1_with_lo,2020,gri_blasphemy_norm,-0.014566,0.016588,0.379907,166,0.705775,,
+T1_with_lo,2020,gri_apostasy_norm,-0.118723,0.042044,0.004746,166,0.705775,,***
+T1_with_lo,2020,gri_religious_courts_norm,0.034910,0.023978,0.145409,166,0.705775,,
+T1_with_lo,2020,v2x_rule_norm,0.131974,0.067016,0.048921,166,0.705775,,**
+T1_with_lo,2020,v2x_civlib_norm,0.094641,0.074926,0.206545,166,0.705775,,
+T1_with_lo,2020,v2x_egal_norm,0.192349,0.065760,0.003444,166,0.705775,,***
+T1_with_lo,2020,log_gdppc_norm,0.068712,0.047361,0.146832,166,0.705775,,
+T1_with_lo,2020,lo_english,-0.031251,0.021184,0.140155,166,0.705775,,
+T1_with_lo,2020,lo_german,-0.005137,0.019519,0.792401,166,0.705775,,
+T1_with_lo,2020,lo_scandinavian,0.074340,0.029657,0.012189,166,0.705775,,**
+T1_with_lo,2020,lo_socialist,0.014309,0.027721,0.605731,166,0.705775,,
+T2_gri_only,all,const,0.625844,0.004705,0.000000,2211,0.014153,,***
+T2_gri_only,all,gri_state_religion_norm,-0.015562,0.016767,0.353439,2211,0.014153,,
+T2_gri_only,all,gri_religious_law_norm,-0.013377,0.008352,0.109379,2211,0.014153,,
+T2_gri_only,all,gri_blasphemy_norm,-0.001757,0.004631,0.704425,2211,0.014153,,
+T2_gri_only,all,gri_apostasy_norm,0.007554,0.013001,0.561295,2211,0.014153,,
+T2_gri_only,all,gri_religious_courts_norm,-0.014849,0.004268,0.000514,2211,0.014153,,***
+T2_gri_gdp,all,const,0.526163,0.044896,0.000000,2172,0.029069,,***
+T2_gri_gdp,all,gri_state_religion_norm,-0.020874,0.016826,0.214912,2172,0.029069,,
+T2_gri_gdp,all,gri_religious_law_norm,-0.012013,0.008396,0.152631,2172,0.029069,,
+T2_gri_gdp,all,gri_blasphemy_norm,-0.001005,0.004620,0.827801,2172,0.029069,,
+T2_gri_gdp,all,gri_apostasy_norm,0.003544,0.013473,0.792531,2172,0.029069,,
+T2_gri_gdp,all,gri_religious_courts_norm,-0.014644,0.004275,0.000627,2172,0.029069,,***
+T2_gri_gdp,all,log_gdppc_norm,0.221840,0.097153,0.022512,2172,0.029069,,**
+T2_no_gdp,all,const,0.432503,0.023415,0.000000,2211,0.177959,,***
+T2_no_gdp,all,gri_state_religion_norm,-0.011734,0.012365,0.342731,2211,0.177959,,
+T2_no_gdp,all,gri_religious_law_norm,-0.002203,0.008068,0.784826,2211,0.177959,,
+T2_no_gdp,all,gri_blasphemy_norm,-0.001735,0.003853,0.652580,2211,0.177959,,
+T2_no_gdp,all,gri_apostasy_norm,0.011767,0.012521,0.347437,2211,0.177959,,
+T2_no_gdp,all,gri_religious_courts_norm,-0.011020,0.003522,0.001782,2211,0.177959,,***
+T2_no_gdp,all,v2x_rule_norm,-0.055987,0.036008,0.120139,2211,0.177959,,
+T2_no_gdp,all,v2x_civlib_norm,0.132599,0.033878,0.000094,2211,0.177959,,***
+T2_no_gdp,all,v2x_egal_norm,0.219644,0.045409,0.000001,2211,0.177959,,***
+T2_with_gdp,all,const,0.341013,0.041987,0.000000,2172,0.189163,,***
+T2_with_gdp,all,gri_state_religion_norm,-0.014335,0.012398,0.247747,2172,0.189163,,
+T2_with_gdp,all,gri_religious_law_norm,-0.000666,0.008125,0.934726,2172,0.189163,,
+T2_with_gdp,all,gri_blasphemy_norm,-0.001003,0.003891,0.796518,2172,0.189163,,
+T2_with_gdp,all,gri_apostasy_norm,0.008976,0.012646,0.477907,2172,0.189163,,
+T2_with_gdp,all,gri_religious_courts_norm,-0.010660,0.003340,0.001438,2172,0.189163,,***
+T2_with_gdp,all,v2x_rule_norm,-0.061550,0.034785,0.076976,2172,0.189163,,*
+T2_with_gdp,all,v2x_civlib_norm,0.131205,0.034212,0.000129,2172,0.189163,,***
+T2_with_gdp,all,v2x_egal_norm,0.240473,0.043858,0.000000,2172,0.189163,,***
+T2_with_gdp,all,log_gdppc_norm,0.181760,0.064661,0.004988,2172,0.189163,,***
+P3_T1_political,2010,const,0.302554,0.055442,0.000000,168,0.360540,,***
+P3_T1_political,2010,gri_state_religion_norm,-0.018275,0.055349,0.741258,168,0.360540,,
+P3_T1_political,2010,gri_religious_law_norm,-0.111056,0.060177,0.064966,168,0.360540,,*
+P3_T1_political,2010,gri_blasphemy_norm,-0.016384,0.033212,0.621789,168,0.360540,,
+P3_T1_political,2010,gri_apostasy_norm,-0.061888,0.047851,0.195895,168,0.360540,,
+P3_T1_political,2010,gri_religious_courts_norm,0.050559,0.031495,0.108423,168,0.360540,,
+P3_T1_political,2010,v2x_rule_norm,0.048215,0.085718,0.573783,168,0.360540,,
+P3_T1_political,2010,v2x_civlib_norm,0.002746,0.094821,0.976898,168,0.360540,,
+P3_T1_political,2010,v2x_egal_norm,0.259884,0.104505,0.012889,168,0.360540,,**
+P3_T1_political,2010,log_gdppc_norm,-0.036931,0.075200,0.623353,168,0.360540,,
+P3_T1_political,2020,const,0.374810,0.067546,0.000000,166,0.276777,,***
+P3_T1_political,2020,gri_state_religion_norm,-0.074224,0.066127,0.261669,166,0.276777,,
+P3_T1_political,2020,gri_religious_law_norm,0.009324,0.082040,0.909515,166,0.276777,,
+P3_T1_political,2020,gri_blasphemy_norm,-0.024351,0.029067,0.402169,166,0.276777,,
+P3_T1_political,2020,gri_apostasy_norm,-0.089151,0.058200,0.125573,166,0.276777,,
+P3_T1_political,2020,gri_religious_courts_norm,0.033854,0.038588,0.380301,166,0.276777,,
+P3_T1_political,2020,v2x_rule_norm,0.140351,0.108729,0.196763,166,0.276777,,
+P3_T1_political,2020,v2x_civlib_norm,-0.027977,0.118042,0.812653,166,0.276777,,
+P3_T1_political,2020,v2x_egal_norm,0.187167,0.101973,0.066438,166,0.276777,,*
+P3_T1_political,2020,log_gdppc_norm,-0.007229,0.081404,0.929240,166,0.276777,,
+P3_T2_political,all,const,0.201978,0.079743,0.011390,2172,0.075540,,**
+P3_T2_political,all,gri_state_religion_norm,-0.022882,0.020946,0.274781,2172,0.075540,,
+P3_T2_political,all,gri_religious_law_norm,-0.014979,0.015659,0.338891,2172,0.075540,,
+P3_T2_political,all,gri_blasphemy_norm,-0.003353,0.008101,0.678975,2172,0.075540,,
+P3_T2_political,all,gri_apostasy_norm,0.016329,0.025851,0.527674,2172,0.075540,,
+P3_T2_political,all,gri_religious_courts_norm,-0.022637,0.008461,0.007526,2172,0.075540,,***
+P3_T2_political,all,v2x_rule_norm,-0.139815,0.063438,0.027642,2172,0.075540,,**
+P3_T2_political,all,v2x_civlib_norm,0.079117,0.067576,0.241829,2172,0.075540,,
+P3_T2_political,all,v2x_egal_norm,0.364004,0.088819,0.000043,2172,0.075540,,***
+P3_T2_political,all,log_gdppc_norm,0.199350,0.122661,0.104278,2172,0.075540,,
+P3_T1_economic,2010,const,0.518633,0.055869,0.000000,168,0.663546,,***
+P3_T1_economic,2010,gri_state_religion_norm,-0.154323,0.064658,0.016998,168,0.663546,,**
+P3_T1_economic,2010,gri_religious_law_norm,0.058633,0.053195,0.270363,168,0.663546,,
+P3_T1_economic,2010,gri_blasphemy_norm,-0.077470,0.034111,0.023142,168,0.663546,,**
+P3_T1_economic,2010,gri_apostasy_norm,-0.320916,0.062512,0.000000,168,0.663546,,***
+P3_T1_economic,2010,gri_religious_courts_norm,0.034082,0.029225,0.243535,168,0.663546,,
+P3_T1_economic,2010,v2x_rule_norm,0.047090,0.084317,0.576513,168,0.663546,,
+P3_T1_economic,2010,v2x_civlib_norm,0.050780,0.090411,0.574350,168,0.663546,,
+P3_T1_economic,2010,v2x_egal_norm,0.094721,0.076649,0.216542,168,0.663546,,
+P3_T1_economic,2010,log_gdppc_norm,0.186981,0.063857,0.003410,168,0.663546,,***
+P3_T1_economic,2020,const,0.584589,0.043340,0.000000,166,0.654164,,***
+P3_T1_economic,2020,gri_state_religion_norm,-0.137282,0.054217,0.011339,166,0.654164,,**
+P3_T1_economic,2020,gri_religious_law_norm,0.078681,0.061830,0.203187,166,0.654164,,
+P3_T1_economic,2020,gri_blasphemy_norm,-0.062373,0.022192,0.004944,166,0.654164,,***
+P3_T1_economic,2020,gri_apostasy_norm,-0.333550,0.058095,0.000000,166,0.654164,,***
+P3_T1_economic,2020,gri_religious_courts_norm,0.020885,0.033965,0.538629,166,0.654164,,
+P3_T1_economic,2020,v2x_rule_norm,0.148645,0.082212,0.070595,166,0.654164,,*
+P3_T1_economic,2020,v2x_civlib_norm,0.019953,0.081374,0.806301,166,0.654164,,
+P3_T1_economic,2020,v2x_egal_norm,0.078141,0.070885,0.270303,166,0.654164,,
+P3_T1_economic,2020,log_gdppc_norm,0.078491,0.069195,0.256651,166,0.654164,,
+P3_T2_economic,all,const,0.564657,0.057396,0.000000,2172,0.008609,,***
+P3_T2_economic,all,gri_state_religion_norm,-0.013587,0.028027,0.627894,2172,0.008609,,
+P3_T2_economic,all,gri_religious_law_norm,0.011179,0.013711,0.414970,2172,0.008609,,
+P3_T2_economic,all,gri_blasphemy_norm,-0.004261,0.005334,0.424518,2172,0.008609,,
+P3_T2_economic,all,gri_apostasy_norm,-0.005986,0.019349,0.757083,2172,0.008609,,
+P3_T2_economic,all,gri_religious_courts_norm,0.005462,0.006133,0.373250,2172,0.008609,,
+P3_T2_economic,all,v2x_rule_norm,-0.019985,0.038731,0.605925,2172,0.008609,,
+P3_T2_economic,all,v2x_civlib_norm,0.033777,0.034196,0.323392,2172,0.008609,,
+P3_T2_economic,all,v2x_egal_norm,-0.004659,0.045546,0.918535,2172,0.008609,,
+P3_T2_economic,all,log_gdppc_norm,0.244087,0.120239,0.042489,2172,0.008609,,**
+P3_T1_physical_safety,2010,const,0.138765,0.061031,0.022986,168,0.703579,,**
+P3_T1_physical_safety,2010,gri_state_religion_norm,-0.134064,0.050382,0.007792,168,0.703579,,***
+P3_T1_physical_safety,2010,gri_religious_law_norm,0.079568,0.054156,0.141769,168,0.703579,,
+P3_T1_physical_safety,2010,gri_blasphemy_norm,-0.003188,0.029816,0.914849,168,0.703579,,
+P3_T1_physical_safety,2010,gri_apostasy_norm,-0.013892,0.048607,0.775029,168,0.703579,,
+P3_T1_physical_safety,2010,gri_religious_courts_norm,0.018023,0.034473,0.601108,168,0.703579,,
+P3_T1_physical_safety,2010,v2x_rule_norm,-0.047066,0.083819,0.574447,168,0.703579,,
+P3_T1_physical_safety,2010,v2x_civlib_norm,0.427740,0.096233,0.000009,168,0.703579,,***
+P3_T1_physical_safety,2010,v2x_egal_norm,0.378159,0.099678,0.000148,168,0.703579,,***
+P3_T1_physical_safety,2010,log_gdppc_norm,0.105548,0.069730,0.130112,168,0.703579,,
+P3_T1_physical_safety,2020,const,0.180083,0.051765,0.000503,166,0.706685,,***
+P3_T1_physical_safety,2020,gri_state_religion_norm,-0.045095,0.042380,0.287303,166,0.706685,,
+P3_T1_physical_safety,2020,gri_religious_law_norm,-0.032338,0.050459,0.521596,166,0.706685,,
+P3_T1_physical_safety,2020,gri_blasphemy_norm,0.037763,0.023976,0.115249,166,0.706685,,
+P3_T1_physical_safety,2020,gri_apostasy_norm,0.018889,0.055356,0.732937,166,0.706685,,
+P3_T1_physical_safety,2020,gri_religious_courts_norm,0.052066,0.040316,0.196547,166,0.706685,,
+P3_T1_physical_safety,2020,v2x_rule_norm,-0.032709,0.093786,0.727269,166,0.706685,,
+P3_T1_physical_safety,2020,v2x_civlib_norm,0.463249,0.091809,0.000000,166,0.706685,,***
+P3_T1_physical_safety,2020,v2x_egal_norm,0.273125,0.091891,0.002956,166,0.706685,,***
+P3_T1_physical_safety,2020,log_gdppc_norm,0.113863,0.062856,0.070067,166,0.706685,,*
+P3_T2_physical_safety,all,const,0.244637,0.089656,0.006416,2172,0.189470,,***
+P3_T2_physical_safety,all,gri_state_religion_norm,0.001972,0.017202,0.908732,2172,0.189470,,
+P3_T2_physical_safety,all,gri_religious_law_norm,0.018018,0.014805,0.223731,2172,0.189470,,
+P3_T2_physical_safety,all,gri_blasphemy_norm,-0.002685,0.008195,0.743226,2172,0.189470,,
+P3_T2_physical_safety,all,gri_apostasy_norm,0.050225,0.018189,0.005811,2172,0.189470,,***
+P3_T2_physical_safety,all,gri_religious_courts_norm,-0.004165,0.015872,0.793050,2172,0.189470,,
+P3_T2_physical_safety,all,v2x_rule_norm,-0.030705,0.044985,0.494969,2172,0.189470,,
+P3_T2_physical_safety,all,v2x_civlib_norm,0.394115,0.058221,0.000000,2172,0.189470,,***
+P3_T2_physical_safety,all,v2x_egal_norm,0.249424,0.089458,0.005352,2172,0.189470,,***
+P3_T2_physical_safety,all,log_gdppc_norm,0.077150,0.164505,0.639132,2172,0.189470,,
+P3_T1_health,2010,const,0.029774,0.066423,0.653978,168,0.716466,,
+P3_T1_health,2010,gri_state_religion_norm,0.051092,0.051690,0.322942,168,0.716466,,
+P3_T1_health,2010,gri_religious_law_norm,0.167135,0.055473,0.002587,168,0.716466,,***
+P3_T1_health,2010,gri_blasphemy_norm,-0.027596,0.027558,0.316644,168,0.716466,,
+P3_T1_health,2010,gri_apostasy_norm,-0.028884,0.057463,0.615202,168,0.716466,,
+P3_T1_health,2010,gri_religious_courts_norm,0.003223,0.030381,0.915502,168,0.716466,,
+P3_T1_health,2010,v2x_rule_norm,-0.106977,0.095618,0.263226,168,0.716466,,
+P3_T1_health,2010,v2x_civlib_norm,0.141777,0.091298,0.120447,168,0.716466,,
+P3_T1_health,2010,v2x_egal_norm,0.206916,0.112730,0.066432,168,0.716466,,*
+P3_T1_health,2010,log_gdppc_norm,0.800199,0.077451,0.000000,168,0.716466,,***
+P3_T1_health,2020,const,0.235846,0.050155,0.000003,166,0.746183,,***
+P3_T1_health,2020,gri_state_religion_norm,0.018630,0.037832,0.622408,166,0.746183,,
+P3_T1_health,2020,gri_religious_law_norm,0.060974,0.046513,0.189893,166,0.746183,,
+P3_T1_health,2020,gri_blasphemy_norm,0.001890,0.021816,0.930955,166,0.746183,,
+P3_T1_health,2020,gri_apostasy_norm,0.012095,0.034514,0.726013,166,0.746183,,
+P3_T1_health,2020,gri_religious_courts_norm,0.040001,0.029123,0.169595,166,0.746183,,
+P3_T1_health,2020,v2x_rule_norm,0.069355,0.079830,0.384963,166,0.746183,,
+P3_T1_health,2020,v2x_civlib_norm,0.002497,0.073522,0.972907,166,0.746183,,
+P3_T1_health,2020,v2x_egal_norm,0.066572,0.075901,0.380434,166,0.746183,,
+P3_T1_health,2020,log_gdppc_norm,0.685860,0.053436,0.000000,166,0.746183,,***
+P3_T2_health,all,const,0.603796,0.051196,0.000000,2172,0.011834,,***
+P3_T2_health,all,gri_state_religion_norm,-0.002312,0.008358,0.782107,2172,0.011834,,
+P3_T2_health,all,gri_religious_law_norm,0.019170,0.009618,0.046371,2172,0.011834,,**
+P3_T2_health,all,gri_blasphemy_norm,0.006790,0.004317,0.115935,2172,0.011834,,
+P3_T2_health,all,gri_apostasy_norm,0.007830,0.006545,0.231703,2172,0.011834,,
+P3_T2_health,all,gri_religious_courts_norm,0.000987,0.004992,0.843223,2172,0.011834,,
+P3_T2_health,all,v2x_rule_norm,0.013230,0.029812,0.657256,2172,0.011834,,
+P3_T2_health,all,v2x_civlib_norm,-0.007010,0.030003,0.815279,2172,0.011834,,
+P3_T2_health,all,v2x_egal_norm,0.014080,0.049298,0.775210,2172,0.011834,,
+P3_T2_health,all,log_gdppc_norm,0.053940,0.094383,0.567727,2172,0.011834,,
+P4_panel_fe_L1,all,const,0.338320,0.045174,0.000000,2003,0.192830,,***
+P4_panel_fe_L1,all,gri_state_religion_norm_L1,-0.005954,0.016314,0.715165,2003,0.192830,,
+P4_panel_fe_L1,all,gri_religious_law_norm_L1,-0.000694,0.008843,0.937496,2003,0.192830,,
+P4_panel_fe_L1,all,gri_blasphemy_norm_L1,-0.000157,0.003876,0.967772,2003,0.192830,,
+P4_panel_fe_L1,all,gri_apostasy_norm_L1,0.000057,0.015413,0.997037,2003,0.192830,,
+P4_panel_fe_L1,all,gri_religious_courts_norm_L1,-0.012627,0.004392,0.004087,2003,0.192830,,***
+P4_panel_fe_L1,all,v2x_rule_norm,-0.062251,0.034884,0.074512,2003,0.192830,,*
+P4_panel_fe_L1,all,v2x_civlib_norm,0.139607,0.034169,0.000046,2003,0.192830,,***
+P4_panel_fe_L1,all,v2x_egal_norm,0.231758,0.045858,0.000000,2003,0.192830,,***
+P4_panel_fe_L1,all,log_gdppc_norm,0.192157,0.068509,0.005087,2003,0.192830,,***
+P4_panel_fe_L2,all,const,0.341286,0.049423,0.000000,1834,0.192085,,***
+P4_panel_fe_L2,all,gri_state_religion_norm_L2,-0.004643,0.016018,0.771950,1834,0.192085,,
+P4_panel_fe_L2,all,gri_religious_law_norm_L2,-0.002179,0.010838,0.840722,1834,0.192085,,
+P4_panel_fe_L2,all,gri_blasphemy_norm_L2,0.001664,0.003850,0.665635,1834,0.192085,,
+P4_panel_fe_L2,all,gri_apostasy_norm_L2,-0.011342,0.018263,0.534688,1834,0.192085,,
+P4_panel_fe_L2,all,gri_religious_courts_norm_L2,-0.008426,0.004903,0.085864,1834,0.192085,,*
+P4_panel_fe_L2,all,v2x_rule_norm,-0.056798,0.036175,0.116584,1834,0.192085,,
+P4_panel_fe_L2,all,v2x_civlib_norm,0.142315,0.036037,0.000082,1834,0.192085,,***
+P4_panel_fe_L2,all,v2x_egal_norm,0.225915,0.050373,0.000008,1834,0.192085,,***
+P4_panel_fe_L2,all,log_gdppc_norm,0.190429,0.073126,0.009294,1834,0.192085,,***
+P4_reverse_causality,all,const,0.398317,0.269505,0.139554,2511,0.011479,,
+P4_reverse_causality,all,women_treatment_index,-0.048644,0.239129,0.838824,2511,0.011479,,
+P4_reverse_causality,all,v2x_rule_norm,-0.225339,0.247158,0.362011,2511,0.011479,,
+P4_reverse_causality,all,v2x_civlib_norm,-0.133897,0.162576,0.410253,2511,0.011479,,
+P4_reverse_causality,all,v2x_egal_norm,-0.012260,0.328330,0.970216,2511,0.011479,,
+P4_reverse_causality,all,log_gdppc_norm,-0.028540,0.527284,0.956838,2511,0.011479,,
+P5_B1_SIGI_sigi_norm,2019,const,0.266413,0.110916,0.016309,118,0.608780,,**
+P5_B1_SIGI_sigi_norm,2019,gri_state_religion_norm,-0.153286,0.117483,0.191978,118,0.608780,,
+P5_B1_SIGI_sigi_norm,2019,gri_religious_law_norm,0.019403,0.109790,0.859725,118,0.608780,,
+P5_B1_SIGI_sigi_norm,2019,gri_blasphemy_norm,-0.071199,0.041655,0.087407,118,0.608780,,*
+P5_B1_SIGI_sigi_norm,2019,gri_apostasy_norm,-0.282685,0.124244,0.022892,118,0.608780,,**
+P5_B1_SIGI_sigi_norm,2019,gri_religious_courts_norm,0.051018,0.064753,0.430768,118,0.608780,,
+P5_B1_SIGI_sigi_norm,2019,v2x_rule_norm,0.014551,0.169019,0.931393,118,0.608780,,
+P5_B1_SIGI_sigi_norm,2019,v2x_civlib_norm,-0.002081,0.181378,0.990845,118,0.608780,,
+P5_B1_SIGI_sigi_norm,2019,v2x_egal_norm,0.169864,0.157202,0.279901,118,0.608780,,
+P5_B1_SIGI_sigi_norm,2019,log_gdppc_norm,0.567829,0.106499,0.000000,118,0.608780,,***
+P5_B1_SIGI_sigi_family_norm,2019,const,0.383271,0.071486,0.000000,163,0.594302,,***
+P5_B1_SIGI_sigi_family_norm,2019,gri_state_religion_norm,-0.225023,0.083605,0.007113,163,0.594302,,***
+P5_B1_SIGI_sigi_family_norm,2019,gri_religious_law_norm,0.003275,0.072237,0.963837,163,0.594302,,
+P5_B1_SIGI_sigi_family_norm,2019,gri_blasphemy_norm,-0.093322,0.035094,0.007832,163,0.594302,,***
+P5_B1_SIGI_sigi_family_norm,2019,gri_apostasy_norm,-0.324487,0.076982,0.000025,163,0.594302,,***
+P5_B1_SIGI_sigi_family_norm,2019,gri_religious_courts_norm,0.092866,0.045690,0.042103,163,0.594302,,**
+P5_B1_SIGI_sigi_family_norm,2019,v2x_rule_norm,-0.025354,0.114250,0.824378,163,0.594302,,
+P5_B1_SIGI_sigi_family_norm,2019,v2x_civlib_norm,0.114985,0.120500,0.339967,163,0.594302,,
+P5_B1_SIGI_sigi_family_norm,2019,v2x_egal_norm,0.090947,0.111804,0.415957,163,0.594302,,
+P5_B1_SIGI_sigi_family_norm,2019,log_gdppc_norm,0.366301,0.105374,0.000509,163,0.594302,,***
+P5_B1_SIGI_sigi_physical_norm,2019,const,0.302531,0.075451,0.000061,129,0.450690,,***
+P5_B1_SIGI_sigi_physical_norm,2019,gri_state_religion_norm,0.016999,0.091960,0.853345,129,0.450690,,
+P5_B1_SIGI_sigi_physical_norm,2019,gri_religious_law_norm,0.118248,0.100167,0.237798,129,0.450690,,
+P5_B1_SIGI_sigi_physical_norm,2019,gri_blasphemy_norm,-0.033293,0.032475,0.305282,129,0.450690,,
+P5_B1_SIGI_sigi_physical_norm,2019,gri_apostasy_norm,-0.153791,0.060645,0.011215,129,0.450690,,**
+P5_B1_SIGI_sigi_physical_norm,2019,gri_religious_courts_norm,0.058674,0.045913,0.201267,129,0.450690,,
+P5_B1_SIGI_sigi_physical_norm,2019,v2x_rule_norm,0.070189,0.133300,0.598505,129,0.450690,,
+P5_B1_SIGI_sigi_physical_norm,2019,v2x_civlib_norm,0.032611,0.118880,0.783841,129,0.450690,,
+P5_B1_SIGI_sigi_physical_norm,2019,v2x_egal_norm,0.100651,0.111785,0.367905,129,0.450690,,
+P5_B1_SIGI_sigi_physical_norm,2019,log_gdppc_norm,0.416312,0.119955,0.000519,129,0.450690,,***
+P5_B1_SIGI_sigi_resources_norm,2019,const,0.386741,0.096997,0.000067,130,0.453973,,***
+P5_B1_SIGI_sigi_resources_norm,2019,gri_state_religion_norm,-0.109965,0.093059,0.237334,130,0.453973,,
+P5_B1_SIGI_sigi_resources_norm,2019,gri_religious_law_norm,0.106357,0.107514,0.322546,130,0.453973,,
+P5_B1_SIGI_sigi_resources_norm,2019,gri_blasphemy_norm,-0.061376,0.030153,0.041803,130,0.453973,,**
+P5_B1_SIGI_sigi_resources_norm,2019,gri_apostasy_norm,-0.169101,0.087002,0.051939,130,0.453973,,*
+P5_B1_SIGI_sigi_resources_norm,2019,gri_religious_courts_norm,0.025159,0.053771,0.639860,130,0.453973,,
+P5_B1_SIGI_sigi_resources_norm,2019,v2x_rule_norm,0.070761,0.137001,0.605504,130,0.453973,,
+P5_B1_SIGI_sigi_resources_norm,2019,v2x_civlib_norm,0.016487,0.128605,0.897995,130,0.453973,,
+P5_B1_SIGI_sigi_resources_norm,2019,v2x_egal_norm,0.084377,0.132777,0.525117,130,0.453973,,
+P5_B1_SIGI_sigi_resources_norm,2019,log_gdppc_norm,0.385215,0.083236,0.000004,130,0.453973,,***
+P5_B1_SIGI_sigi_civil_norm,2019,const,0.438861,0.107296,0.000043,132,0.347701,,***
+P5_B1_SIGI_sigi_civil_norm,2019,gri_state_religion_norm,-0.096657,0.095549,0.311730,132,0.347701,,
+P5_B1_SIGI_sigi_civil_norm,2019,gri_religious_law_norm,-0.024020,0.110316,0.827631,132,0.347701,,
+P5_B1_SIGI_sigi_civil_norm,2019,gri_blasphemy_norm,-0.035439,0.041317,0.391039,132,0.347701,,
+P5_B1_SIGI_sigi_civil_norm,2019,gri_apostasy_norm,-0.224578,0.130484,0.085230,132,0.347701,,*
+P5_B1_SIGI_sigi_civil_norm,2019,gri_religious_courts_norm,0.008539,0.069795,0.902626,132,0.347701,,
+P5_B1_SIGI_sigi_civil_norm,2019,v2x_rule_norm,-0.107251,0.176796,0.544093,132,0.347701,,
+P5_B1_SIGI_sigi_civil_norm,2019,v2x_civlib_norm,0.095959,0.183016,0.600054,132,0.347701,,
+P5_B1_SIGI_sigi_civil_norm,2019,v2x_egal_norm,0.217713,0.183522,0.235500,132,0.347701,,
+P5_B1_SIGI_sigi_civil_norm,2019,log_gdppc_norm,0.272954,0.117305,0.019972,132,0.347701,,**
+P5_B2_GII_panel_fe,all,const,0.521284,0.100394,0.000000,2008,0.010995,,***
+P5_B2_GII_panel_fe,all,gri_state_religion_norm,-0.016083,0.020114,0.424065,2008,0.010995,,
+P5_B2_GII_panel_fe,all,gri_religious_law_norm,-0.015003,0.008766,0.087149,2008,0.010995,,*
+P5_B2_GII_panel_fe,all,gri_blasphemy_norm,-0.010528,0.006142,0.086676,2008,0.010995,,*
+P5_B2_GII_panel_fe,all,gri_apostasy_norm,0.003763,0.014928,0.801027,2008,0.010995,,
+P5_B2_GII_panel_fe,all,gri_religious_courts_norm,-0.002971,0.009574,0.756377,2008,0.010995,,
+P5_B2_GII_panel_fe,all,v2x_rule_norm,-0.023468,0.042415,0.580138,2008,0.010995,,
+P5_B2_GII_panel_fe,all,v2x_civlib_norm,-0.003671,0.033628,0.913083,2008,0.010995,,
+P5_B2_GII_panel_fe,all,v2x_egal_norm,0.061615,0.042959,0.151671,2008,0.010995,,
+P5_B2_GII_panel_fe,all,log_gdppc_norm,0.064731,0.209228,0.757068,2008,0.010995,,
+P5_A4_Europe,2010,const,0.006149,0.186901,0.973756,41,0.696090,,
+P5_A4_Europe,2010,gri_state_religion_norm,0.017330,0.052411,0.740911,41,0.696090,,
+P5_A4_Europe,2010,gri_religious_law_norm,0.094866,0.074565,0.203281,41,0.696090,,
+P5_A4_Europe,2010,gri_blasphemy_norm,-0.034340,0.030627,0.262193,41,0.696090,,
+P5_A4_Europe,2010,gri_religious_courts_norm,-0.004012,0.028006,0.886090,41,0.696090,,
+P5_A4_Europe,2010,v2x_rule_norm,-0.189446,0.100196,0.058659,41,0.696090,,*
+P5_A4_Europe,2010,v2x_civlib_norm,0.346902,0.164113,0.034532,41,0.696090,,**
+P5_A4_Europe,2010,v2x_egal_norm,0.556058,0.172159,0.001238,41,0.696090,,***
+P5_A4_Europe,2010,log_gdppc_norm,0.143327,0.104179,0.168888,41,0.696090,,
+P5_A4_Sub_Saharan_Africa,2010,const,0.350787,0.091794,0.000133,47,0.627598,,***
+P5_A4_Sub_Saharan_Africa,2010,gri_state_religion_norm,-0.090535,0.137002,0.508723,47,0.627598,,
+P5_A4_Sub_Saharan_Africa,2010,gri_religious_law_norm,-0.044674,0.134792,0.740321,47,0.627598,,
+P5_A4_Sub_Saharan_Africa,2010,gri_blasphemy_norm,0.119481,0.757420,0.874656,47,0.627598,,
+P5_A4_Sub_Saharan_Africa,2010,gri_apostasy_norm,-0.158734,0.753388,0.833126,47,0.627598,,
+P5_A4_Sub_Saharan_Africa,2010,gri_religious_courts_norm,0.021496,0.093266,0.817716,47,0.627598,,
+P5_A4_Sub_Saharan_Africa,2010,v2x_rule_norm,0.174155,0.110075,0.113616,47,0.627598,,
+P5_A4_Sub_Saharan_Africa,2010,v2x_civlib_norm,0.023564,0.165307,0.886650,47,0.627598,,
+P5_A4_Sub_Saharan_Africa,2010,v2x_egal_norm,0.226006,0.195186,0.246907,47,0.627598,,
+P5_A4_Sub_Saharan_Africa,2010,log_gdppc_norm,-0.003808,0.103270,0.970584,47,0.627598,,
+P5_B4_clrelig_extended,all,const,0.341523,0.043885,0.000000,2172,0.189166,,***
+P5_B4_clrelig_extended,all,gri_state_religion_norm,-0.014311,0.012353,0.246775,2172,0.189166,,
+P5_B4_clrelig_extended,all,gri_religious_law_norm,-0.000673,0.008091,0.933705,2172,0.189166,,
+P5_B4_clrelig_extended,all,gri_blasphemy_norm,-0.001018,0.003927,0.795568,2172,0.189166,,
+P5_B4_clrelig_extended,all,gri_apostasy_norm,0.008959,0.012672,0.479678,2172,0.189166,,
+P5_B4_clrelig_extended,all,gri_religious_courts_norm,-0.010650,0.003344,0.001470,2172,0.189166,,***
+P5_B4_clrelig_extended,all,v2clrelig_norm,-0.001189,0.025160,0.962323,2172,0.189166,,
+P5_B4_clrelig_extended,all,v2x_rule_norm,-0.061663,0.034750,0.076139,2172,0.189166,,*
+P5_B4_clrelig_extended,all,v2x_civlib_norm,0.131731,0.035529,0.000215,2172,0.189166,,***
+P5_B4_clrelig_extended,all,v2x_egal_norm,0.240625,0.043673,0.000000,2172,0.189166,,***
+P5_B4_clrelig_extended,all,log_gdppc_norm,0.181586,0.064773,0.005106,2172,0.189166,,***
+P5_B4_clrelig_sole,all,const,0.329122,0.040524,0.000000,2676,0.172575,,***
+P5_B4_clrelig_sole,all,v2clrelig_norm,-0.001609,0.026447,0.951495,2676,0.172575,,
+P5_B4_clrelig_sole,all,v2x_rule_norm,-0.053762,0.033600,0.109708,2676,0.172575,,
+P5_B4_clrelig_sole,all,v2x_civlib_norm,0.109376,0.039209,0.005318,2676,0.172575,,***
+P5_B4_clrelig_sole,all,v2x_egal_norm,0.256441,0.042686,0.000000,2676,0.172575,,***
+P5_B4_clrelig_sole,all,log_gdppc_norm,0.187481,0.061904,0.002482,2676,0.172575,,***
+P5_legal_origins_cs_2010,2010,const,0.304311,0.040537,0.000000,168,0.781951,,***
+P5_legal_origins_cs_2010,2010,gri_state_religion_norm,-0.085898,0.034710,0.013334,168,0.781951,,**
+P5_legal_origins_cs_2010,2010,gri_religious_law_norm,-0.003635,0.040071,0.927725,168,0.781951,,
+P5_legal_origins_cs_2010,2010,gri_blasphemy_norm,-0.011096,0.018118,0.540257,168,0.781951,,
+P5_legal_origins_cs_2010,2010,gri_apostasy_norm,-0.116656,0.030049,0.000104,168,0.781951,,***
+P5_legal_origins_cs_2010,2010,gri_religious_courts_norm,0.036177,0.020879,0.083151,168,0.781951,,*
+P5_legal_origins_cs_2010,2010,v2x_rule_norm,0.063599,0.056913,0.263791,168,0.781951,,
+P5_legal_origins_cs_2010,2010,v2x_civlib_norm,0.149665,0.065777,0.022885,168,0.781951,,**
+P5_legal_origins_cs_2010,2010,v2x_egal_norm,0.208822,0.067002,0.001829,168,0.781951,,***
+P5_legal_origins_cs_2010,2010,log_gdppc_norm,0.086985,0.044950,0.052975,168,0.781951,,*
+P5_legal_origins_cs_2010,2010,lo_english,-0.012194,0.019137,0.523991,168,0.781951,,
+P5_legal_origins_cs_2010,2010,lo_german,0.014312,0.020161,0.477774,168,0.781951,,
+P5_legal_origins_cs_2010,2010,lo_scandinavian,0.136288,0.023861,0.000000,168,0.781951,,***
+P5_legal_origins_cs_2010,2010,lo_socialist,0.065599,0.030086,0.029228,168,0.781951,,**
+P5_legal_origins_cs_2020,2020,const,0.384263,0.044332,0.000000,166,0.705775,,***
+P5_legal_origins_cs_2020,2020,gri_state_religion_norm,-0.101629,0.037617,0.006899,166,0.705775,,***
+P5_legal_origins_cs_2020,2020,gri_religious_law_norm,0.043760,0.048125,0.363189,166,0.705775,,
+P5_legal_origins_cs_2020,2020,gri_blasphemy_norm,-0.014566,0.016588,0.379907,166,0.705775,,
+P5_legal_origins_cs_2020,2020,gri_apostasy_norm,-0.118723,0.042044,0.004746,166,0.705775,,***
+P5_legal_origins_cs_2020,2020,gri_religious_courts_norm,0.034910,0.023978,0.145409,166,0.705775,,
+P5_legal_origins_cs_2020,2020,v2x_rule_norm,0.131974,0.067016,0.048921,166,0.705775,,**
+P5_legal_origins_cs_2020,2020,v2x_civlib_norm,0.094641,0.074926,0.206545,166,0.705775,,
+P5_legal_origins_cs_2020,2020,v2x_egal_norm,0.192349,0.065760,0.003444,166,0.705775,,***
+P5_legal_origins_cs_2020,2020,log_gdppc_norm,0.068712,0.047361,0.146832,166,0.705775,,
+P5_legal_origins_cs_2020,2020,lo_english,-0.031251,0.021184,0.140155,166,0.705775,,
+P5_legal_origins_cs_2020,2020,lo_german,-0.005137,0.019519,0.792401,166,0.705775,,
+P5_legal_origins_cs_2020,2020,lo_scandinavian,0.074340,0.029657,0.012189,166,0.705775,,**
+P5_legal_origins_cs_2020,2020,lo_socialist,0.014309,0.027721,0.605731,166,0.705775,,
+P5_legal_origins_panel_English-law,2007-2022,gri_religious_courts_norm,-0.010158,0.005116,0.047650,566,0.251086,,**
+P5_legal_origins_panel_French-law,2007-2022,gri_religious_courts_norm,-0.007099,0.005079,0.162510,1034,0.195991,,
+P5_legal_origins_panel_non-English-law,2007-2022,gri_religious_courts_norm,-0.009871,0.003738,0.008368,1606,0.188662,,***
+P6_placebo_wdi_lifexpf_norm,all,const,0.603796,0.051196,0.000000,2172,0.011834,Female life expectancy (female DV),***
+P6_placebo_wdi_lifexpf_norm,all,gri_state_religion_norm,-0.002312,0.008358,0.782107,2172,0.011834,Female life expectancy (female DV),
+P6_placebo_wdi_lifexpf_norm,all,gri_religious_law_norm,0.019170,0.009618,0.046371,2172,0.011834,Female life expectancy (female DV),**
+P6_placebo_wdi_lifexpf_norm,all,gri_blasphemy_norm,0.006790,0.004317,0.115935,2172,0.011834,Female life expectancy (female DV),
+P6_placebo_wdi_lifexpf_norm,all,gri_apostasy_norm,0.007830,0.006545,0.231703,2172,0.011834,Female life expectancy (female DV),
+P6_placebo_wdi_lifexpf_norm,all,gri_religious_courts_norm,0.000987,0.004992,0.843223,2172,0.011834,Female life expectancy (female DV),
+P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.013230,0.029812,0.657256,2172,0.011834,Female life expectancy (female DV),
+P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,-0.007010,0.030003,0.815279,2172,0.011834,Female life expectancy (female DV),
+P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,0.014080,0.049298,0.775210,2172,0.011834,Female life expectancy (female DV),
+P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,0.053940,0.094383,0.567727,2172,0.011834,Female life expectancy (female DV),
+P6_placebo_wdi_lfpf_norm,all,const,0.670364,0.041865,0.000000,2158,0.031830,Female LFP rate (female DV),***
+P6_placebo_wdi_lfpf_norm,all,gri_state_religion_norm,-0.023556,0.016645,0.157167,2158,0.031830,Female LFP rate (female DV),
+P6_placebo_wdi_lfpf_norm,all,gri_religious_law_norm,-0.004496,0.008401,0.592611,2158,0.031830,Female LFP rate (female DV),
+P6_placebo_wdi_lfpf_norm,all,gri_blasphemy_norm,-0.000716,0.003467,0.836355,2158,0.031830,Female LFP rate (female DV),
+P6_placebo_wdi_lfpf_norm,all,gri_apostasy_norm,0.017078,0.011239,0.128798,2158,0.031830,Female LFP rate (female DV),
+P6_placebo_wdi_lfpf_norm,all,gri_religious_courts_norm,-0.001145,0.003952,0.772108,2158,0.031830,Female LFP rate (female DV),
+P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.016632,0.030886,0.590297,2158,0.031830,Female LFP rate (female DV),
+P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.045051,0.026701,0.091720,2158,0.031830,Female LFP rate (female DV),*
+P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,-0.021717,0.040008,0.587320,2158,0.031830,Female LFP rate (female DV),
+P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.079346,0.078634,0.313074,2158,0.031830,Female LFP rate (female DV),
+P6_placebo_women_treatment_index,all,const,0.341013,0.041987,0.000000,2172,0.189163,Women's treatment index (female DV),***
+P6_placebo_women_treatment_index,all,gri_state_religion_norm,-0.014335,0.012398,0.247747,2172,0.189163,Women's treatment index (female DV),
+P6_placebo_women_treatment_index,all,gri_religious_law_norm,-0.000666,0.008125,0.934726,2172,0.189163,Women's treatment index (female DV),
+P6_placebo_women_treatment_index,all,gri_blasphemy_norm,-0.001003,0.003891,0.796518,2172,0.189163,Women's treatment index (female DV),
+P6_placebo_women_treatment_index,all,gri_apostasy_norm,0.008976,0.012646,0.477907,2172,0.189163,Women's treatment index (female DV),
+P6_placebo_women_treatment_index,all,gri_religious_courts_norm,-0.010660,0.003340,0.001438,2172,0.189163,Women's treatment index (female DV),***
+P6_placebo_women_treatment_index,all,v2x_rule_norm,-0.061550,0.034785,0.076976,2172,0.189163,Women's treatment index (female DV),*
+P6_placebo_women_treatment_index,all,v2x_civlib_norm,0.131205,0.034212,0.000129,2172,0.189163,Women's treatment index (female DV),***
+P6_placebo_women_treatment_index,all,v2x_egal_norm,0.240473,0.043858,0.000000,2172,0.189163,Women's treatment index (female DV),***
+P6_placebo_women_treatment_index,all,log_gdppc_norm,0.181760,0.064661,0.004988,2172,0.189163,Women's treatment index (female DV),***
+P6_placebo_lifexpm_norm,all,const,0.593901,0.078514,0.000000,2247,0.039010,Male life expectancy (placebo DV),***
+P6_placebo_lifexpm_norm,all,gri_state_religion_norm,0.002292,0.007989,0.774267,2247,0.039010,Male life expectancy (placebo DV),
+P6_placebo_lifexpm_norm,all,gri_religious_law_norm,0.003493,0.013376,0.794015,2247,0.039010,Male life expectancy (placebo DV),
+P6_placebo_lifexpm_norm,all,gri_blasphemy_norm,0.007692,0.004417,0.081739,2247,0.039010,Male life expectancy (placebo DV),*
+P6_placebo_lifexpm_norm,all,gri_apostasy_norm,0.004302,0.005534,0.437087,2247,0.039010,Male life expectancy (placebo DV),
+P6_placebo_lifexpm_norm,all,gri_religious_courts_norm,0.004444,0.006791,0.512915,2247,0.039010,Male life expectancy (placebo DV),
+P6_placebo_lifexpm_norm,all,v2x_rule_norm,-0.002880,0.023867,0.903950,2247,0.039010,Male life expectancy (placebo DV),
+P6_placebo_lifexpm_norm,all,v2x_civlib_norm,-0.005736,0.022871,0.802013,2247,0.039010,Male life expectancy (placebo DV),
+P6_placebo_lifexpm_norm,all,v2x_egal_norm,0.058268,0.046923,0.214459,2247,0.039010,Male life expectancy (placebo DV),
+P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.232827,0.143743,0.105442,2247,0.039010,Male life expectancy (placebo DV),
+P6_placebo_lfpm_norm,all,const,0.270503,0.116331,0.020154,2233,0.065794,Male LFP rate (placebo DV),**
+P6_placebo_lfpm_norm,all,gri_state_religion_norm,0.008885,0.011097,0.423404,2233,0.065794,Male LFP rate (placebo DV),
+P6_placebo_lfpm_norm,all,gri_religious_law_norm,0.006050,0.013199,0.646736,2233,0.065794,Male LFP rate (placebo DV),
+P6_placebo_lfpm_norm,all,gri_blasphemy_norm,-0.007475,0.006796,0.271544,2233,0.065794,Male LFP rate (placebo DV),
+P6_placebo_lfpm_norm,all,gri_apostasy_norm,-0.028814,0.008724,0.000974,2233,0.065794,Male LFP rate (placebo DV),***
+P6_placebo_lfpm_norm,all,gri_religious_courts_norm,0.003048,0.005093,0.549672,2233,0.065794,Male LFP rate (placebo DV),
+P6_placebo_lfpm_norm,all,v2x_rule_norm,-0.059177,0.052329,0.258243,2233,0.065794,Male LFP rate (placebo DV),
+P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.035205,0.044100,0.424787,2233,0.065794,Male LFP rate (placebo DV),
+P6_placebo_lfpm_norm,all,v2x_egal_norm,0.106432,0.075730,0.160047,2233,0.065794,Male LFP rate (placebo DV),
+P6_placebo_lfpm_norm,all,log_gdppc_norm,0.449435,0.217634,0.039040,2233,0.065794,Male LFP rate (placebo DV),**
+T2_with_cedaw,all,const,0.355561,0.085950,0.000037,2146,0.193101,,***
+T2_with_cedaw,all,gri_state_religion_norm,-0.014563,0.012380,0.239612,2146,0.193101,,
+T2_with_cedaw,all,gri_religious_law_norm,-0.000701,0.008211,0.931944,2146,0.193101,,
+T2_with_cedaw,all,gri_blasphemy_norm,-0.000659,0.003886,0.865468,2146,0.193101,,
+T2_with_cedaw,all,gri_apostasy_norm,0.008921,0.012593,0.478798,2146,0.193101,,
+T2_with_cedaw,all,gri_religious_courts_norm,-0.010621,0.003321,0.001406,2146,0.193101,,***
+T2_with_cedaw,all,v2x_rule_norm,-0.059019,0.034381,0.086206,2146,0.193101,,*
+T2_with_cedaw,all,v2x_civlib_norm,0.125054,0.033843,0.000226,2146,0.193101,,***
+T2_with_cedaw,all,v2x_egal_norm,0.251483,0.043382,0.000000,2146,0.193101,,***
+T2_with_cedaw,all,log_gdppc_norm,0.188609,0.065857,0.004229,2146,0.193101,,***
+T2_with_cedaw,all,cedaw_years_since_norm,-0.034488,0.120166,0.774142,2146,0.193101,,
+T1_with_cedaw,2010,const,0.238835,0.044080,0.000000,166,0.769823,,***
+T1_with_cedaw,2010,gri_state_religion_norm,-0.079416,0.037113,0.032365,166,0.769823,,**
+T1_with_cedaw,2010,gri_religious_law_norm,0.006233,0.039505,0.874639,166,0.769823,,
+T1_with_cedaw,2010,gri_blasphemy_norm,-0.022522,0.018816,0.231322,166,0.769823,,
+T1_with_cedaw,2010,gri_apostasy_norm,-0.102477,0.031652,0.001205,166,0.769823,,***
+T1_with_cedaw,2010,gri_religious_courts_norm,0.033970,0.021005,0.105829,166,0.769823,,
+T1_with_cedaw,2010,v2x_rule_norm,0.025143,0.054147,0.642398,166,0.769823,,
+T1_with_cedaw,2010,v2x_civlib_norm,0.125912,0.064769,0.051892,166,0.769823,,*
+T1_with_cedaw,2010,v2x_egal_norm,0.267345,0.061058,0.000012,166,0.769823,,***
+T1_with_cedaw,2010,log_gdppc_norm,0.117614,0.046469,0.011373,166,0.769823,,**
+T1_with_cedaw,2010,cedaw_years_since_norm,0.119608,0.046514,0.010128,166,0.769823,,**
+T2_subperiod_2008_2019,2008-2019,const,0.361511,0.041593,0.000000,1675,0.149537,,***
+T2_subperiod_2008_2019,2008-2019,gri_state_religion_norm,-0.039809,0.012963,0.002172,1675,0.149537,,***
+T2_subperiod_2008_2019,2008-2019,gri_religious_law_norm,0.003868,0.006542,0.554471,1675,0.149537,,
+T2_subperiod_2008_2019,2008-2019,gri_blasphemy_norm,-0.000433,0.004318,0.920081,1675,0.149537,,
+T2_subperiod_2008_2019,2008-2019,gri_apostasy_norm,0.026419,0.008405,0.001704,1675,0.149537,,***
+T2_subperiod_2008_2019,2008-2019,gri_religious_courts_norm,-0.006801,0.005281,0.197936,1675,0.149537,,
+T2_subperiod_2008_2019,2008-2019,v2x_rule_norm,-0.039965,0.034518,0.247132,1675,0.149537,,
+T2_subperiod_2008_2019,2008-2019,v2x_civlib_norm,0.095196,0.031348,0.002433,1675,0.149537,,***
+T2_subperiod_2008_2019,2008-2019,v2x_egal_norm,0.219870,0.048819,0.000007,1675,0.149537,,***
+T2_subperiod_2008_2019,2008-2019,log_gdppc_norm,0.173326,0.072999,0.017705,1675,0.149537,,**
+T2_changers_only,all,const,0.280352,0.059535,0.000003,577,0.301151,,***
+T2_changers_only,all,gri_state_religion_norm,-0.028398,0.026002,0.275282,577,0.301151,,
+T2_changers_only,all,gri_religious_law_norm,-0.005163,0.014689,0.725363,577,0.301151,,
+T2_changers_only,all,gri_blasphemy_norm,0.000998,0.007440,0.893297,577,0.301151,,
+T2_changers_only,all,gri_apostasy_norm,-0.022197,0.019596,0.257852,577,0.301151,,
+T2_changers_only,all,gri_religious_courts_norm,-0.009735,0.003477,0.005305,577,0.301151,,***
+T2_changers_only,all,v2x_rule_norm,-0.029920,0.039782,0.452332,577,0.301151,,
+T2_changers_only,all,v2x_civlib_norm,0.086635,0.058408,0.138622,577,0.301151,,
+T2_changers_only,all,v2x_egal_norm,0.305075,0.083520,0.000286,577,0.301151,,***
+T2_changers_only,all,log_gdppc_norm,0.286067,0.094395,0.002565,577,0.301151,,***
+P8a_country_linear_trends,2007-2022,const,-0.000000,0.000000,0.000000,2172,0.166734,,***
+P8a_country_linear_trends,2007-2022,gri_state_religion_norm,-0.028799,0.008690,0.000936,2172,0.166734,,***
+P8a_country_linear_trends,2007-2022,gri_religious_law_norm,0.005242,0.005927,0.376568,2172,0.166734,,
+P8a_country_linear_trends,2007-2022,gri_blasphemy_norm,-0.002630,0.003128,0.400572,2172,0.166734,,
+P8a_country_linear_trends,2007-2022,gri_apostasy_norm,0.010695,0.007543,0.156400,2172,0.166734,,
+P8a_country_linear_trends,2007-2022,gri_religious_courts_norm,-0.004341,0.003307,0.189436,2172,0.166734,,
+P8a_country_linear_trends,2007-2022,v2x_rule_norm,-0.049673,0.036413,0.172667,2172,0.166734,,
+P8a_country_linear_trends,2007-2022,v2x_civlib_norm,0.189444,0.037991,0.000001,2172,0.166734,,***
+P8a_country_linear_trends,2007-2022,v2x_egal_norm,0.155186,0.054853,0.004715,2172,0.166734,,***
+P8a_country_linear_trends,2007-2022,log_gdppc_norm,0.213705,0.083633,0.010684,2172,0.166734,,**
+P8b_lo_interaction,2007-2022,const,0.339714,0.042007,0.000000,2172,0.190409,,***
+P8b_lo_interaction,2007-2022,gri_state_religion_norm,-0.014105,0.012418,0.256154,2172,0.190409,,
+P8b_lo_interaction,2007-2022,gri_religious_law_norm,-0.000875,0.008194,0.915008,2172,0.190409,,
+P8b_lo_interaction,2007-2022,gri_blasphemy_norm,-0.000949,0.003894,0.807581,2172,0.190409,,
+P8b_lo_interaction,2007-2022,gri_apostasy_norm,0.008423,0.012820,0.511257,2172,0.190409,,
+P8b_lo_interaction,2007-2022,gri_religious_courts_norm,-0.006863,0.004269,0.108121,2172,0.190409,,
+P8b_lo_interaction,2007-2022,v2x_rule_norm,-0.061581,0.034308,0.072816,2172,0.190409,,*
+P8b_lo_interaction,2007-2022,v2x_civlib_norm,0.132212,0.033698,0.000090,2172,0.190409,,***
+P8b_lo_interaction,2007-2022,v2x_egal_norm,0.237538,0.044428,0.000000,2172,0.190409,,***
+P8b_lo_interaction,2007-2022,log_gdppc_norm,0.187306,0.065290,0.004164,2172,0.190409,,***
+P8b_lo_interaction,2007-2022,courts_x_english,-0.003266,0.006297,0.604113,2172,0.190409,,
+P8b_lo_interaction,2007-2022,courts_x_socialist,-0.013438,0.007877,0.088161,2172,0.190409,,*
+P9_event_study,all,et_-3,0.001977,0.007044,0.779049,2676,0.173276,,
+P9_event_study,all,et_-2,0.003129,0.006245,0.616405,2676,0.173276,,
+P9_event_study,all,et_0,0.001197,0.005913,0.839618,2676,0.173276,,
+P9_event_study,all,et_1,0.003353,0.005814,0.564207,2676,0.173276,,
+P9_event_study,all,et_2,0.004207,0.005957,0.480096,2676,0.173276,,
+P9_event_study,all,et_3,0.005567,0.004712,0.237520,2676,0.173276,,
+T2_changers_wild_bootstrap,all,gri_religious_courts_norm,-0.009590,0.003357,0.012024,577,,,**
+T2_driscoll_kraay,all,const,0.341013,0.017738,0.000000,2172,0.189163,,***
+T2_driscoll_kraay,all,gri_state_religion_norm,-0.014335,0.011524,0.213697,2172,0.189163,,
+T2_driscoll_kraay,all,gri_religious_law_norm,-0.000666,0.004034,0.868988,2172,0.189163,,
+T2_driscoll_kraay,all,gri_blasphemy_norm,-0.001003,0.001139,0.378246,2172,0.189163,,
+T2_driscoll_kraay,all,gri_apostasy_norm,0.008976,0.010611,0.397700,2172,0.189163,,
+T2_driscoll_kraay,all,gri_religious_courts_norm,-0.010660,0.002830,0.000170,2172,0.189163,,***
+T2_driscoll_kraay,all,v2x_rule_norm,-0.061550,0.010023,0.000000,2172,0.189163,,***
+T2_driscoll_kraay,all,v2x_civlib_norm,0.131205,0.020429,0.000000,2172,0.189163,,***
+T2_driscoll_kraay,all,v2x_egal_norm,0.240473,0.013651,0.000000,2172,0.189163,,***
+T2_driscoll_kraay,all,log_gdppc_norm,0.181760,0.011532,0.000000,2172,0.189163,,***
+T2_mundlak_cre,all,const,0.281218,0.041192,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,gri_state_religion_norm,-0.014308,0.011927,0.230261,2172,0.742354,,
+T2_mundlak_cre,all,gri_religious_law_norm,-0.000940,0.007839,0.904581,2172,0.742354,,
+T2_mundlak_cre,all,gri_blasphemy_norm,-0.000781,0.003784,0.836464,2172,0.742354,,
+T2_mundlak_cre,all,gri_apostasy_norm,0.009001,0.012138,0.458371,2172,0.742354,,
+T2_mundlak_cre,all,gri_religious_courts_norm,-0.010627,0.003218,0.000960,2172,0.742354,,***
+T2_mundlak_cre,all,v2x_rule_norm,-0.060494,0.033535,0.071243,2172,0.742354,,*
+T2_mundlak_cre,all,v2x_civlib_norm,0.130464,0.032946,0.000075,2172,0.742354,,***
+T2_mundlak_cre,all,v2x_egal_norm,0.239067,0.041992,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,log_gdppc_norm,0.188926,0.067073,0.004852,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2011,0.002043,0.001891,0.279991,2172,0.742354,,
+T2_mundlak_cre,all,yr_2012,0.008892,0.002825,0.001647,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2013,0.016366,0.003647,0.000007,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2014,0.020558,0.003851,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2015,0.024937,0.004125,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2016,0.030404,0.004303,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2017,0.034863,0.004524,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2018,0.041031,0.004327,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2019,0.050887,0.004863,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2020,0.057148,0.004939,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2021,0.057220,0.005611,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,yr_2022,0.058116,0.006011,0.000000,2172,0.742354,,***
+T2_mundlak_cre,all,gri_state_religion_norm_cmean,-0.040028,0.036827,0.277073,2172,0.742354,,
+T2_mundlak_cre,all,gri_religious_law_norm_cmean,0.072221,0.051155,0.158007,2172,0.742354,,
+T2_mundlak_cre,all,gri_blasphemy_norm_cmean,-0.035889,0.019383,0.064088,2172,0.742354,,*
+T2_mundlak_cre,all,gri_apostasy_norm_cmean,-0.177807,0.036507,0.000001,2172,0.742354,,***
+T2_mundlak_cre,all,gri_religious_courts_norm_cmean,0.049328,0.026252,0.060238,2172,0.742354,,*
+T2_mundlak_cre,all,v2x_rule_norm_cmean,0.106946,0.067702,0.114186,2172,0.742354,,
+T2_mundlak_cre,all,v2x_civlib_norm_cmean,0.026205,0.080039,0.743363,2172,0.742354,,
+T2_mundlak_cre,all,v2x_egal_norm_cmean,-0.006341,0.073772,0.931504,2172,0.742354,,
+T2_mundlak_cre,all,log_gdppc_norm_cmean,-0.081964,0.078766,0.298059,2172,0.742354,,
+P9_male_composite_placebo,all,const,0.490245,0.102754,0.000002,2238,0.038662,Male welfare index (placebo DV),***
+P9_male_composite_placebo,all,gri_state_religion_norm,-0.014216,0.012805,0.267027,2238,0.038662,Male welfare index (placebo DV),
+P9_male_composite_placebo,all,gri_religious_law_norm,0.016392,0.013059,0.209550,2238,0.038662,Male welfare index (placebo DV),
+P9_male_composite_placebo,all,gri_blasphemy_norm,-0.001021,0.004313,0.812906,2238,0.038662,Male welfare index (placebo DV),
+P9_male_composite_placebo,all,gri_apostasy_norm,0.002857,0.009952,0.774037,2238,0.038662,Male welfare index (placebo DV),
+P9_male_composite_placebo,all,gri_religious_courts_norm,-0.001442,0.008954,0.872114,2238,0.038662,Male welfare index (placebo DV),
+P9_male_composite_placebo,all,v2x_rule_norm,-0.071069,0.038882,0.067722,2238,0.038662,Male welfare index (placebo DV),*
+P9_male_composite_placebo,all,v2x_civlib_norm,0.034186,0.043274,0.429629,2238,0.038662,Male welfare index (placebo DV),
+P9_male_composite_placebo,all,v2x_egal_norm,0.157141,0.076004,0.038809,2238,0.038662,Male welfare index (placebo DV),**
+P9_male_composite_placebo,all,log_gdppc_norm,0.216820,0.190082,0.254142,2238,0.038662,Male welfare index (placebo DV),

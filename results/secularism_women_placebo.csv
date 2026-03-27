@@ -1,0 +1,7 @@
+tier,year,predictor,dv_label,coef,se,pval,n,r2,sig
+P6_placebo_wdi_lifexpf_norm,all,gri_religious_courts_norm,Female life expectancy (female DV),0.000917,0.005365,0.864266,1708,0.011713,
+P6_placebo_wdi_lfpf_norm,all,gri_religious_courts_norm,Female LFP rate (female DV),-0.007853,0.004902,0.109345,1697,0.053478,
+P6_placebo_wbl_treatment_index,all,gri_religious_courts_norm,Women's treatment index (female DV),-0.005144,0.009469,0.587002,1708,0.005370,
+P6_placebo_lifexpm_norm,all,gri_religious_courts_norm,Male life expectancy (placebo DV),0.011006,0.011217,0.326661,1765,0.037505,
+P6_placebo_lfpm_norm,all,gri_religious_courts_norm,Male LFP rate (placebo DV),0.004904,0.004563,0.282687,1754,0.033199,
+P9_male_composite_placebo,all,gri_religious_courts_norm,Male welfare index (placebo DV),0.003164,0.010469,0.762544,1756,0.017750,

@@ -1,8 +1,70 @@
-# Women & Religion Dataset
+# data/
 
-**Research question:** How does religious composition affect the treatment of women?
+Analysis-ready, normalised input datasets. No raw source files are included here — see [`docs/DATA_SOURCES.md`](../docs/DATA_SOURCES.md) for original provenance.
 
-**Unit:** Country-year | **Period:** 2007-2022 | **Countries:** 198 | **Rows:** 3,164 | **Columns:** 43
+All normalisation uses **robust min-max** (1%/99% winsorisation, then scale to [0,1]) unless otherwise noted. Life expectancy variables use UNDP HDI fixed goalposts (min = 20, max = 85 years).
+
+---
+
+## Dataset Overview
+
+| File | Rows | Countries | Years | Purpose |
+|---|---|---|---|---|
+| `wbl_treatment_index.csv` | 2,222 | ~168 | 2013-2022 | **Active** outcome index -- WBL legal rights + health |
+| `women_secularism_normalised.csv` | 3,164 | ~198 | 2007-2022 | Alternative outcome -- 13-component composite |
+| `secularism_composition_normalised.csv` | 3,164 | ~198 | 2007-2022 | Secularism predictor variables |
+| `gender_gap_panel.csv` | 3,164 | ~198 | 2007-2022 | Robustness outcomes (GII, GDI, WEF GGG, gaps) |
+| `women_religion_normalised.csv` | -- | -- | -- | Early composite outcome (group project provenance) |
+| `religion_composition_normalised.csv` | -- | -- | -- | Early composition predictor (group project provenance) |
+
+---
+
+## File Details
+
+### `wbl_treatment_index.csv` -- Active Outcome Index
+- **Source:** World Bank WBL 2024 (10 legal domains) + WDI life expectancy + maternal mortality
+- **Key variable:** `wbl_treatment_index` -- equal-weight average of normalised domain scores
+- **Life expectancy:** normalised using UNDP HDI fixed goalposts
+- See `wbl_treatment_index_README.md` for column-by-column details
+
+### `women_secularism_normalised.csv` -- Composite Outcome Index
+- **Source:** V-Dem v15 (political/civil rights), QoG/WDI (labour, health, governance), WHO
+- **Key variable:** `women_treatment_index` -- 13-component composite, equal weights
+- **Coverage advantage:** 2007-2022 gives more within-country variation than WBL index
+- See `women_secularism_README.md`
+
+### `secularism_composition_normalised.csv` -- Predictor Dataset
+- **Key variables:**
+  - `gri_religious_courts_norm` -- **focal predictor** (Pew GRI separate religious courts)
+  - `gri_state_religion_norm`, `gri_religious_law_norm`, `gri_blasphemy_norm`, `gri_apostasy_norm`
+  - `v2clrelig_norm` -- V-Dem religious civil liberties
+  - `log_gdppc_norm` -- log GDP per capita (control)
+  - `pct_muslim_norm` -- Muslim population share (WRP, interpolated)
+  - `pct_interpolated` flag -- 1 if religious composition was linearly interpolated
+- See `secularism_composition_README.md`
+
+### `gender_gap_panel.csv` -- Robustness Outcomes
+- **Key variables:** `gii_norm` (Gender Inequality Index), `gdi_norm` (Gender Development Index), `wef_ggg_norm` (WEF Global Gender Gap), `life_exp_gap_norm`, `lfp_gap_norm`
+- **Coverage:** GII 80%, GDI 88%, WEF GGG 67% of country-years
+- See `gender_gap_panel_README.md`
+
+### `women_religion_normalised.csv` and `religion_composition_normalised.csv`
+- **Provenance:** Early-pipeline versions produced during the MDM3 group project (before the dissertation pipeline was built). Kept for reproducibility reference.
+- The final analysis uses `wbl_treatment_index.csv` and `secularism_composition_normalised.csv` instead.
+- These files describe the same underlying constructs but were built with an earlier, simpler normalisation approach.
+
+---
+
+## Interpolation Flags
+
+- `pct_interpolated = 1` in `secularism_composition_normalised.csv` indicates that the `pct_*` (religious composition) values for that row were linearly interpolated between the 2010 and 2020 WRP cross-sections, or forward/back-filled (<=3 years back-fill, <=2 years forward-fill).
+- `wvs_interpolated = 1` indicates WVS religiosity values were similarly imputed.
+
+---
+
+<!-- Original group project README preserved below for provenance -->
+
+## Original group project dataset description
 
 ---
 

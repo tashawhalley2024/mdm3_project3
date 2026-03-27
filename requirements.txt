@@ -1,0 +1,7 @@
+pandas>=1.5
+numpy>=1.23
+matplotlib>=3.6
+scipy>=1.9
+statsmodels>=0.14
+linearmodels>=4.28
+pycountry>=22.3

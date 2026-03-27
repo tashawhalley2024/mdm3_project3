@@ -1,0 +1,3 @@
+spec,coef,se,pval,r2,n_obs,delta_Rmax_=_2.2,delta_Rmax_=_1.0
+Bivariate (courts only),-0.005880,0.009342,0.529178,0.000748,1708,,
+Full model (GDP-controlled),-0.005144,0.009469,0.587002,0.005370,1708,5.016476,0.032502
