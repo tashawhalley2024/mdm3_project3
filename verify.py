@@ -106,7 +106,7 @@ try:
         },
         "data/robustness_outcomes.csv": {
             "min_rows": 3100,
-            "required_cols": ["iso3", "country", "year", "women_treatment_index"],
+            "required_cols": ["iso3", "country", "year", "gii", "gdi"],
         },
         "results/results.csv": {
             "min_rows": 320,
