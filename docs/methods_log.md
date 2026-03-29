@@ -54,8 +54,7 @@ scientifically justified interpolation or fill, all flagged in the output data.
 
 ## 3. Interpolation — religious composition (pct_*)
 
-**Variables:** `pct_christian`, `pct_muslim`, `pct_hindu`, `pct_buddhist`,
-`pct_jewish`, `pct_unaffiliated`, `pct_other` (normalised versions).
+**Variables:** `pct_unaffiliated`, `pct_other` (normalised versions).
 
 **Source coverage:** Pew Global Religious Futures provides data only in survey
 years 2010 and 2020; WRP provides a 2010 cross-section fallback. Without

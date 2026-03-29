@@ -16,11 +16,6 @@ Values only present in **2010 and 2020** (actual survey years). All other years 
 
 | Column | What it measures | Source | Coverage |
 |--------|-----------------|--------|----------|
-| `pct_christian_norm` | Christian share of population | Pew / WRP | 12% |
-| `pct_muslim_norm` | Muslim share of population | Pew / WRP | 12% |
-| `pct_hindu_norm` | Hindu share of population | Pew / WRP | 12% |
-| `pct_buddhist_norm` | Buddhist share of population | Pew / WRP | 12% |
-| `pct_jewish_norm` | Jewish share of population | Pew / WRP | 12% |
 | `pct_unaffiliated_norm` | Religiously unaffiliated share of population | Pew / WRP | 12% |
 | `pct_other_norm` | All other religions combined | Pew / WRP | 12% |
 

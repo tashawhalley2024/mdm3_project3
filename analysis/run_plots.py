@@ -79,10 +79,6 @@ def get_region(iso3: str) -> str:
 
 # ── Pretty labels for predictors ───────────────────────────────────────────────
 LABELS = {
-    "pct_christian_norm":      "% Christian",
-    "pct_muslim_norm":         "% Muslim",
-    "pct_hindu_norm":          "% Hindu",
-    "pct_buddhist_norm":       "% Buddhist",
     "pct_unaffiliated_norm":   "% Unaffiliated",
     "gri_state_religion_norm": "State religion",
     "gri_religious_law_norm":  "Religious law",
@@ -92,8 +88,6 @@ LABELS = {
     "v2x_rule_norm":           "Rule of law",
     "v2x_civlib_norm":         "Civil liberties",
     "v2x_egal_norm":           "Egalitarianism",
-    "pct_muslim_2010":         "% Muslim (2010)",
-    "muslim_x_rellaw":         "Muslim × Rel. law",
     "const":                   "Intercept",
     # GDP
     "log_gdppc_norm":          "GDP p.c. (log, norm)",
@@ -116,7 +110,7 @@ def plot_coefplot():
     tier_labels = {
         "T1_with_gdp": "Tier 1 — Cross-sectional OLS\n(2010 & 2020, GDP-controlled)",
         "T2_with_gdp": "Tier 2 — Panel FE\n(2007-2022, country + year FE, GDP-controlled)",
-        "T3_with_gdp": "Tier 3 — Interaction model\n(Muslim x religious law, GDP-controlled)",
+        "T3_with_gdp": "Tier 3 — Interaction model\n(GDP-controlled)",
     }
     sig_colors = {
         "***": "#c0392b",
@@ -226,8 +220,7 @@ def plot_coefplot_suboutcomes():
 
     # Religion predictors to show
     rel_preds = [
-        "pct_muslim_norm", "pct_christian_norm", "pct_hindu_norm",
-        "pct_buddhist_norm", "pct_unaffiliated_norm",
+        "pct_unaffiliated_norm",
         "gri_state_religion_norm", "gri_religious_law_norm",
         "gri_blasphemy_norm", "gri_apostasy_norm", "gri_religious_courts_norm",
     ]
@@ -307,94 +300,6 @@ def plot_coefplot_suboutcomes():
     plt.savefig(OUT_COEF_SUB, dpi=150, bbox_inches="tight")
     plt.close()
     print(f"  Saved -> {OUT_COEF_SUB}")
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 2. SCATTER PLOT: pct_muslim vs women_treatment_index (2010)
-# ═══════════════════════════════════════════════════════════════════════════════
-def plot_scatter(df: pd.DataFrame):
-    """
-    2010 cross-section scatter: pct_muslim_norm vs women_treatment_index.
-    Points coloured by region.
-    Two regression lines: raw (bivariate) and adjusted (with controls).
-    Outlier country labels.
-    """
-    OUTCOME  = "women_treatment_index"
-    CONTROLS = ["v2x_rule_norm", "v2x_civlib_norm", "v2x_egal_norm"]
-    X_VAR    = "pct_muslim_norm"
-
-    cs = df[df["year"] == 2010].copy()
-    cs["region"] = cs["iso3"].map(get_region)
-    required = [OUTCOME, X_VAR] + CONTROLS + ["iso3", "country", "region"]
-    cs = cs[required].dropna()
-
-    fig, ax = plt.subplots(figsize=(10, 7))
-
-    # Scatter — coloured by region
-    for region, grp in cs.groupby("region"):
-        ax.scatter(
-            grp[X_VAR], grp[OUTCOME],
-            color=REGION_COLORS.get(region, "#999999"),
-            label=region, alpha=0.75, s=45, edgecolors="white", linewidths=0.4,
-        )
-
-    # Regression line 1: raw (bivariate)
-    x_arr = cs[X_VAR].values
-    y_arr = cs[OUTCOME].values
-    slope_raw, intercept_raw, r_raw, p_raw, _ = stats.linregress(x_arr, y_arr)
-    x_line = np.linspace(x_arr.min(), x_arr.max(), 200)
-    ax.plot(x_line, intercept_raw + slope_raw * x_line,
-            color="black", linewidth=1.8, linestyle="-",
-            label=f"Raw OLS (r={r_raw:.2f}, p={p_raw:.3f})")
-
-    # Regression line 2: partial — residualise on controls then re-fit
-    X_ctrl = sm.add_constant(cs[CONTROLS])
-    res_x = sm.OLS(cs[X_VAR], X_ctrl).fit().resid
-    res_y = sm.OLS(cs[OUTCOME], X_ctrl).fit().resid
-    slope_adj, intercept_adj, r_adj, p_adj, _ = stats.linregress(res_x.values, res_y.values)
-    # Plot partial regression as a centred line
-    x_partial = np.linspace(res_x.min(), res_x.max(), 200)
-    # Map residuals back to original x scale for display
-    x_plot = x_partial + cs[X_VAR].mean()
-    y_plot = intercept_adj + slope_adj * x_partial + cs[OUTCOME].mean()
-    ax.plot(x_plot, y_plot,
-            color="black", linewidth=1.8, linestyle="--",
-            label=f"Adjusted OLS (β={slope_adj:.2f}, p={p_adj:.3f})")
-
-    # Label outliers (top/bottom 8 by residual from raw line)
-    cs["_fitted"]  = intercept_raw + slope_raw * cs[X_VAR]
-    cs["_resid"]   = cs[OUTCOME] - cs["_fitted"]
-    outliers = pd.concat([
-        cs.nlargest(5, "_resid"),
-        cs.nsmallest(5, "_resid"),
-        cs[cs[X_VAR] > 0.7],   # high-Muslim countries
-    ]).drop_duplicates("iso3")
-
-    for _, row in outliers.iterrows():
-        ax.annotate(
-            row["iso3"],
-            xy=(row[X_VAR], row[OUTCOME]),
-            xytext=(4, 4), textcoords="offset points",
-            fontsize=7, color="#333333", alpha=0.9,
-        )
-
-    ax.set_xlabel("% Muslim population (normalised, 2010)", fontsize=11)
-    ax.set_ylabel("Women's Treatment Index (2010)", fontsize=11)
-    ax.set_title(
-        "Muslim Population Share vs Women's Treatment (2010 cross-section)\n"
-        "Raw correlation (—) and partial correlation controlling for rule of law,\n"
-        "civil liberties, and egalitarianism (- -)",
-        fontsize=10, fontweight="bold",
-    )
-    ax.legend(fontsize=8, loc="upper right", framealpha=0.9)
-    ax.grid(alpha=0.3, linewidth=0.5)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-
-    plt.tight_layout()
-    plt.savefig(OUT_SCATTER, dpi=150, bbox_inches="tight")
-    plt.close()
-    print(f"  Saved -> {OUT_SCATTER}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1142,11 +1047,8 @@ def main():
     print("\n[2/4] Coefficient forest plot (sub-outcomes)...")
     plot_coefplot_suboutcomes()
 
-    print("\n[3/4] Scatter plot (2010 cross-section)...")
+    print("\n[3/4] Time-trend (high vs low GRI courts)...")
     df = load_merged()
-    plot_scatter(df)
-
-    print("\n[4/4] Time-trend (high vs low GRI courts)...")
     plot_time_trend(df)
 
     print("\n[5/6] LOO jackknife plot...")
