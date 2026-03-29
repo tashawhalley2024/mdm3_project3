@@ -5,3 +5,4 @@ scipy>=1.9
 statsmodels>=0.14
 linearmodels>=4.28
 pycountry>=22.3
+openpyxl>=3.0
