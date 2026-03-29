@@ -33,5 +33,5 @@ These were generated from the full pipeline (V-Dem/WDI ETL) which requires the l
 
 To re-run from scratch, rebuild the inputs from the ETL pipeline (see [`docs/DATA_SOURCES.md`](../docs/DATA_SOURCES.md)), then:
 ```bash
-python analysis/run_sanity_check.py
+python analysis/sanity_check.py
 ```

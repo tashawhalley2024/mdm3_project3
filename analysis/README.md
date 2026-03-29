@@ -12,6 +12,7 @@ Python scripts for the secularism-women panel analysis. All scripts resolve path
 | `run_plots.py` | Generates 10 publication figures | `results/results.csv`, `data/predictors.csv`, `data/outcome_composite.csv` | `figures/01_scatter.png` … `figures/10_alt_outcomes.png` |
 | `compare_indices.py` | Compares composite vs WBL index coefficients | `results/results_composite.csv`, `results/results_wbl.csv` | `results/index_comparison.csv`, `results/index_comparison.md` |
 | `sanity_check.py` | Validates WBL index against composite baseline | `sanity_check/baseline.csv`, `sanity_check/actual.csv` *(not in repo — intermediate files)* | `sanity_check/overlap_comparison.csv`, `sanity_check/comparison_scatter.png` |
+
 | `utils.py` | Shared utilities (`robust_minmax` normalisation) | — | — |
 | `config.py` | Shared constants (`REGION_MAP`, `FOCAL_PRED`, path anchors) | — | — |
 
@@ -26,7 +27,7 @@ python analysis/run_plots.py
 python analysis/compare_indices.py
 ```
 
-`sanity_check.py` is standalone and requires `sanity_check/baseline.csv` and `sanity_check/actual.csv` (intermediate files, not committed to the repo).
+`analysis/sanity_check.py` is standalone and requires `sanity_check/baseline.csv` and `sanity_check/actual.csv` (intermediate files, not committed to the repo).
 
 ---
 
