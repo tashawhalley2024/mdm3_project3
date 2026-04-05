@@ -130,7 +130,41 @@ for name, df in group_scores[1:]:
     )
 
 score_cols = [name for name, _ in group_scores]
-combined["overall_score"] = combined[score_cols].mean(axis=1)
+
+# Two-layer weighting function
+
+def apply_two_layer_weighting(df):
+    de_jure_cols = [
+        "assets",
+        "econ_rights",
+        "fam_safety",
+        "mobility",
+        "parenthood",
+        "pay",
+        "pension",
+        "workplace"
+    ]
+
+    de_facto_cols = [
+        "health",
+        "political_rep"
+    ]
+
+    # First layer:
+    # average the groups inside each category
+    df["de_jure_score"] = df[de_jure_cols].mean(axis=1)
+    df["de_facto_score"] = df[de_facto_cols].mean(axis=1)
+
+    # Second layer:
+    # combine de jure and de facto with equal weight
+    df["overall_score"] = (
+        0.5 * df["de_jure_score"] +
+        0.5 * df["de_facto_score"]
+    )
+
+    return df
+   
+combined = apply_two_layer_weighting(combined)
 
 overall = combined[merge_keys + ["overall_score"]].dropna(subset=["overall_score"])
 overall = overall.sort_values(["Economy", "Year"]).reset_index(drop=True)
