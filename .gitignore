@@ -7,9 +7,6 @@ venv/
 .venv/
 *.egg-info/
 
-# Raw data (not redistributable, too large for git)
-data/raw/
-
 # Runtime log output
 *.log
 
