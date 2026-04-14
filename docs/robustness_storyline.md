@@ -92,7 +92,7 @@ Several robustness checks were computed but are excluded from the presentation b
 - **Event studies (both predictors):** Designed for sharp policy changes, not slow-moving institutional variables where 73% of variation is between-country. All event-time coefficients are near zero with large standard errors — uninformative by construction.
 - **Oster delta/sensitivity for courts:** The Oster test asks "could omitted variables explain a significant result?" Applying it to a non-significant predictor (p=0.584) is logically inverted; the large delta arises mechanically because the coefficient barely changes, not because the result is robust.
 - **Wild cluster bootstrap:** Addresses small-cluster bias (<50 clusters). The full sample has ~170 clusters, well above the Cameron et al. (2008) threshold. Redundant with entity-clustered SEs.
-- **Driscoll-Kraay SEs:** Produces numerically identical results to entity-clustered SEs, confirming that cross-sectional dependence is not an issue but adding no new information.
+- **Driscoll-Kraay SEs:** Produces a smaller SE than entity-clustered (0.003 vs 0.007) because bandwidth=4 does not capture the full within-country autocorrelation of slow-moving GRI variables over 16 years. With N=168 and T=16, cluster-robust is the preferred SE per Cameron & Miller (2015). The DK result for courts (p=0.026) is reported in results/README.md for transparency but is not the primary inference.
 - **Redundant Mundlak CRE (Phase 9d):** Identical estimator to T4 using pooled OLS instead of GLS — same results, no added value.
 
 ---

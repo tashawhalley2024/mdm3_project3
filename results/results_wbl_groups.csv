@@ -1,0 +1,111 @@
+group,group_label,predictor,coef,se,pval,sig,n,r2
+assets,Assets & inheritance,const,0.810566,0.025244,0.000000,***,1648,0.015558
+assets,Assets & inheritance,gri_state_religion_norm,-0.021690,0.022215,0.329043,,1648,0.015558
+assets,Assets & inheritance,gri_religious_law_norm,0.008987,0.010505,0.392401,,1648,0.015558
+assets,Assets & inheritance,gri_blasphemy_norm,0.003261,0.003154,0.301312,,1648,0.015558
+assets,Assets & inheritance,gri_apostasy_norm,-0.000689,0.003757,0.854457,,1648,0.015558
+assets,Assets & inheritance,gri_religious_courts_norm,-0.001284,0.001208,0.287817,,1648,0.015558
+assets,Assets & inheritance,v2x_rule_norm,-0.015836,0.032706,0.628312,,1648,0.015558
+assets,Assets & inheritance,v2x_civlib_norm,0.022062,0.019087,0.247940,,1648,0.015558
+assets,Assets & inheritance,v2x_egal_norm,-0.062488,0.038041,0.100665,,1648,0.015558
+assets,Assets & inheritance,log_gdppc_norm,0.078293,0.081533,0.337086,,1648,0.015558
+econ_rights,Economic rights,const,0.764033,0.064296,0.000000,***,1648,0.010266
+econ_rights,Economic rights,gri_state_religion_norm,0.016193,0.015568,0.298444,,1648,0.010266
+econ_rights,Economic rights,gri_religious_law_norm,0.018664,0.012541,0.136891,,1648,0.010266
+econ_rights,Economic rights,gri_blasphemy_norm,-0.008522,0.006173,0.167636,,1648,0.010266
+econ_rights,Economic rights,gri_apostasy_norm,-0.011792,0.017315,0.495964,,1648,0.010266
+econ_rights,Economic rights,gri_religious_courts_norm,0.001724,0.009943,0.862386,,1648,0.010266
+econ_rights,Economic rights,v2x_rule_norm,0.036860,0.071451,0.606015,,1648,0.010266
+econ_rights,Economic rights,v2x_civlib_norm,0.064905,0.103558,0.530919,,1648,0.010266
+econ_rights,Economic rights,v2x_egal_norm,-0.056504,0.069198,0.414317,,1648,0.010266
+econ_rights,Economic rights,log_gdppc_norm,0.070391,0.123090,0.567502,,1648,0.010266
+fam_safety,Family & safety,const,0.771337,0.093979,0.000000,***,1648,0.021335
+fam_safety,Family & safety,gri_state_religion_norm,0.000903,0.030068,0.976034,,1648,0.021335
+fam_safety,Family & safety,gri_religious_law_norm,0.022610,0.019423,0.244569,,1648,0.021335
+fam_safety,Family & safety,gri_blasphemy_norm,-0.002711,0.007525,0.718731,,1648,0.021335
+fam_safety,Family & safety,gri_apostasy_norm,-0.027072,0.036906,0.463352,,1648,0.021335
+fam_safety,Family & safety,gri_religious_courts_norm,0.002415,0.011916,0.839411,,1648,0.021335
+fam_safety,Family & safety,v2x_rule_norm,0.186507,0.084857,0.028112,**,1648,0.021335
+fam_safety,Family & safety,v2x_civlib_norm,-0.125251,0.096709,0.195478,,1648,0.021335
+fam_safety,Family & safety,v2x_egal_norm,-0.078218,0.123137,0.525392,,1648,0.021335
+fam_safety,Family & safety,log_gdppc_norm,0.034319,0.179226,0.848170,,1648,0.021335
+health,Health,const,0.817671,0.031291,0.000000,***,1668,0.021097
+health,Health,gri_state_religion_norm,0.011517,0.010173,0.257771,,1668,0.021097
+health,Health,gri_religious_law_norm,0.005446,0.006529,0.404362,,1668,0.021097
+health,Health,gri_blasphemy_norm,0.001749,0.001974,0.375579,,1668,0.021097
+health,Health,gri_apostasy_norm,-0.006171,0.005496,0.261681,,1668,0.021097
+health,Health,gri_religious_courts_norm,-0.001813,0.002200,0.410151,,1668,0.021097
+health,Health,v2x_rule_norm,0.015633,0.020153,0.438026,,1668,0.021097
+health,Health,v2x_civlib_norm,-0.001074,0.020973,0.959162,,1668,0.021097
+health,Health,v2x_egal_norm,0.008959,0.031429,0.775649,,1668,0.021097
+health,Health,log_gdppc_norm,-0.070961,0.058347,0.224107,,1668,0.021097
+mobility,Mobility,const,1.010266,0.062514,0.000000,***,1648,0.029364
+mobility,Mobility,gri_state_religion_norm,0.034530,0.024502,0.158972,,1648,0.029364
+mobility,Mobility,gri_religious_law_norm,0.005016,0.016952,0.767349,,1648,0.029364
+mobility,Mobility,gri_blasphemy_norm,0.005110,0.006625,0.440645,,1648,0.029364
+mobility,Mobility,gri_apostasy_norm,-0.025259,0.025492,0.321924,,1648,0.029364
+mobility,Mobility,gri_religious_courts_norm,-0.036204,0.030821,0.240323,,1648,0.029364
+mobility,Mobility,v2x_rule_norm,0.102071,0.073845,0.167110,,1648,0.029364
+mobility,Mobility,v2x_civlib_norm,-0.105197,0.073925,0.154944,,1648,0.029364
+mobility,Mobility,v2x_egal_norm,-0.117506,0.056294,0.037027,**,1648,0.029364
+mobility,Mobility,log_gdppc_norm,-0.119910,0.127870,0.348527,,1648,0.029364
+parenthood,Parenthood,const,0.485230,0.124552,0.000102,***,1648,0.008655
+parenthood,Parenthood,gri_state_religion_norm,-0.027942,0.026128,0.285064,,1648,0.008655
+parenthood,Parenthood,gri_religious_law_norm,-0.012107,0.026868,0.652347,,1648,0.008655
+parenthood,Parenthood,gri_blasphemy_norm,-0.005679,0.013451,0.672928,,1648,0.008655
+parenthood,Parenthood,gri_apostasy_norm,-0.000934,0.022118,0.966335,,1648,0.008655
+parenthood,Parenthood,gri_religious_courts_norm,0.009854,0.015449,0.523689,,1648,0.008655
+parenthood,Parenthood,v2x_rule_norm,-0.036417,0.056490,0.519249,,1648,0.008655
+parenthood,Parenthood,v2x_civlib_norm,0.009524,0.054861,0.862198,,1648,0.008655
+parenthood,Parenthood,v2x_egal_norm,-0.054910,0.097390,0.572968,,1648,0.008655
+parenthood,Parenthood,log_gdppc_norm,0.255551,0.268182,0.340799,,1648,0.008655
+pay,Pay,const,0.475586,0.126615,0.000179,***,1648,0.009019
+pay,Pay,gri_state_religion_norm,-0.014778,0.037511,0.693660,,1648,0.009019
+pay,Pay,gri_religious_law_norm,0.034179,0.020713,0.099133,*,1648,0.009019
+pay,Pay,gri_blasphemy_norm,0.009198,0.013123,0.483462,,1648,0.009019
+pay,Pay,gri_apostasy_norm,-0.036166,0.021787,0.097133,*,1648,0.009019
+pay,Pay,gri_religious_courts_norm,0.014500,0.020584,0.481277,,1648,0.009019
+pay,Pay,v2x_rule_norm,-0.009476,0.097326,0.922451,,1648,0.009019
+pay,Pay,v2x_civlib_norm,0.026661,0.064338,0.678644,,1648,0.009019
+pay,Pay,v2x_egal_norm,-0.067398,0.094598,0.476287,,1648,0.009019
+pay,Pay,log_gdppc_norm,0.364936,0.256309,0.154714,,1648,0.009019
+pension,Pension,const,0.619808,0.115893,0.000000,***,1648,0.005998
+pension,Pension,gri_state_religion_norm,0.026936,0.057926,0.641995,,1648,0.005998
+pension,Pension,gri_religious_law_norm,0.021906,0.021625,0.311209,,1648,0.005998
+pension,Pension,gri_blasphemy_norm,0.002618,0.015694,0.867522,,1648,0.005998
+pension,Pension,gri_apostasy_norm,-0.011040,0.043128,0.798010,,1648,0.005998
+pension,Pension,gri_religious_courts_norm,-0.017755,0.018854,0.346515,,1648,0.005998
+pension,Pension,v2x_rule_norm,-0.052571,0.066147,0.426880,,1648,0.005998
+pension,Pension,v2x_civlib_norm,0.032244,0.066607,0.628395,,1648,0.005998
+pension,Pension,v2x_egal_norm,0.032836,0.097278,0.735755,,1648,0.005998
+pension,Pension,log_gdppc_norm,0.153011,0.229230,0.504557,,1648,0.005998
+political_rep,Political representation,const,0.211721,0.095408,0.026633,**,1640,0.019520
+political_rep,Political representation,gri_state_religion_norm,0.015372,0.033607,0.647458,,1640,0.019520
+political_rep,Political representation,gri_religious_law_norm,-0.013066,0.018116,0.470883,,1640,0.019520
+political_rep,Political representation,gri_blasphemy_norm,-0.001793,0.007705,0.816058,,1640,0.019520
+political_rep,Political representation,gri_apostasy_norm,-0.040865,0.030812,0.184963,,1640,0.019520
+political_rep,Political representation,gri_religious_courts_norm,-0.016711,0.011565,0.148687,,1640,0.019520
+political_rep,Political representation,v2x_rule_norm,-0.032755,0.071127,0.645217,,1640,0.019520
+political_rep,Political representation,v2x_civlib_norm,-0.010259,0.062901,0.870465,,1640,0.019520
+political_rep,Political representation,v2x_egal_norm,0.110127,0.093033,0.236708,,1640,0.019520
+political_rep,Political representation,log_gdppc_norm,0.253937,0.163313,0.120186,,1640,0.019520
+workplace,Workplace,const,1.041800,0.191297,0.000000,***,1648,0.018181
+workplace,Workplace,gri_state_religion_norm,-0.021962,0.070471,0.755351,,1648,0.018181
+workplace,Workplace,gri_religious_law_norm,0.026247,0.038419,0.494593,,1648,0.018181
+workplace,Workplace,gri_blasphemy_norm,-0.024875,0.013164,0.058994,*,1648,0.018181
+workplace,Workplace,gri_apostasy_norm,-0.063157,0.044249,0.153706,,1648,0.018181
+workplace,Workplace,gri_religious_courts_norm,-0.004522,0.025508,0.859317,,1648,0.018181
+workplace,Workplace,v2x_rule_norm,-0.009244,0.126555,0.941782,,1648,0.018181
+workplace,Workplace,v2x_civlib_norm,-0.022790,0.120545,0.850076,,1648,0.018181
+workplace,Workplace,v2x_egal_norm,0.136737,0.167858,0.415434,,1648,0.018181
+workplace,Workplace,log_gdppc_norm,-0.671897,0.397819,0.091441,*,1648,0.018181
+overall_score,Overall score,const,0.674234,0.039120,0.000000,***,1648,0.012839
+overall_score,Overall score,gri_state_religion_norm,0.011054,0.014882,0.457735,,1648,0.012839
+overall_score,Overall score,gri_religious_law_norm,0.007364,0.007106,0.300242,,1648,0.012839
+overall_score,Overall score,gri_blasphemy_norm,-0.000659,0.003499,0.850683,,1648,0.012839
+overall_score,Overall score,gri_apostasy_norm,-0.019684,0.009336,0.035160,**,1648,0.012839
+overall_score,Overall score,gri_religious_courts_norm,-0.006949,0.006877,0.312389,,1648,0.012839
+overall_score,Overall score,v2x_rule_norm,0.009067,0.027471,0.741401,,1648,0.012839
+overall_score,Overall score,v2x_civlib_norm,-0.022333,0.028951,0.440583,,1648,0.012839
+overall_score,Overall score,v2x_egal_norm,-0.009736,0.038664,0.801228,,1648,0.012839
+overall_score,Overall score,log_gdppc_norm,0.009121,0.073359,0.901072,,1648,0.012839
