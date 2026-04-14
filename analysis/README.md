@@ -8,7 +8,7 @@ Python scripts for the secularism-women panel analysis. All scripts resolve path
 
 | Script | What it does | Inputs | Outputs |
 |---|---|---|---|
-| `run_analysis.py` | Runs all regressions (T1 cross-section, T2 panel FE, Phases 3–10) | `data/outcome_wbl.csv`, `data/predictors.csv`, `data/robustness_outcomes.csv` | `results/results.csv` + robustness CSVs |
+| `run_analysis.py` | Runs all regressions (T1 cross-section, T2 panel FE, T4 Mundlak, Phases 3–10) | `data/outcome_wbl.csv`, `data/predictors.csv`, `data/robustness_outcomes.csv` | `results/results.csv` + robustness CSVs |
 | `run_plots.py` | Generates 10 publication figures | `results/results.csv`, `data/predictors.csv`, `data/outcome_composite.csv` | `figures/01_scatter.png` … `figures/10_alt_outcomes.png` |
 | `compare_indices.py` | Compares composite vs WBL index coefficients | `results/results_composite.csv`, `results/results_wbl.csv` | `results/index_comparison.csv`, `results/index_comparison.md` |
 | `sanity_check.py` | Validates WBL index against composite baseline | `sanity_check/baseline.csv`, `sanity_check/actual.csv` *(not in repo — intermediate files)* | `sanity_check/overlap_comparison.csv`, `sanity_check/comparison_scatter.png` |

@@ -19,7 +19,8 @@ This repo contains two components:
 ├── data/               Raw data files + analysis-ready CSVs
 ├── analysis/           Regression scripts (secularism analysis)
 ├── results/            Regression output CSVs and robustness tables
-├── figures/            Publication-quality PNG figures (10 total)
+├── figures/            Publication-quality PNG figures
+├── writing/            LaTeX methodology write-up + bibliography
 ├── sanity_check/       Index validation outputs
 └── docs/               Data handling log and source references
 ```
@@ -76,33 +77,113 @@ python scoring.py        # scores groups → output/overall_score.csv
 
 **Research question:** Does institutional secularism improve the welfare and treatment of women?
 
-Cross-national panel, up to 198 countries, 2007–2022. Focal predictor: `gri_religious_courts_norm` (Pew GRI separate religious courts score, normalised).
+Cross-national panel, up to 198 countries, 2007–2022 (WBL outcome available 2013 onwards). Focal predictor: `gri_religious_courts_norm` (Pew GRI religious courts score, normalised). Key finding: `gri_apostasy_norm` is the most consistently significant GRI predictor across all specifications.
 
-### Key Finding
+### Analysis status
 
-Religious court institutionalisation is associated with significantly lower women's welfare scores:
-
-| Model | Coef | SE | p |
+| Tier | Model | Status | Script location |
 |---|---|---|---|
-| T2 Panel FE (no GDP) | −0.011 | 0.004 | 0.002 |
-| T2 Panel FE (with GDP) | −0.008 | 0.003 | 0.003 |
-| Wild cluster bootstrap | −0.010 | — | 0.012 |
-| Driscoll-Kraay HAC | −0.011 | 0.003 | <0.001 |
-| WEF GGG external validation | −0.020 | — | 0.036 |
+| T1 | Cross-sectional OLS (2014 & 2020, HC3 SEs) | **Implemented** | `analysis/run_analysis.py` |
+| T2 | Two-way Fixed-Effects panel (country + year FE, clustered SEs, 2007–2022) | **Implemented** | `analysis/run_analysis.py` |
+| T3 | System-GMM (Blundell-Bond dynamic panel) | **Implemented** (fails Roodman bounds — see below) | `analysis/run_analysis.py` |
+| T4 | Mundlak RE-FE hybrid (between + within decomposition) | **Implemented** | `analysis/run_analysis.py` |
 
-- **LOO jackknife:** 170 country-drop runs — 0 sign flips, 0 non-significant
-- **Pre-trend test:** event-study F-test p = 0.881 (no pre-trends)
-- **Oster delta:** 8.3 at Rmax = 1.3×R_full (robust to omitted variable bias)
-- **Placebo:** courts score on male outcomes ≈ 0 (p = 0.27–0.87), confirming gendered mechanism
-
-### How to run
+### How to run (current implemented models)
 
 ```bash
 python analysis/run_analysis.py    # regressions → results/
 python analysis/run_plots.py       # figures → figures/
-python analysis/compare_indices.py # index comparison → results/index_comparison.*
 python verify.py                   # integrity check
 ```
+
+### Current results summary
+
+| Model | gri_religious_courts coef | p-value | gri_apostasy coef | p-value |
+|---|---|---|---|---|
+| T1 OLS (2020, no GDP) | +0.023 | 0.222 | −0.121 | <0.001 |
+| T2 TWFE (no GDP) | −0.007 | 0.289 | −0.018 | 0.033 |
+| T2 TWFE (with GDP) | −0.007 | 0.312 | −0.020 | 0.035 |
+| T4 Mundlak within | −0.007 | 0.288 | −0.020 | 0.027 |
+| T4 Mundlak between | +0.042 | 0.064 | −0.122 | 0.001 |
+
+Robustness checks (implemented):
+- LOO jackknife: 166 country-drop runs
+- Pre-trend test: event-study F-test
+- Oster sensitivity: delta statistic
+- Lagged GRI predictors (L1, L2)
+- Sub-outcome analysis (political, economic, safety, health)
+- Alternative outcomes: SIGI 2019, GII
+- Regional heterogeneity
+- Legal origins controls
+- V-Dem freedom of religion alternative predictor
+- Wild cluster bootstrap
+- Driscoll-Kraay HAC standard errors
+- Mundlak CRE (pooled OLS cross-check of T4)
+
+---
+
+## Part 2 Extensions: T3 System-GMM and T4 Mundlak
+
+Both T3 and T4 are implemented. Both append results to `results/results.csv` in the existing tidy format (`tier, year, predictor, coef, se, pval, n, r2, dv_label, sig`).
+
+The full methodological justification for both models (with literature review and bibliography) is in:
+- `writing/methodology_full.tex` — unified LaTeX write-up for all four tiers
+- `writing/references_full.bib` — 30-entry bibliography
+- `writing/literature_review_gmm.tex` — GMM-specific extended section
+
+### T3: System-GMM (Blundell-Bond 1998)
+
+**Why:** TWFE cannot include a lagged DV (Nickell bias), and the GRI/V-Dem regressors are plausibly endogenous. System-GMM addresses both via internal instruments from lagged values.
+
+**Estimating equation:**
+
+```
+W_it = ρ·W_i,t-1 + β·G_it + γ·X_it + α_i + λ_t + ε_it
+```
+
+where `W_it` = `wbl_treatment_index`, `G_it` = GRI vector, `X_it` = V-Dem controls + log GDP.
+
+**Implementation:**
+- Package: `pydynpd` (`pip install pydynpd`) — purpose-built Blundell-Bond for Python
+- Instrument strategy: collapse instrument matrix; lag depth 2 for differenced equation, lag-1 differences for levels equation
+- Estimator: two-step GMM with Windmeijer (2005) finite-sample SE correction
+- Diagnostics to report: Hansen J-test p-value (instrument validity), AR(1) and AR(2) Arellano-Bond tests (no second-order serial correlation)
+- Instrument count must not exceed N≈198; use `collapse=True` in pydynpd
+
+**Closest published template:** Achuo et al. (2024, *Journal of Economics and Development*) — WBL Index as DV, World Governance Indicators as predictors, 142 countries, system-GMM robustness.
+
+**Key constraint:** With T=16 and N=198, instrument proliferation is the main risk. Monitor Hansen p-value — if >0.25, instruments are too many (paradoxically passing).
+
+**Diagnostic outcome:** T3 was implemented but fails the Roodman (2009) bounds check. The GMM autoregressive coefficient (rho = 1.215) exceeds the pooled OLS upper bound (0.982), indicating explosive dynamics inconsistent with a welfare index bounded in [0, 1]. The Hansen J-test p-value (0.83) is suspiciously high, consistent with instrument proliferation despite collapsing. AR(2) p = 0.30 passes. T3 results are reported in `results/results.csv` for transparency but are excluded from substantive conclusions. The T1/T2/T4 estimates constitute the primary evidence.
+
+---
+
+### T4: Mundlak RE-FE Hybrid (Mundlak 1978) — Implemented
+
+**Why:** TWFE discards all between-country variation. The Mundlak model retains it by decomposing each predictor into a within-country deviation and a country mean, yielding two substantively distinct coefficients per variable — the *within effect* (does a country becoming more secular improve welfare?) and the *between effect* (do secular countries structurally have better outcomes?).
+
+**Transformation:** For each time-varying predictor X_it, add its country mean X̄_i as an additional regressor:
+
+```
+W_it = β₁·X_it + β₂·X̄_i + u_i + ε_it
+```
+
+- `β₁` = within effect (within-country change over time)
+- `β₂` = between effect (cross-country structural difference)
+- `u_i` = random country effect (GLS, not FE)
+
+**Implementation:** `tier4_mundlak_re()` in `analysis/run_analysis.py`.
+- Country means (`_mean` suffix) computed for all 9 time-varying predictors (5 GRI + 3 V-Dem + GDP)
+- Estimator: `linearmodels.panel.RandomEffects` with entity-clustered SEs
+- Year dummies included to absorb common time shocks
+- Results tagged as `T4_mundlak_re` in `results/results.csv`
+
+**Verified properties:**
+- Within-coefficients match T2 TWFE to <0.001 absolute difference (confirms correct specification)
+- Between and within effects differ for all 5 GRI variables (confirms unobserved heterogeneity; FE warranted)
+- 3 of 9 country means significant at 5% (Mundlak test rejects simple RE)
+
+**Key result:** `gri_apostasy_norm` between-effect (β₂ = −0.122, p = 0.001) is roughly 6.2× the within-effect (β₁ = −0.020, p = 0.027). Secularism matters structurally across countries far more than within-country changes over 2007–2022.
 
 ---
 
@@ -115,7 +196,11 @@ python verify.py                   # integrity check
 | WDI life expectancy | `data/lifeexp/` | 2013–2023 | Health group |
 | WDI maternal mortality | `data/maternalmort/` | 2013–2023 | Health group |
 | WDI parliament seats | `data/parliament/` | 2013–2023 | Political representation |
-| Pew GRI | `data/predictors.csv` | 2007–2022 | Secularism predictor |
+| Pew GRI | `data/predictors.csv` | 2007–2022 | Secularism predictors |
 | V-Dem v15, QoG, WHO | `data/outcome_composite.csv` | 2007–2022 | Alternative outcome index |
 
-See [`docs/sources.md`](docs/sources.md) for full provenance.
+Analysis-ready merged files:
+- `data/outcome_wbl.csv` — outcome variable (`wbl_treatment_index`), ~198 countries, 2007–2022
+- `data/predictors.csv` — all GRI predictors + V-Dem controls + `log_gdppc_norm`
+
+See [`docs/sources.md`](docs/sources.md) for full provenance and [`docs/methods_log.md`](docs/methods_log.md) for all data handling decisions.

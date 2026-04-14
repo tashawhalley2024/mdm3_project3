@@ -1,8 +1,14 @@
 # Data Handling Methods Log
 
 **Project:** Does secularism improve the welfare and treatment of women relative to men?
-**Scope:** Cross-national panel, up to 180 countries, 2007-2022.
+**Scope:** Cross-national panel, up to 198 countries, 2007-2022.
 **Last updated:** See git log.
+
+> **Note:** Entries 1–12 reference file paths from a previous pipeline layout
+> (`src/extract_women_secularism.py`, `src/build_secularism_composition.py`, etc.)
+> that no longer exist in the current repo structure. The actual pipeline files are
+> `data_reading.py`, `scoring.py`, and `analysis/run_analysis.py`. The scientific
+> justifications in entries 1–12 remain valid — only the file paths are outdated.
 
 This document records every non-trivial data handling decision made in the
 analysis pipeline, with scientific justification and implementation details.
@@ -343,10 +349,145 @@ and `process_new_datasets.py`.
 
 ---
 
+## 13. Planned model: System-GMM (Tier 3)
+
+**Status:** Implemented in `analysis/run_analysis.py` (`tier3_system_gmm()`).
+
+**Decision:** Add Blundell-Bond (1998) system-GMM as a third-tier estimator.
+
+**Justification:** The TWFE model (Tier 2) cannot accommodate a lagged dependent
+variable without inducing Nickell (1981) bias (non-negligible at T=16, N≈198), and the
+GRI religious institution variables and V-Dem governance controls are plausibly
+endogenous with women's welfare. System-GMM resolves both by instrumenting the lagged
+DV and endogenous regressors using their own prior lags.
+
+**Estimating equation:**
+```
+W_it = ρ·W_i,t-1 + β·G_it + γ·X_it + α_i + λ_t + ε_it
+```
+- `W_it` = `wbl_treatment_index`
+- `G_it` = GRI predictors vector (5 variables)
+- `X_it` = V-Dem controls + `log_gdppc_norm`
+- `α_i`, `λ_t` = country and year fixed effects (absorbed via differencing + year dummies)
+
+**Instrument strategy:**
+- Differenced equation: lag 2 of all endogenous variables as instruments
+- Levels equation: lag-1 differences as instruments (Blundell-Bond system)
+- Collapse instrument matrix (`collapse=True`) — instrument count must not exceed N≈198
+- Two-step GMM with Windmeijer (2005) finite-sample SE correction
+
+**Diagnostics to report:**
+- Hansen J-statistic (p-value; null = instruments valid; caution if p > 0.25)
+- Arellano-Bond AR(1) test (should reject, p < 0.05)
+- Arellano-Bond AR(2) test (should NOT reject, p > 0.05 — key validity check)
+
+**Package:** `pydynpd` (`pip install pydynpd`)
+
+**Literature template:** Achuo et al. (2024, *Journal of Economics and Development*),
+142-country panel, WBL Index as DV, World Governance Indicators as predictors,
+system-GMM robustness specification. Full bibliography in `writing/references_full.bib`.
+
+---
+
+## 14. Planned model: Mundlak RE-FE hybrid (Tier 4)
+
+**Status:** [SUPERSEDED by Entry 15 — now implemented as `tier4_mundlak_re()` in `analysis/run_analysis.py`]
+
+**Decision:** Add the Mundlak (1978) correlated random effects model as a fourth-tier
+estimator.
+
+**Justification:** TWFE discards all between-country variation by construction —
+it identifies only within-country changes over time. The Mundlak approach retains both
+the within and between dimensions, yielding two substantively distinct effects:
+(β₁) within — does a country becoming more secular over time improve women's welfare?
+(β₂) between — do structurally secular countries have better outcomes than non-secular ones?
+These are different theoretical questions. TWFE answers only the first.
+
+**Transformation:** For each time-varying predictor X_it, compute the country mean
+X̄_i (average across all years for country i) and add it as an additional regressor:
+
+```
+W_it = β₁·X_it + β₂·X̄_i + u_i + ε_it
+```
+
+Country means required for: all 5 GRI vars, all 3 V-Dem controls, `log_gdppc_norm`.
+Naming convention: suffix `_mean` (e.g. `gri_religious_courts_norm_mean`).
+
+**Key property:** The within coefficient β₁ should equal the TWFE coefficient
+numerically. If it does not, this is a sign of a specification error.
+
+**Estimator:** `linearmodels.panel.RandomEffects` (GLS random effects).
+- Do NOT demean X_it — keep original values, add X̄_i as separate columns
+- Include year dummies
+- Entity-clustered standard errors
+
+**Package:** `linearmodels` (already a project dependency)
+
+**Literature references:** Mundlak (1978, *Econometrica*); Bell & Jones (2015,
+*Political Science Research and Methods*) for the between/within decomposition
+framing. Full bibliography in `writing/references_full.bib`.
+
+---
+
+## 15. Implemented: Mundlak RE-FE hybrid (Tier 4)
+
+**Status:** Implemented in `analysis/run_analysis.py` as `tier4_mundlak_re()`.
+
+**What was done:**
+- Added `tier4_mundlak_re()` function using `linearmodels.panel.RandomEffects`
+  (GLS random-effects estimator), not pooled OLS
+- Country means computed for all 9 time-varying predictors (5 GRI + 3 V-Dem + GDP)
+  with suffix `_mean`
+- Year dummies included (`pd.get_dummies`, drop_first=True) to absorb common time
+  shocks, making within-coefficients comparable to T2 TWFE
+- Entity-clustered standard errors for consistency with T2
+- Zero-variance mean columns automatically dropped
+- Sanity-check print: T4 within-coefficients vs T2 TWFE coefficients
+- Results appended to `results/results.csv` as tier `T4_mundlak_re`
+
+**Relationship to existing `phase9_mundlak_cre()`:**
+The Phase 9 version uses pooled OLS with country means (valid CRE approach). T4 uses
+the proper RE-GLS estimator. Both are retained — Phase 9 serves as a robustness cross-check.
+
+**Interpretation:**
+- β₁ on X_it = within-country effect (change in secularism → change in women's welfare)
+- β₂ on X̄_i = between-country effect (structurally secular vs non-secular countries)
+- If β₁ ≈ T2 TWFE coefficient, the Mundlak specification is consistent
+
+---
+
+## Summary table
+
+| # | Change | File(s) modified | Flag column added |
+|---|--------|-----------------|-------------------|
+| 1 | Robust min-max (1%/99% winsorisation) | utils.py, extract_*.py, build_*.py, process_*.py | none |
+| 2 | General NaN-preserving policy | all | none |
+| 3 | pct_* linear interpolation | build_secularism_composition.py | `pct_interpolated` |
+| 4 | WVS +-2yr interpolation | build_secularism_composition.py | `wvs_interpolated` |
+| 5 | SIGI +-2yr neighbourhood fill | process_new_datasets.py | `sigi_interpolated` |
+| 6 | EPR 2022 forward-fill | extract_women_secularism.py | `epr_excl_2022_ffill` |
+| 7 | Composite index >=8 var threshold | extract_women_secularism.py | `women_index_n_vars` |
+| 8 | Complete-case PCA (mean imputation) | phase2_merge_and_score.py | none |
+| 9 | GDP pre-built in comp dataset | build_secularism_composition.py, analyse_*.py | none |
+| 10 | REGION_MAP, FOCAL_PRED in config.py | config.py, analyse_*.py, plot_*.py | none |
+| 11 | UNESCO literacy fallback | extract_women_secularism.py | `wdi_litradf_source` |
+| 12 | SHA-256 pipeline checksums | utils.py, extract_*.py, build_*.py, process_*.py | none |
+| 13 | System-GMM (Tier 3) — IMPLEMENTED | analysis/run_analysis.py | `T3_system_gmm` rows |
+| 14 | Mundlak RE-FE hybrid (Tier 4) — SUPERSEDED by #15 | analysis/run_analysis.py | none |
+| 15 | Mundlak RE-FE hybrid (Tier 4) — IMPLEMENTED | analysis/run_analysis.py | none |
+
+---
+
 ## References
 
 - Allison, P.D. (2002). *Missing Data*. Sage.
+- Arellano, M. & Bond, S. (1991). Some tests of specification for panel data. *Review of Economic Studies*, 58(2).
+- Bell, A. & Jones, K. (2015). Explaining fixed effects: Random effects modelling of time-series cross-sectional and panel data. *Political Science Research and Methods*, 3(1).
+- Blundell, R. & Bond, S. (1998). Initial conditions and moment restrictions in dynamic panel data models. *Journal of Econometrics*, 87(1).
 - Dray, S. & Josse, J. (2015). Principal component analysis with missing values. *Biometrics*, 71(2).
 - Hackett, C. et al. (2017). *The Changing Global Religious Landscape*. Pew Research Center.
+- Mundlak, Y. (1978). On the pooling of time series and cross section data. *Econometrica*, 46(1).
+- Nickell, S. (1981). Biases in dynamic models with fixed effects. *Econometrica*, 49(6).
 - Norris, P. & Inglehart, R. (2004). *Sacred and Secular*. Cambridge University Press.
 - OECD (2008). *Handbook on Constructing Composite Indicators*. OECD Publishing.
+- Windmeijer, F. (2005). A finite sample correction for the variance of linear efficient two-step GMM estimators. *Journal of Econometrics*, 126(1).

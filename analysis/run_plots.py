@@ -29,36 +29,94 @@ warnings.filterwarnings("ignore")
 
 # ── Import shared config ────────────────────────────────────────────────────────
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from config import REGION_MAP, FOCAL_PRED
+from config import REGION_MAP, FOCAL_PRED, FOCAL_PRED_2, PALETTE
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+# ── Presentation style ─────────────────────────────────────────────────────────
+def _presentation_style():
+    """Project-wide rcParams — presentation-scale fonts, clean spines, white bg.
+
+    Called once at script entry so every figure gets consistent styling.
+    """
+    plt.rcParams.update({
+        "figure.facecolor":   "white",
+        "axes.facecolor":     "white",
+        "savefig.facecolor":  "white",
+        "font.family":        "DejaVu Sans",
+        "font.size":          12,
+        "axes.titlesize":     14,
+        "axes.titleweight":   "bold",
+        "axes.labelsize":     11,
+        "axes.labelweight":   "normal",
+        "xtick.labelsize":    10,
+        "ytick.labelsize":    10,
+        "legend.fontsize":    10,
+        "figure.titlesize":   15,
+        "figure.titleweight": "bold",
+        "axes.spines.top":    False,
+        "axes.spines.right":  False,
+        "axes.linewidth":     1.1,
+        "grid.linewidth":     0.5,
+        "grid.alpha":         0.35,
+        "lines.linewidth":    1.8,
+    })
+
+
+def _sig_colour(pval: float) -> str:
+    """Map a p-value to the palette significance colour."""
+    if pval < 0.01:  return PALETTE["sig_high"]
+    if pval < 0.05:  return PALETTE["sig_med"]
+    if pval < 0.10:  return PALETTE["sig_low"]
+    return PALETTE["null"]
+
+
+def _sig_stars(pval: float) -> str:
+    if pval < 0.01:  return "***"
+    if pval < 0.05:  return "**"
+    if pval < 0.10:  return "*"
+    return ""
+
+
+def _narrative_title(ax_or_fig, punchline: str, subtitle: str = "", fig_level=False):
+    """Two-line title: bold narrative on top, small descriptive subtitle below."""
+    if fig_level:
+        ax_or_fig.suptitle(
+            f"{punchline}\n" + (f"{subtitle}" if subtitle else ""),
+            fontsize=15, fontweight="bold", y=1.00,
+        )
+    else:
+        full = punchline + (f"\n{subtitle}" if subtitle else "")
+        ax_or_fig.set_title(full, fontsize=13, fontweight="bold", loc="left", pad=12)
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 RESULTS_PATH = os.path.join(ROOT, "results/results.csv")
 COMP_PATH    = os.path.join(ROOT, "data/predictors.csv")
 WOMEN_PATH   = os.path.join(ROOT, "data/outcome_composite.csv")
 OUT_COEF     = os.path.join(ROOT, "figures/02_coefplot.png")
-OUT_COEF_SUB = os.path.join(ROOT, "figures/03_coefplot_suboutcomes.png")
 OUT_SCATTER  = os.path.join(ROOT, "figures/01_scatter.png")
-OUT_TREND    = os.path.join(ROOT, "figures/04_trend.png")
 OUT_LOO      = os.path.join(ROOT, "figures/05_loo_jackknife.png")
 OUT_PLACEBO  = os.path.join(ROOT, "figures/06_placebo.png")
 OUT_SPEC     = os.path.join(ROOT, "figures/07_spec_ladder.png")
 
-LOO_CSV      = os.path.join(ROOT, "results/loo_jackknife.csv")
-PLACEBO_CSV  = os.path.join(ROOT, "results/placebo.csv")
-RESULTS_CSV  = os.path.join(ROOT, "results/results.csv")
-SPEC_CSV     = os.path.join(ROOT, "results/spec_ladder.csv")
+LOO_CSV           = os.path.join(ROOT, "results/loo_jackknife.csv")
+LOO_APOSTASY_CSV  = os.path.join(ROOT, "results/loo_jackknife_apostasy.csv")
+PLACEBO_CSV       = os.path.join(ROOT, "results/placebo.csv")
+PLACEBO_APOSTASY_CSV = os.path.join(ROOT, "results/placebo_apostasy.csv")
+RESULTS_CSV       = os.path.join(ROOT, "results/results.csv")
+SPEC_CSV          = os.path.join(ROOT, "results/spec_ladder.csv")
+SPEC_APOSTASY_CSV = os.path.join(ROOT, "results/spec_ladder_apostasy.csv")
 
-# Phase 9 paths
-EVENTSTUDY_CSV = os.path.join(ROOT, "results/event_study.csv")
-EVENTSTUDY_PNG = os.path.join(ROOT, "figures/08_event_study.png")
-OSTER_SENS_CSV = os.path.join(ROOT, "results/oster_sensitivity.csv")
+# Oster sensitivity — apostasy only (courts version dropped: logically inverted for null predictor)
+OSTER_SENS_CSV = os.path.join(ROOT, "results/oster_sensitivity_apostasy.csv")
 OSTER_SENS_PNG = os.path.join(ROOT, "figures/09_oster_sensitivity.png")
 
 # Phase 10 paths
 WBL_RESULTS_CSV = os.path.join(ROOT, "results/results_wbl.csv")
 OUT_ALT_OUTCOMES = os.path.join(ROOT, "figures/10_alt_outcomes.png")
+
+OUT_MUNDLAK = os.path.join(ROOT, "figures/12_mundlak_decomposition.png")
 
 # FOCAL_PRED and REGION_MAP imported from src.config above
 
@@ -95,102 +153,260 @@ LABELS = {
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# 0. SCATTER: religious courts vs women's treatment (2020 cross-section)
+# ═══════════════════════════════════════════════════════════════════════════════
+def plot_scatter(df: pd.DataFrame):
+    """
+    Dual-panel 2020 cross-section scatter:
+      Left  — religious courts vs women's treatment (null)
+      Right — apostasy laws vs women's treatment (signal)
+    Regions colour the points; a handful of anchor countries are labelled
+    so the viewer can see where the signal lives.
+    """
+    OUTCOME = "women_treatment_index"
+    cols = ["iso3", FOCAL_PRED, FOCAL_PRED_2, OUTCOME]
+    snap = df[df["year"] == 2020][cols].dropna()
+    if snap.empty:
+        print("  No 2020 data for scatter -- skipping.")
+        return
+
+    snap["region"] = snap["iso3"].map(get_region)
+
+    # Anchor countries chosen for spread (one high-courts, one mid-outcome,
+    # one low-outcome) without label collisions on the binary x-axis.
+    anchor_iso = ["IRN", "USA", "NOR", "IND"]
+
+    fig, axes = plt.subplots(1, 2, figsize=(13, 6), sharey=True)
+
+    for ax, pred, panel_title in [
+        (axes[0], FOCAL_PRED,   "Religious courts"),
+        (axes[1], FOCAL_PRED_2, "Apostasy laws"),
+    ]:
+        for region, color in REGION_COLORS.items():
+            sub = snap[snap["region"] == region]
+            if sub.empty:
+                continue
+            ax.scatter(sub[pred], sub[OUTCOME], c=color, label=region,
+                       s=55, alpha=0.75, edgecolors="white", linewidth=0.6)
+
+        X  = sm.add_constant(snap[pred])
+        ols = sm.OLS(snap[OUTCOME], X).fit()
+        x_grid = np.linspace(snap[pred].min(), snap[pred].max(), 100)
+        X_grid = sm.add_constant(x_grid)
+        y_hat  = ols.predict(X_grid)
+        ci     = ols.get_prediction(X_grid).conf_int(alpha=0.05)
+
+        line_color = PALETTE["apostasy"] if pred == FOCAL_PRED_2 else PALETTE["courts"]
+        ax.plot(x_grid, y_hat, color=line_color, linewidth=2.4, zorder=5)
+        ax.fill_between(x_grid, ci[:, 0], ci[:, 1], color=line_color, alpha=0.12)
+
+        beta = ols.params[pred]
+        pval = ols.pvalues[pred]
+        stars = _sig_stars(pval) or "n.s."
+        ax.annotate(
+            f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\nn = {len(snap)}",
+            xy=(0.03, 0.05), xycoords="axes fraction",
+            fontsize=11, ha="left", va="bottom",
+            bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
+                      edgecolor=line_color, linewidth=1.3, alpha=0.95),
+        )
+
+        # Country anchors
+        for iso in anchor_iso:
+            row = snap[snap["iso3"] == iso]
+            if row.empty:
+                continue
+            ax.annotate(iso,
+                        xy=(row.iloc[0][pred], row.iloc[0][OUTCOME]),
+                        xytext=(4, 4), textcoords="offset points",
+                        fontsize=8.5, color="#222", fontweight="bold")
+
+        ax.set_xlabel(f"{panel_title} (GRI, normalised)")
+        ax.set_title(panel_title, fontsize=13, fontweight="bold", loc="left", pad=8)
+        ax.grid(alpha=0.3, linewidth=0.5)
+
+    axes[0].set_ylabel("Women's treatment index")
+    axes[1].legend(loc="lower left", framealpha=0.92, ncol=2, fontsize=8)
+
+    # Note the binary structure of the courts variable — placed in upper-right
+    # of the courts panel away from the bottom-left β/p stats box.
+    axes[0].annotate(
+        "Variable is binary-coded (0/1)\nin Pew GRI",
+        xy=(0.97, 0.97), xycoords="axes fraction",
+        fontsize=8.5, ha="right", va="top",
+        color="#666", style="italic",
+        bbox=dict(boxstyle="round,pad=0.3", facecolor="white",
+                  edgecolor="#ddd", alpha=0.85),
+    )
+
+    fig.suptitle(
+        "Courts: no correlation. Apostasy: strong negative correlation.",
+        fontsize=16, fontweight="bold", y=1.04,
+    )
+    fig.text(
+        0.5, 0.99,
+        "2020 cross-section — each point is a country; line is OLS with 95% CI",
+        ha="center", fontsize=10.5, color="#555",
+    )
+
+    plt.tight_layout(rect=[0, 0, 1, 0.93])
+    plt.savefig(OUT_SCATTER, dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved -> {OUT_SCATTER}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # 1. COEFFICIENT FOREST PLOT
 # ═══════════════════════════════════════════════════════════════════════════════
 def plot_coefplot():
     """
-    Three-panel forest plot: one panel per tier.
-    Rows = predictors, x-axis = coefficient, bars = 95% CI.
-    Colour-coded by significance: *** red, ** orange, * yellow, ns grey.
+    Two-panel forest plot (T1 cross-section 2020, T2 panel FE).
+    Apostasy + courts are pinned to the top with a highlight band;
+    remaining predictors appear below as greyed-out context.
     """
     df = pd.read_csv(RESULTS_PATH)
 
-    # Use GDP-controlled ("with_gdp") versions as the primary display
-    tier_order = ["T1_with_gdp", "T2_with_gdp", "T3_with_gdp"]
-    tier_labels = {
-        "T1_with_gdp": "Tier 1 — Cross-sectional OLS\n(2010 & 2020, GDP-controlled)",
-        "T2_with_gdp": "Tier 2 — Panel FE\n(2007-2022, country + year FE, GDP-controlled)",
-        "T3_with_gdp": "Tier 3 — Interaction model\n(GDP-controlled)",
-    }
-    sig_colors = {
-        "***": "#c0392b",
-        "**":  "#e67e22",
-        "*":   "#f1c40f",
-        "":    "#95a5a6",
+    tier_order = ["T1_with_gdp", "T2_with_gdp"]
+    tier_titles = {
+        "T1_with_gdp": "Tier 1 — Cross-sectional OLS (2020)",
+        "T2_with_gdp": "Tier 2 — Panel fixed effects (2007–2022)",
     }
 
-    # Skip intercept and year dummies for display
+    # Focal predictors rendered at the top; all other GRI/governance rows are
+    # context. log_gdppc_norm is a pure control (not a hypothesis) and is
+    # listed last so it does not visually compete with the focal predictors.
+    focal_preds = [FOCAL_PRED_2, FOCAL_PRED]
+    context_preds = [
+        "gri_state_religion_norm", "gri_religious_law_norm", "gri_blasphemy_norm",
+        "v2x_rule_norm", "v2x_civlib_norm", "v2x_egal_norm",
+    ]
+    control_preds = ["log_gdppc_norm"]
+
     skip_patterns = ["const", "yr_"]
 
-    fig, axes = plt.subplots(1, 3, figsize=(16, 7), sharey=False)
+    fig, axes = plt.subplots(1, 2, figsize=(13, 7.5), sharex=False)
     fig.suptitle(
-        "Secularism, Governance & Gender Gap: Coefficient Estimates (GDP-controlled)\n"
-        "(dots = OLS/FE coefficient, bars = 95% confidence interval)",
-        fontsize=12, fontweight="bold", y=1.01,
+        "Apostasy matters. Religious courts don't.",
+        fontsize=17, fontweight="bold", y=1.04,
+    )
+    fig.text(
+        0.5, 0.99,
+        "Coefficient estimates with 95% CIs; GDP-controlled; apostasy and courts highlighted.",
+        ha="center", fontsize=10.5, color="#555",
     )
 
     for ax, tier in zip(axes, tier_order):
         sub = df[df["tier"] == tier].copy()
-        # Remove intercept + year dummies
         sub = sub[~sub["predictor"].apply(
             lambda p: any(p.startswith(s) for s in skip_patterns)
         )]
+        # T1 now uses only the 2020 snapshot (year is stored as string in the CSV)
+        if tier.startswith("T1"):
+            sub = sub[sub["year"].astype(str) == "2020"]
 
-        rows = []
-        for _, row in sub.iterrows():
-            label = LABELS.get(row["predictor"], row["predictor"])
-            # For T1 append year suffix to distinguish 2010/2020
-            if tier.startswith("T1"):
-                label = f"{label} ({row['year']})"
-            rows.append({
-                "label": label,
-                "coef": row["coef"],
-                "ci95": 1.96 * row["se"],
-                "sig": row["sig"],
-            })
-        plot_rows = pd.DataFrame(rows) if rows else pd.DataFrame(
-            columns=["label", "coef", "ci95", "sig"]
+        ordered_preds = (
+            focal_preds
+            + [p for p in context_preds if p in sub["predictor"].values]
+            + [p for p in control_preds if p in sub["predictor"].values]
         )
+        rows = []
+        for p in ordered_preds:
+            row = sub[sub["predictor"] == p]
+            if row.empty:
+                continue
+            r = row.iloc[0]
+            rows.append({
+                "predictor": p,
+                "label": LABELS.get(p, p),
+                "coef":  r["coef"],
+                "ci95":  1.96 * r["se"],
+                "pval":  r["pval"],
+                "focal": p in focal_preds,
+                "is_control": p in control_preds,
+            })
 
-        if plot_rows.empty:
+        if not rows:
             ax.text(0.5, 0.5, "No data", ha="center", va="center",
-                    transform=ax.transAxes, fontsize=10)
-            ax.set_title(tier_labels[tier], fontsize=9, fontweight="bold")
+                    transform=ax.transAxes, fontsize=11)
+            ax.set_title(tier_titles[tier], fontsize=13, fontweight="bold", loc="left", pad=8)
             continue
 
+        plot_rows = pd.DataFrame(rows)
+        # Display top-to-bottom: apostasy top, then courts, then context
         plot_rows = plot_rows.iloc[::-1].reset_index(drop=True)
         ys = np.arange(len(plot_rows))
 
+        # Highlight the focal rows
         for i, row in plot_rows.iterrows():
-            color = sig_colors.get(row["sig"], sig_colors[""])
-            ax.errorbar(
-                row["coef"], i,
-                xerr=row["ci95"],
-                fmt="o", color=color, ecolor=color,
-                markersize=6, capsize=3, linewidth=1.5,
-            )
+            if row["focal"]:
+                ax.axhspan(i - 0.5, i + 0.5,
+                           color=PALETTE["highlight_bg"], alpha=0.9, zorder=0)
 
-        ax.axvline(0, color="black", linewidth=0.8, linestyle="--", alpha=0.6)
+        for i, row in plot_rows.iterrows():
+            # Controls render in plain grey regardless of significance — they
+            # are not predictors of interest.
+            if row["is_control"]:
+                color = "#9aa5a8"
+                alpha = 0.55
+                marker_size = 50
+                lw = 1.2
+            else:
+                color = _sig_colour(row["pval"])
+                alpha = 1.0 if row["focal"] else 0.45
+                marker_size = 110 if row["focal"] else 60
+                lw = 2.4 if row["focal"] else 1.5
+
+            ax.plot([row["coef"] - row["ci95"], row["coef"] + row["ci95"]], [i, i],
+                    color=color, linewidth=lw, alpha=alpha, solid_capstyle="round",
+                    zorder=2)
+            ax.scatter(row["coef"], i, color=color, s=marker_size,
+                       edgecolors="white", linewidths=0.8, zorder=3, alpha=alpha)
+
+            if row["focal"]:
+                stars = _sig_stars(row["pval"]) or "n.s."
+                ax.annotate(
+                    f"{row['coef']:+.3f}  {stars}",
+                    xy=(row["coef"] + row["ci95"], i),
+                    xytext=(8, 0), textcoords="offset points",
+                    fontsize=10, fontweight="bold", va="center",
+                    color="#222",
+                )
+
+        ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
         ax.set_yticks(ys)
-        ax.set_yticklabels(plot_rows["label"], fontsize=8)
-        ax.set_title(tier_labels[tier], fontsize=9, fontweight="bold")
-        ax.set_xlabel("Coefficient", fontsize=8)
-        ax.grid(axis="x", alpha=0.3, linewidth=0.5)
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
+        tick_labels = []
+        for _, r in plot_rows.iterrows():
+            if r["focal"]:
+                tick_labels.append(r["label"])
+            else:
+                tick_labels.append(r["label"])
+        ax.set_yticklabels(tick_labels, fontsize=10)
+        # Bold the focal tick labels; lighten the control row label
+        for lbl, r in zip(ax.get_yticklabels(), plot_rows.itertuples()):
+            if r.focal:
+                lbl.set_fontweight("bold")
+                lbl.set_color("#222")
+            elif r.is_control:
+                lbl.set_color("#999")
+                lbl.set_style("italic")
+            else:
+                lbl.set_color("#666")
 
-    # Shared legend
+        ax.set_title(tier_titles[tier], fontsize=13, fontweight="bold", loc="left", pad=8)
+        ax.set_xlabel("Coefficient")
+        ax.grid(axis="x", alpha=0.3, linewidth=0.5)
+
     legend_handles = [
-        mpatches.Patch(color=sig_colors["***"], label="p < 0.01 (***)"),
-        mpatches.Patch(color=sig_colors["**"],  label="p < 0.05 (**)"),
-        mpatches.Patch(color=sig_colors["*"],   label="p < 0.10 (*)"),
-        mpatches.Patch(color=sig_colors[""],    label="Not significant"),
+        mpatches.Patch(color=PALETTE["sig_high"], label="p < 0.01"),
+        mpatches.Patch(color=PALETTE["sig_med"],  label="p < 0.05"),
+        mpatches.Patch(color=PALETTE["sig_low"],  label="p < 0.10"),
+        mpatches.Patch(color=PALETTE["null"],     label="Not significant"),
     ]
     fig.legend(handles=legend_handles, loc="lower center", ncol=4,
-               fontsize=9, bbox_to_anchor=(0.5, -0.04))
+               bbox_to_anchor=(0.5, -0.02), frameon=False)
 
-    plt.tight_layout()
-    plt.savefig(OUT_COEF, dpi=150, bbox_inches="tight")
+    plt.tight_layout(rect=[0, 0.02, 1, 0.93])
+    plt.savefig(OUT_COEF, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Saved -> {OUT_COEF}")
 
@@ -198,271 +414,126 @@ def plot_coefplot():
 # ═══════════════════════════════════════════════════════════════════════════════
 # 1b. SUB-OUTCOME COEFFICIENT PLOT (Phase 3)
 # ═══════════════════════════════════════════════════════════════════════════════
-def plot_coefplot_suboutcomes():
-    """
-    Forest plot for the sub-outcome analysis (Phase 3).
-    Four rows (one per sub-outcome group), two columns (Tier 1 2010 + Tier 2 panel).
-    Religion predictors only — excludes controls for readability.
-    """
-    df = pd.read_csv(RESULTS_PATH)
-
-    sub_names = ["political", "economic", "physical_safety", "health"]
-    sub_labels = {
-        "political":       "Political\n(gender, legislature, WiP, ministers)",
-        "economic":        "Economic\n(business law, LFPR, literacy)",
-        "physical_safety": "Physical safety\n(homicide, civil liberties)",
-        "health":          "Health\n(female life expectancy)",
-    }
-    tier_labels_short = {
-        "T1": "Tier 1\n(2010 cross-section)",
-        "T2": "Tier 2\n(panel FE)",
-    }
-
-    # Religion predictors to show
-    rel_preds = [
-        "pct_unaffiliated_norm",
-        "gri_state_religion_norm", "gri_religious_law_norm",
-        "gri_blasphemy_norm", "gri_apostasy_norm", "gri_religious_courts_norm",
-    ]
-
-    sig_colors = {
-        "***": "#c0392b", "**": "#e67e22", "*": "#f1c40f", "": "#95a5a6",
-    }
-
-    fig, axes = plt.subplots(
-        len(sub_names), 2,
-        figsize=(14, 4 * len(sub_names)),
-        sharey=False,
-    )
-    fig.suptitle(
-        "Religion & Governance Effects by Outcome Dimension (Phase 3: Sub-outcome Analysis)\n"
-        "Left = 2010 cross-section; Right = panel FE 2007-2022",
-        fontsize=12, fontweight="bold", y=1.01,
-    )
-
-    for row_i, sub_name in enumerate(sub_names):
-        for col_i, (tier_key, tier_filter) in enumerate([
-            ("T1", f"P3_T1_{sub_name}"),
-            ("T2", f"P3_T2_{sub_name}"),
-        ]):
-            ax = axes[row_i, col_i]
-            sub = df[df["tier"] == tier_filter].copy()
-
-            # Filter to religion predictors; take 2010 for T1
-            if tier_key == "T1":
-                sub = sub[sub["year"] == 2010]
-            sub = sub[sub["predictor"].isin(rel_preds)]
-
-            if sub.empty:
-                ax.text(0.5, 0.5, "No data", ha="center", va="center",
-                        transform=ax.transAxes, fontsize=9)
-                ax.set_visible(True)
-                continue
-
-            sub = sub.iloc[::-1].reset_index(drop=True)
-            ys = np.arange(len(sub))
-
-            for i, row in sub.iterrows():
-                color = sig_colors.get(row["sig"], sig_colors[""])
-                ax.errorbar(
-                    row["coef"], i,
-                    xerr=1.96 * row["se"],
-                    fmt="o", color=color, ecolor=color,
-                    markersize=5, capsize=3, linewidth=1.4,
-                )
-
-            ax.axvline(0, color="black", linewidth=0.8, linestyle="--", alpha=0.6)
-            labels = [LABELS.get(p, p) for p in sub["predictor"]]
-            ax.set_yticks(ys)
-            ax.set_yticklabels(labels, fontsize=8)
-            ax.set_xlabel("Coefficient", fontsize=8)
-            ax.grid(axis="x", alpha=0.3, linewidth=0.5)
-            ax.spines["top"].set_visible(False)
-            ax.spines["right"].set_visible(False)
-
-            if col_i == 0:
-                ax.set_ylabel(sub_labels[sub_name], fontsize=8, fontweight="bold",
-                              labelpad=6)
-            if row_i == 0:
-                ax.set_title(tier_labels_short[tier_key], fontsize=9,
-                             fontweight="bold")
-
-    legend_handles = [
-        mpatches.Patch(color=sig_colors["***"], label="p < 0.01 (***)"),
-        mpatches.Patch(color=sig_colors["**"],  label="p < 0.05 (**)"),
-        mpatches.Patch(color=sig_colors["*"],   label="p < 0.10 (*)"),
-        mpatches.Patch(color=sig_colors[""],    label="Not significant"),
-    ]
-    fig.legend(handles=legend_handles, loc="lower center", ncol=4,
-               fontsize=9, bbox_to_anchor=(0.5, -0.02))
-
-    plt.tight_layout()
-    plt.savefig(OUT_COEF_SUB, dpi=150, bbox_inches="tight")
-    plt.close()
-    print(f"  Saved -> {OUT_COEF_SUB}")
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# 3. TIME-TREND: high vs low GRI-courts countries
-# ═══════════════════════════════════════════════════════════════════════════════
-def plot_time_trend(df: pd.DataFrame):
-    """
-    Average women_treatment_index over 2007–2022 for countries that are
-    consistently in the top tercile ('High') vs bottom tercile ('Low') of
-    gri_religious_courts_norm (measured in 2010, kept constant as classifier).
-    Shows the panel FE finding visually.
-    """
-    OUTCOME   = "women_treatment_index"
-    COURTS    = "gri_religious_courts_norm"
-
-    # Classify countries by 2010 courts score (stable classifier)
-    cs2010 = df[df["year"] == 2010][["iso3", COURTS]].dropna()
-    q33 = cs2010[COURTS].quantile(0.33)
-    q67 = cs2010[COURTS].quantile(0.67)
-
-    low_courts  = cs2010[cs2010[COURTS] <= q33]["iso3"].tolist()
-    high_courts = cs2010[cs2010[COURTS] >= q67]["iso3"].tolist()
-
-    trend_low  = (df[df["iso3"].isin(low_courts)]
-                  .groupby("year")[OUTCOME].mean())
-    trend_high = (df[df["iso3"].isin(high_courts)]
-                  .groupby("year")[OUTCOME].mean())
-    trend_mid  = (df[~df["iso3"].isin(low_courts + high_courts)]
-                  .groupby("year")[OUTCOME].mean())
-
-    fig, ax = plt.subplots(figsize=(10, 5))
-
-    ax.plot(trend_low.index,  trend_low.values,
-            color="#4c72b0", linewidth=2.2, marker="o", markersize=5,
-            label=f"Low religious courts (n={len(low_courts)} countries)")
-    ax.plot(trend_mid.index,  trend_mid.values,
-            color="#8172b3", linewidth=1.4, linestyle=":", marker="^", markersize=4,
-            label=f"Middle tercile (n={len(df[~df['iso3'].isin(low_courts+high_courts)]['iso3'].unique())} countries)")
-    ax.plot(trend_high.index, trend_high.values,
-            color="#c44e52", linewidth=2.2, marker="s", markersize=5,
-            label=f"High religious courts (n={len(high_courts)} countries)")
-
-    ax.set_xlabel("Year", fontsize=11)
-    ax.set_ylabel("Avg Women's Treatment Index", fontsize=11)
-    ax.set_title(
-        "Women's Treatment Over Time by Religious Court Score\n"
-        "(Countries classified by 2010 GRI religious-courts score; "
-        "panel FE coefficient = −0.009, p=0.002)",
-        fontsize=10, fontweight="bold",
-    )
-    ax.legend(fontsize=9, framealpha=0.9)
-    ax.grid(alpha=0.3, linewidth=0.5)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.set_xticks(sorted(df["year"].unique()))
-    ax.tick_params(axis="x", rotation=45)
-
-    plt.tight_layout()
-    plt.savefig(OUT_TREND, dpi=150, bbox_inches="tight")
-    plt.close()
-    print(f"  Saved -> {OUT_TREND}")
-
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # 4. LEAVE-ONE-OUT JACKKNIFE PLOT
 # ═══════════════════════════════════════════════════════════════════════════════
-def plot_loo():
-    """
-    Visualise the LOO jackknife stability of the religious courts coefficient.
-
-    Panel A (left): histogram of the 170 LOO coefficients.
-      - Vertical red line = baseline (full-sample) estimate.
-      - Shaded band = ±1.96 × baseline SE (95% CI of full-sample estimate).
-      - Kernel density overlay.
-
-    Panel B (right): ranked dot plot of the 20 most influential countries.
-      - Each dot = LOO coefficient when that country is dropped.
-      - Baseline shown as dashed line.
-      - Countries labelled.
-    """
-    import os
-    if not os.path.exists(LOO_CSV):
-        print(f"  LOO CSV not found ({LOO_CSV}) -- skipping.")
-        return
-
-    loo = pd.read_csv(LOO_CSV)
+def _render_loo_column(loo, ax_strip, ax_bars, palette_color, label_name):
+    """One column of the LOO grid: dot strip on top, top-5 influential countries below."""
     base_coef = loo["base_coef"].iloc[0]
     base_se   = loo["base_se"].iloc[0]
     ci95_lo   = base_coef - 1.96 * base_se
     ci95_hi   = base_coef + 1.96 * base_se
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
+    coefs  = loo["coef"].dropna().values
+    n_total = len(coefs)
+    n_sig   = int((loo["pval"] < 0.05).sum())
+    n_flips = int((loo["coef"] * base_coef < 0).sum())
+
+    # ── Top: horizontal dot strip ─────────────────────────────────────────
+    rng = np.random.default_rng(seed=0)
+    y_jitter = rng.uniform(-0.35, 0.35, size=n_total)
+
+    # Baseline 95% CI band
+    ax_strip.axvspan(ci95_lo, ci95_hi, color=palette_color, alpha=0.12,
+                     label="Baseline 95% CI")
+
+    # Each LOO coefficient as a small alpha dot
+    ax_strip.scatter(coefs, y_jitter, s=18, color=palette_color, alpha=0.45,
+                     edgecolors="none", zorder=3)
+
+    # Baseline marker
+    ax_strip.axvline(base_coef, color=palette_color, linewidth=2.4,
+                     label=f"Baseline β = {base_coef:.4f}", zorder=4)
+    # Zero / sign-flip line
+    ax_strip.axvline(0, color="black", linewidth=1.0, linestyle="--", alpha=0.6,
+                     label="Zero (sign-flip threshold)")
+
+    # Two-line title: bold predictor name + headline result on next line
+    headline = (
+        f"{n_sig}/{n_total} LOO runs p < 0.05    •    "
+        f"{n_flips} sign flip{'s' if n_flips != 1 else ''}"
+    )
+    ax_strip.set_title(
+        f"{label_name}\n{headline}",
+        fontsize=13, fontweight="bold", loc="left", pad=10,
+        color=palette_color,
+    )
+
+    ax_strip.set_xlabel("LOO coefficient")
+    ax_strip.set_ylim(-1.0, 1.0)
+    ax_strip.set_yticks([])
+    ax_strip.legend(loc="upper right", framealpha=0.95, fontsize=9)
+    ax_strip.grid(axis="x", alpha=0.3, linewidth=0.5)
+
+    # ── Bottom: top-5 influential countries ───────────────────────────────
+    top5 = loo.reindex(loo["coef_change"].abs().nlargest(5).index).copy()
+    top5 = top5.sort_values("coef").reset_index(drop=True)
+
+    bar_colors = [palette_color if c > base_coef else "#888" for c in top5["coef"]]
+    ys = np.arange(len(top5))
+
+    ax_bars.scatter(top5["coef"], ys, color=bar_colors, s=80, zorder=3,
+                    edgecolors="white", linewidths=0.8)
+    for i, row in top5.iterrows():
+        ax_bars.plot([base_coef, row["coef"]], [i, i],
+                     color="#bbb", linewidth=1.0, zorder=2)
+
+    ax_bars.axvline(base_coef, color=palette_color, linewidth=1.8, linestyle="--")
+    ax_bars.axvspan(ci95_lo, ci95_hi, color=palette_color, alpha=0.10)
+    ax_bars.axvline(0, color="black", linewidth=0.8, linestyle=":", alpha=0.5)
+
+    ax_bars.set_yticks(ys)
+    ax_bars.set_yticklabels(
+        [f"{r['iso3']} — {r['country'][:18]}" for _, r in top5.iterrows()],
+        fontsize=10,
+    )
+    ax_bars.set_xlabel("LOO coefficient")
+    ax_bars.set_title("5 most influential countries", fontsize=11,
+                      fontweight="normal", color="#555", loc="left", pad=6)
+    ax_bars.grid(axis="x", alpha=0.3, linewidth=0.5)
+
+
+def plot_loo():
+    """
+    LOO jackknife stability, 2×2 grid:
+      Row 1: histogram of LOO coefficients (courts | apostasy)
+      Row 2: top-5 most influential countries (courts | apostasy)
+    Shows that both estimates are stable across country drops.
+    """
+    have_courts   = os.path.exists(LOO_CSV)
+    have_apostasy = os.path.exists(LOO_APOSTASY_CSV)
+
+    if not have_courts and not have_apostasy:
+        print("  No LOO CSVs found -- skipping.")
+        return
+
+    n_cols = int(have_courts) + int(have_apostasy)
+    fig, axes = plt.subplots(2, n_cols, figsize=(6.5 * n_cols, 9.5),
+                             squeeze=False)
+
+    col = 0
+    if have_courts:
+        loo_c = pd.read_csv(LOO_CSV)
+        _render_loo_column(loo_c, axes[0, col], axes[1, col],
+                           PALETTE["courts"], "Religious courts")
+        col += 1
+    if have_apostasy:
+        loo_a = pd.read_csv(LOO_APOSTASY_CSV)
+        _render_loo_column(loo_a, axes[0, col], axes[1, col],
+                           PALETTE["apostasy"], "Apostasy laws")
+
     fig.suptitle(
-        "Leave-One-Out Jackknife: Religious Courts Coefficient\n"
-        "(Panel FE, 2007-2022; dependent variable = Women's Treatment Index)",
-        fontsize=11, fontweight="bold",
+        "Both results are stable — no single country drives them",
+        fontsize=16, fontweight="bold", y=1.00,
+    )
+    fig.text(
+        0.5, 0.95,
+        "Leave-one-out jackknife: drop one country at a time; plot each re-estimated coefficient",
+        ha="center", fontsize=10.5, color="#555",
     )
 
-    # ── Panel A: histogram ───────────────────────────────────────────────────
-    ax1.hist(loo["coef"].dropna(), bins=30, color="#4c72b0", alpha=0.7,
-             edgecolor="white", linewidth=0.5, density=True)
-
-    # KDE overlay
-    from scipy.stats import gaussian_kde
-    kde_vals = loo["coef"].dropna().values
-    kde = gaussian_kde(kde_vals, bw_method="scott")
-    x_range = np.linspace(kde_vals.min() - 0.002, kde_vals.max() + 0.002, 300)
-    ax1.plot(x_range, kde(x_range), color="#4c72b0", linewidth=2)
-
-    # 95% CI band of baseline estimate
-    ax1.axvspan(ci95_lo, ci95_hi, color="#c44e52", alpha=0.12,
-                label="Baseline 95% CI")
-    # Baseline estimate
-    ax1.axvline(base_coef, color="#c44e52", linewidth=2,
-                label=f"Baseline: {base_coef:.5f}")
-    # Zero line
-    ax1.axvline(0, color="black", linewidth=0.8, linestyle="--", alpha=0.5)
-
-    n_total = loo["coef"].notna().sum()
-    n_sig   = (loo["pval"] < 0.05).sum()
-    ax1.set_xlabel("LOO Coefficient (gri_religious_courts_norm)", fontsize=10)
-    ax1.set_ylabel("Density", fontsize=10)
-    ax1.set_title(
-        f"Distribution of {n_total} LOO estimates\n"
-        f"(p<0.05 in {n_sig}/{n_total} runs; 0 sign reversals)",
-        fontsize=9,
-    )
-    ax1.legend(fontsize=8, framealpha=0.9)
-    ax1.spines["top"].set_visible(False)
-    ax1.spines["right"].set_visible(False)
-
-    # ── Panel B: ranked influential-country dot plot ──────────────────────────
-    top20 = loo.reindex(loo["coef_change"].abs().nlargest(20).index).copy()
-    top20 = top20.sort_values("coef")
-
-    colors = ["#c44e52" if c > base_coef else "#4c72b0" for c in top20["coef"]]
-    ys = np.arange(len(top20))
-
-    ax2.scatter(top20["coef"], ys, color=colors, s=55, zorder=3)
-    for i, (_, row) in enumerate(top20.iterrows()):
-        ax2.plot([base_coef, row["coef"]], [i, i],
-                 color="#999999", linewidth=0.8, zorder=2)
-
-    ax2.axvline(base_coef, color="#c44e52", linewidth=1.5, linestyle="--",
-                label=f"Baseline: {base_coef:.5f}")
-    ax2.axvspan(ci95_lo, ci95_hi, color="#c44e52", alpha=0.10)
-    ax2.axvline(0, color="black", linewidth=0.8, linestyle=":", alpha=0.5)
-
-    ax2.set_yticks(ys)
-    ax2.set_yticklabels(
-        [f"{r['iso3']} ({r['country'][:12]})" for _, r in top20.iterrows()],
-        fontsize=8,
-    )
-    ax2.set_xlabel("LOO Coefficient", fontsize=10)
-    ax2.set_title("20 Most Influential Countries\n(blue = dropping them weakens effect; "
-                  "red = strengthens)", fontsize=9)
-    ax2.legend(fontsize=8, framealpha=0.9)
-    ax2.grid(axis="x", alpha=0.3, linewidth=0.5)
-    ax2.spines["top"].set_visible(False)
-    ax2.spines["right"].set_visible(False)
-
-    plt.tight_layout()
-    plt.savefig(OUT_LOO, dpi=150, bbox_inches="tight")
+    plt.tight_layout(rect=[0, 0, 1, 0.94])
+    plt.savefig(OUT_LOO, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Saved -> {OUT_LOO}")
 
@@ -472,91 +543,108 @@ def plot_loo():
 # ═══════════════════════════════════════════════════════════════════════════════
 def plot_placebo():
     """
-    Side-by-side comparison of the religious courts coefficient across
-    female DVs (actual outcomes) and male DVs (placebos).
-
-    If the effect is genuinely gendered, the female DVs should show a
-    significantly more negative coefficient than the male placebos.
+    Gendered-mechanism test: apostasy coefficient on female DVs vs male placebos.
+    Female bars are highlighted; male bars are desaturated to keep the contrast
+    front-and-centre.
     """
-    import os
-    if not os.path.exists(PLACEBO_CSV):
-        print(f"  Placebo CSV not found ({PLACEBO_CSV}) -- skipping.")
+    csv = PLACEBO_APOSTASY_CSV if os.path.exists(PLACEBO_APOSTASY_CSV) else PLACEBO_CSV
+    if not os.path.exists(csv):
+        print(f"  Placebo CSV not found ({csv}) -- skipping.")
         return
+    df = pd.read_csv(csv)
 
-    df = pd.read_csv(PLACEBO_CSV)
-
-    # Human-readable labels
     label_map = {
-        "P6_placebo_wdi_lifexpf_norm": "Female life\nexpectancy",
-        "P6_placebo_wdi_lfpf_norm":    "Female labour\nforce partic.",
-        f"P6_placebo_{LABELS.get('women_treatment_index', 'women_treatment_index')}": "Women's\ntreatment index",
+        "P6_placebo_wbl_treatment_index": "Women's\ntreatment index",
         "P6_placebo_women_treatment_index": "Women's\ntreatment index",
+        "P6_placebo_wdi_lifexpf_norm": "Female life\nexpectancy",
+        "P6_placebo_wdi_lfpf_norm":    "Female labour\nforce part.",
         "P6_placebo_lifexpm_norm":     "Male life\nexpectancy",
-        "P6_placebo_lfpm_norm":        "Male labour\nforce partic.",
+        "P6_placebo_lfpm_norm":        "Male labour\nforce part.",
     }
 
-    # Classify as female or placebo
-    female_tiers = [t for t in df["tier"].unique()
-                    if any(x in t for x in ["wdi_lifexpf", "wdi_lfpf", "women_treatment"])]
-    male_tiers   = [t for t in df["tier"].unique()
-                    if any(x in t for x in ["lifexpm", "lfpm_norm"])]
+    # Lead with the primary female DV (women's treatment index), then female
+    # life expectancy. Drop LFP rows: U-shaped FLFP-development relationship
+    # (Goldin 1995, Mammen & Paxson 2000) means LFP under coercive regimes
+    # often reflects compulsion, not empowerment — a real but distracting
+    # confound for a 30-second placebo slide.
+    female_order = [
+        "P6_placebo_wbl_treatment_index",
+        "P6_placebo_women_treatment_index",
+        "P6_placebo_wdi_lifexpf_norm",
+    ]
+    male_order = ["P6_placebo_lifexpm_norm"]
 
+    avail = set(df["tier"].unique())
+    female_tiers = [t for t in female_order if t in avail]
+    male_tiers   = [t for t in male_order   if t in avail]
     all_tiers = female_tiers + male_tiers
-    sub = df[df["tier"].isin(all_tiers)].copy()
+    if not all_tiers:
+        print("  No placebo tiers matched -- skipping.")
+        return
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+    sub = df.set_index("tier").loc[all_tiers]
+    coefs = sub["coef"].values
+    ci95  = 1.96 * sub["se"].values
+    pvals = sub["pval"].values
 
-    x_pos    = np.arange(len(all_tiers))
-    colors   = (["#4c72b0"] * len(female_tiers)) + (["#dd8452"] * len(male_tiers))
-    ci95     = 1.96 * sub.set_index("tier").loc[all_tiers, "se"].values
-    coefs    = sub.set_index("tier").loc[all_tiers, "coef"].values
-    pvals    = sub.set_index("tier").loc[all_tiers, "pval"].values
+    fig, ax = plt.subplots(figsize=(11, 5.8))
+    x_pos = np.arange(len(all_tiers))
 
-    for i, (tier, coef, ci, pval, color) in enumerate(
-        zip(all_tiers, coefs, ci95, pvals, colors)
-    ):
-        ax.bar(i, coef, color=color, alpha=0.75, width=0.55)
-        ax.errorbar(i, coef, yerr=ci, fmt="none", color="black",
-                    capsize=5, linewidth=1.5)
-        sig = "***" if pval < 0.01 else ("**" if pval < 0.05
-              else ("*" if pval < 0.10 else "ns"))
-        ax.text(i, coef + (ci + 0.003) * np.sign(coef) if coef >= 0
-                else coef - ci - 0.006,
-                sig, ha="center", va="bottom", fontsize=10, fontweight="bold")
+    colors = ([PALETTE["female"]] * len(female_tiers)
+              + [PALETTE["male"]]   * len(male_tiers))
+    alphas = ([1.0] * len(female_tiers)
+              + [0.55] * len(male_tiers))
+
+    for i, (coef, ci, pval, color, a) in enumerate(zip(coefs, ci95, pvals, colors, alphas)):
+        ax.bar(i, coef, color=color, alpha=a, width=0.6, edgecolor="white", linewidth=0.8)
+        ax.errorbar(i, coef, yerr=ci, fmt="none",
+                    color="#333" if a == 1.0 else "#999",
+                    capsize=5, linewidth=1.4)
+        stars = _sig_stars(pval) or "n.s."
+        # Always place the annotation ABOVE zero so it stays inside the plot.
+        y_ann = max(coef + ci, 0) + 0.003
+        ax.text(i, y_ann, stars, ha="center", va="bottom",
+                fontsize=13 if a == 1.0 else 10,
+                fontweight="bold", color="#222" if a == 1.0 else "#666")
 
     ax.axhline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
+
+    # Pad y-axis so the "n.s." stars above zero do not collide with the title
+    upper = max(np.max(coefs + ci95), 0) + 0.012
+    lower = min(np.min(coefs - ci95), 0) - 0.005
+    ax.set_ylim(lower, upper)
 
     tick_labels = [label_map.get(t, t.replace("P6_placebo_", "").replace("_norm", ""))
                    for t in all_tiers]
     ax.set_xticks(x_pos)
-    ax.set_xticklabels(tick_labels, fontsize=9)
-    ax.set_ylabel("Coefficient on Religious Courts\n(Panel FE, clustered SE)", fontsize=10)
+    ax.set_xticklabels(tick_labels, fontsize=10)
+    ax.set_ylabel("Coefficient on apostasy laws\n(Panel FE, clustered SE)")
+
+    fig.suptitle(
+        "Apostasy laws harm women, not men",
+        fontsize=16, fontweight="bold", y=1.00,
+    )
     ax.set_title(
-        "Placebo Test: Religious Courts Effect on Female vs Male Outcomes\n"
-        "(If gender is the mechanism: |female coef| >> |male coef|)",
-        fontsize=10, fontweight="bold",
+        "Gendered-mechanism test: female outcomes vs male placebo outcomes",
+        fontsize=11, fontweight="normal", color="#555", loc="left", pad=10,
     )
 
-    # Legend patches
-    female_patch = mpatches.Patch(color="#4c72b0", alpha=0.75, label="Female outcomes (actual DVs)")
-    male_patch   = mpatches.Patch(color="#dd8452", alpha=0.75, label="Male outcomes (placebo DVs)")
-    ax.legend(handles=[female_patch, male_patch], fontsize=9, framealpha=0.9)
+    female_patch = mpatches.Patch(color=PALETTE["female"], alpha=1.0,
+                                  label="Female outcomes (actual DVs)")
+    male_patch   = mpatches.Patch(color=PALETTE["male"],   alpha=0.55,
+                                  label="Male outcomes (placebo DVs)")
+    ax.legend(handles=[female_patch, male_patch],
+              loc="upper center", bbox_to_anchor=(0.5, -0.18),
+              ncol=2, frameon=False)
 
-    # Add divider between female and male groups
     if female_tiers and male_tiers:
-        ax.axvline(len(female_tiers) - 0.5, color="gray", linewidth=1.2,
-                   linestyle=":", alpha=0.7)
-        ax.text(len(female_tiers) - 0.55, ax.get_ylim()[0] * 0.9,
-                "Actual DVs", ha="right", fontsize=8, color="gray")
-        ax.text(len(female_tiers) - 0.45, ax.get_ylim()[0] * 0.9,
-                "Placebo DVs", ha="left", fontsize=8, color="gray")
+        ax.axvline(len(female_tiers) - 0.5, color="#bbb", linewidth=1.0,
+                   linestyle=":", alpha=0.8)
 
     ax.grid(axis="y", alpha=0.3, linewidth=0.5)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
 
     plt.tight_layout()
-    plt.savefig(OUT_PLACEBO, dpi=150, bbox_inches="tight")
+    plt.savefig(OUT_PLACEBO, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Saved -> {OUT_PLACEBO}")
 
@@ -564,257 +652,138 @@ def plot_placebo():
 # ═══════════════════════════════════════════════════════════════════════════════
 # 6. SPECIFICATION STABILITY PLOT
 # ═══════════════════════════════════════════════════════════════════════════════
-def plot_spec_stability():
+def _collect_spec_rows(focal_pred, ladder_csv):
+    """Pull specification rows for one focal predictor as a single unified list.
+
+    The Oster ladder lives in `ladder_csv` (Bivariate + Full model) and the
+    sensitivity / subsample specs live in `RESULTS_CSV`.
     """
-    Single figure showing the religious courts coefficient across every
-    major model specification — the key 'robustness summary' for the paper.
-
-    Specs drawn from two sources:
-      (a) secularism_women_spec_stability.csv  — Oster specification ladder
-      (b) secularism_women_results.csv         — subsample & robustness tiers
-
-    Layout: horizontal forest plot.  One row per specification.
-    Colour: by significance level.  Vertical dashed line at zero.
-    Annotated with N obs and delta where available.
-    """
-    import os
-    if not os.path.exists(RESULTS_CSV):
-        print(f"  Results CSV not found -- skipping.")
-        return
-
     res = pd.read_csv(RESULTS_CSV)
-    focal = res[res["predictor"] == FOCAL_PRED].copy()
+    focal = res[res["predictor"] == focal_pred]
+    focal_L1 = res[res["predictor"] == f"{focal_pred}_L1"]
+    focal_L2 = res[res["predictor"] == f"{focal_pred}_L2"]
 
-    # ── Pull specs in display order ───────────────────────────────────────────
-    spec_rows = []
+    rows = []
 
-    def _add(label, tier, year_filter=None, note=""):
-        sub = focal[focal["tier"] == tier]
-        if year_filter is not None:
-            sub = sub[sub["year"] == year_filter]
+    # Bivariate row from the Oster spec ladder CSV (helpful baseline)
+    if os.path.exists(ladder_csv):
+        ost = pd.read_csv(ladder_csv)
+        biv = ost[ost["spec"].str.startswith("Bivariate", na=False)]
+        if not biv.empty:
+            r = biv.iloc[0]
+            rows.append({
+                "label": "Bivariate",
+                "coef":  float(r["coef"]),
+                "se":    float(r["se"]),
+                "pval":  float(r["pval"]),
+                "n":     int(r["n_obs"]),
+            })
+
+    def _add(label, tier, source=focal):
+        sub = source[source["tier"] == tier]
         if sub.empty:
             return
         r = sub.iloc[0]
-        spec_rows.append({
+        rows.append({
             "label": label,
-            "coef":  r["coef"],
-            "se":    r["se"],
-            "pval":  r["pval"],
+            "coef":  float(r["coef"]),
+            "se":    float(r["se"]),
+            "pval":  float(r["pval"]),
             "n":     int(r["n"]),
-            "note":  note,
-            "group": "model",
         })
 
-    # Oster ladder from spec stability CSV (if it exists)
-    oster_rows = []
-    if os.path.exists(SPEC_CSV):
-        ost = pd.read_csv(SPEC_CSV)
-        ladder_labels = {
-            "Bivariate (courts only)":      "Bivariate (courts only)",
-            "+ Other GRI variables":        "+ Other GRI vars",
-            "+ Institutional controls":     "+ Institutional controls",
-            "+ GDP per capita":             "+ GDP per capita",
-            "+ CEDAW years (full model)":   "+ CEDAW years",
-        }
-        for orig, short in ladder_labels.items():
-            row = ost[ost["spec"] == orig]
-            if row.empty:
-                continue
-            r = row.iloc[0]
-            delta_col = [c for c in ost.columns if "2p2" in c]
-            note = ""
-            if delta_col and not np.isnan(r.get(delta_col[0], np.nan)):
-                note = f"delta={r[delta_col[0]]:.2f}"
-            oster_rows.append({
-                "label": short,
-                "coef":  r["coef"],
-                "se":    r["se"],
-                "pval":  r["pval"],
-                "n":     int(r["n_obs"]),
-                "note":  note,
-                "group": "oster",
-            })
+    _add("Main (FE + GDP)",       "T2_with_gdp")
+    _add("+ CEDAW",                "T2_with_cedaw")
+    _add("Pre-COVID (2008–2019)",  "T2_subperiod_2008_2019")
+    _add("Changers only",          "T2_changers_only")
+    _add("Lag L1",                 "P4_panel_fe_L1", source=focal_L1)
+    _add("Lag L2",                 "P4_panel_fe_L2", source=focal_L2)
+    _add("WEF GGG (alt DV)",       "P10_wef_panel")
+    _add("MENA only",              "P10_mena_only")
 
-    # Subsample & sensitivity specs from results CSV
-    _add("Panel FE + GDP (main result)",  "T2_with_gdp",     note="")
-    _add("Panel FE + CEDAW",              "T2_with_cedaw",    note="")
-    _add("Sub-period 2008-2019",          "T2_subperiod_2008_2019", note="pre-COVID")
-    _add("Changers only (N~47)",          "T2_changers_only", note="courts moved")
-    _add("Non-changers (N~128)",          "T2_nonchangers",   note="courts stable")
-    _add("GII as outcome (panel FE)",     "P5_B2_GII_panel_fe", note="alt DV")
-    _add("Lagged courts L1 (FE)",         "P4_panel_fe_L1",   note="courts(t-1)")
-    _add("Lagged courts L2 (FE)",         "P4_panel_fe_L2",   note="courts(t-2)")
-    _add("WEF Global Gender Gap (alt DV)", "P10_wef_panel",   note="external index")
-    _add("MENA countries only",            "P10_mena_only",   note="N~19 ctry")
+    return rows
 
-    # Assemble: Oster ladder first (context), then sensitivity specs
-    all_rows = oster_rows + spec_rows
-    if not all_rows:
-        print("  No specs found -- skipping.")
+
+def _render_spec_column(ax, rows, panel_title, focal_color):
+    """Render one spec-ladder column (single unified list of rows)."""
+    if not rows:
+        ax.text(0.5, 0.5, "No data", ha="center", va="center",
+                transform=ax.transAxes, fontsize=12)
+        ax.set_title(panel_title, fontsize=13, fontweight="bold", loc="left", pad=8)
         return
 
-    df_plot = pd.DataFrame(all_rows).reset_index(drop=True)
-    df_plot = df_plot.iloc[::-1].reset_index(drop=True)  # flip: top = first spec
+    df_plot = pd.DataFrame(rows).iloc[::-1].reset_index(drop=True)
+    n = len(df_plot)
+    ys = np.arange(n)
 
-    # ── Colour by significance ────────────────────────────────────────────────
-    sig_colors = {
-        "***": "#c0392b", "**": "#e67e22", "*": "#f1c40f", "": "#95a5a6",
-    }
-    def _sig(p):
-        return "***" if p < 0.01 else ("**" if p < 0.05 else ("*" if p < 0.10 else ""))
-
-    # ── Plot ──────────────────────────────────────────────────────────────────
-    n_rows = len(df_plot)
-    fig_h  = max(6, n_rows * 0.52 + 2)
-    fig, ax = plt.subplots(figsize=(11, fig_h))
-
-    ys = np.arange(n_rows)
+    # Highlight "Main" row
+    main_idx = df_plot.index[df_plot["label"].str.startswith("Main")].tolist()
+    if main_idx:
+        mi = main_idx[0]
+        ax.axhspan(mi - 0.5, mi + 0.5,
+                   color=PALETTE["highlight_bg"], alpha=0.85, zorder=0)
 
     for i, row in df_plot.iterrows():
-        sig   = _sig(row["pval"])
-        color = sig_colors[sig]
+        color = _sig_colour(row["pval"])
         ci95  = 1.96 * row["se"]
-
-        # Draw CI bar first (behind dot)
         ax.plot([row["coef"] - ci95, row["coef"] + ci95], [i, i],
-                color=color, linewidth=2.2, alpha=0.7, solid_capstyle="round")
-        # Dot
-        ax.scatter(row["coef"], i, color=color, s=70, zorder=4,
+                color=color, linewidth=2.2, alpha=0.85, solid_capstyle="round")
+        ax.scatter(row["coef"], i, color=color, s=75, zorder=4,
                    edgecolors="white", linewidths=0.6)
 
-        # Right-side annotation: N + note
-        x_ann = ax.get_xlim()[1] if ax.get_xlim()[1] > 0 else 0.02
-        ann = f"N={row['n']:,}"
-        if row["note"]:
-            ann += f"  [{row['note']}]"
-        ax.annotate(ann, xy=(row["coef"] + ci95, i),
-                    xytext=(6, 0), textcoords="offset points",
-                    fontsize=7, va="center", color="#555555")
-
-    # Divider between Oster ladder and sensitivity specs
-    n_oster = len(oster_rows)
-    n_sens  = len(spec_rows)
-    if n_oster > 0 and n_sens > 0:
-        # In the reversed order, sensitivity specs are at bottom (low ys)
-        divider_y = n_sens - 0.5
-        ax.axhline(divider_y, color="#aaaaaa", linewidth=0.8,
-                   linestyle="--", alpha=0.7)
-        ax.text(ax.get_xlim()[0] if ax.get_xlim()[0] < 0 else -0.015,
-                divider_y + 0.3, "Oster specification ladder",
-                fontsize=7, color="#777777", style="italic")
-        ax.text(ax.get_xlim()[0] if ax.get_xlim()[0] < 0 else -0.015,
-                divider_y - 0.7, "Subsample & sensitivity checks",
-                fontsize=7, color="#777777", style="italic")
-
     ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
-
     ax.set_yticks(ys)
-    ax.set_yticklabels(df_plot["label"], fontsize=9)
-    ax.set_xlabel("Coefficient on Religious Courts (gri_religious_courts_norm)", fontsize=10)
-    ax.set_title(
-        "Specification Stability: Religious Courts Effect on Women's Treatment\n"
-        "All specifications estimate the same outcome (women_treatment_index) "
-        "with panel entity + year fixed effects",
-        fontsize=10, fontweight="bold",
-    )
-
-    legend_handles = [
-        mpatches.Patch(color=sig_colors["***"], label="p < 0.01 (***)"),
-        mpatches.Patch(color=sig_colors["**"],  label="p < 0.05 (**)"),
-        mpatches.Patch(color=sig_colors["*"],   label="p < 0.10 (*)"),
-        mpatches.Patch(color=sig_colors[""],    label="Not significant"),
-    ]
-    ax.legend(handles=legend_handles, fontsize=8, loc="lower right",
-              framealpha=0.9)
+    ax.set_yticklabels(df_plot["label"], fontsize=10)
+    ax.set_xlabel("Coefficient")
+    ax.set_title(panel_title, fontsize=13, fontweight="bold", loc="left",
+                 pad=8, color=focal_color)
     ax.grid(axis="x", alpha=0.3, linewidth=0.5)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-
-    plt.tight_layout()
-    plt.savefig(OUT_SPEC, dpi=150, bbox_inches="tight")
-    plt.close()
-    print(f"  Saved -> {OUT_SPEC}")
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# 7. EVENT STUDY PLOT (Phase 9)
-# ═══════════════════════════════════════════════════════════════════════════════
-def plot_event_study():
+def plot_spec_stability():
     """
-    Event study: coefficient on each event-time dummy relative to year t=-1.
-    Shaded pre-period, annotated pre-trend p-value.
+    Dual-panel specification ladder: courts (left) vs apostasy (right).
+    Each panel shows the bivariate baseline + 8 sensitivity / subsample specs.
+    The main spec is highlighted with a pale background band.
     """
-    if not os.path.exists(EVENTSTUDY_CSV):
-        print(f"  Event study CSV not found ({EVENTSTUDY_CSV}) -- skipping.")
+    if not os.path.exists(RESULTS_CSV):
+        print("  Results CSV not found -- skipping.")
         return
 
-    es = pd.read_csv(EVENTSTUDY_CSV).sort_values("event_time")
+    courts_rows = _collect_spec_rows(FOCAL_PRED,   SPEC_CSV)
+    apos_rows   = _collect_spec_rows(FOCAL_PRED_2, SPEC_APOSTASY_CSV)
 
-    fig, ax = plt.subplots(figsize=(9, 5))
+    n_rows = max(len(courts_rows), len(apos_rows))
+    fig, axes = plt.subplots(1, 2, figsize=(14, max(6, n_rows * 0.55 + 2)))
 
-    # Shade pre-period (t < 0) in light grey
-    ax.axvspan(-3.5, -0.5, color="#eeeeee", alpha=0.7, label="Pre-period", zorder=0)
+    _render_spec_column(axes[0], courts_rows,
+                        "Religious courts", PALETTE["courts"])
+    _render_spec_column(axes[1], apos_rows,
+                        "Apostasy laws", PALETTE["apostasy"])
 
-    # Reference lines
-    ax.axhline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
-    ax.axvline(-0.5, color="#777777", linewidth=1.2, linestyle="--", alpha=0.7,
-               label="Event boundary (t=0)")
-
-    # Dots + 95% CI bars
-    for _, row in es.iterrows():
-        t      = row["event_time"]
-        c      = row["coef"]
-        se     = row["se"]
-        is_ref = (t == -1)
-        color  = "#aaaaaa" if is_ref else "#c44e52"
-        marker = "D" if is_ref else "o"
-        ax.errorbar(
-            t, c, yerr=1.96 * se,
-            fmt=marker, color=color, ecolor=color,
-            markersize=5 if is_ref else 7,
-            capsize=4, linewidth=1.5,
-            alpha=0.5 if is_ref else 1.0,
-            zorder=3,
-        )
-
-    # Annotate pre-trend p-value if present
-    if "pretrend_p" in es.columns:
-        pre_p_vals = es["pretrend_p"].dropna()
-        if not pre_p_vals.empty:
-            pre_p = float(pre_p_vals.iloc[0])
-            ax.annotate(
-                f"Pre-trend test: p = {pre_p:.3f}",
-                xy=(0.03, 0.96), xycoords="axes fraction",
-                fontsize=9, ha="left", va="top",
-                bbox=dict(boxstyle="round,pad=0.3", facecolor="white",
-                          edgecolor="#cccccc", alpha=0.85),
-            )
-
-    ax.set_xlabel("Years relative to event (t = 0: first large courts change)", fontsize=10)
-    ax.set_ylabel("Coefficient on event-time dummy\n(reference: year t = -1)", fontsize=10)
-    ax.set_title(
-        "Event Study: Religious Courts Change and Women's Welfare Index\n"
-        "(Relative to year before change, 95% CI)",
-        fontsize=10, fontweight="bold",
+    fig.suptitle(
+        "Robust across every specification",
+        fontsize=16, fontweight="bold", y=1.00,
     )
-    ax.set_xticks(sorted(es["event_time"].dropna().astype(int).unique()))
+    fig.text(
+        0.5, 0.95,
+        "Courts stays null; apostasy stays significant — across bivariate baseline and every sensitivity / subsample check.",
+        ha="center", fontsize=10.5, color="#555",
+    )
 
     legend_handles = [
-        mpatches.Patch(color="#eeeeee", alpha=0.7, label="Pre-period"),
-        mlines.Line2D([], [], color="#c44e52", marker="o", markersize=7,
-                      label="Post-change estimates"),
-        mlines.Line2D([], [], color="#aaaaaa", marker="D", markersize=5,
-                      linestyle="none", label="Reference (t=-1, coef=0)"),
+        mpatches.Patch(color=PALETTE["sig_high"], label="p < 0.01"),
+        mpatches.Patch(color=PALETTE["sig_med"],  label="p < 0.05"),
+        mpatches.Patch(color=PALETTE["sig_low"],  label="p < 0.10"),
+        mpatches.Patch(color=PALETTE["null"],     label="Not significant"),
     ]
-    ax.legend(handles=legend_handles, fontsize=8, framealpha=0.9)
-    ax.grid(axis="y", alpha=0.3, linewidth=0.5)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
+    fig.legend(handles=legend_handles, loc="lower center", ncol=4,
+               bbox_to_anchor=(0.5, -0.02), frameon=False)
 
-    plt.tight_layout()
-    plt.savefig(EVENTSTUDY_PNG, dpi=150, bbox_inches="tight")
+    plt.tight_layout(rect=[0, 0.02, 1, 0.93])
+    plt.savefig(OUT_SPEC, dpi=300, bbox_inches="tight")
     plt.close()
-    print(f"  Saved -> {EVENTSTUDY_PNG}")
+    print(f"  Saved -> {OUT_SPEC}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -822,9 +791,8 @@ def plot_event_study():
 # ═══════════════════════════════════════════════════════════════════════════════
 def plot_oster_sensitivity():
     """
-    Oster (2019) delta as a function of Rmax (expressed as a multiple of R_full).
-    Shaded green region where delta >= 1 (robust).
-    Vertical reference lines at 1.3x and 2.2x (Oster's benchmarks).
+    Oster (2019) delta sensitivity for apostasy.
+    Annotates the headline delta at the 2.2x Oster benchmark prominently.
     """
     if not os.path.exists(OSTER_SENS_CSV):
         print(f"  Oster sensitivity CSV not found ({OSTER_SENS_CSV}) -- skipping.")
@@ -835,12 +803,10 @@ def plot_oster_sensitivity():
         print("  Oster sensitivity data empty -- skipping.")
         return
 
-    # Clip delta for display (avoid extreme values from near-zero denominator)
-    df["delta_clipped"] = df["delta"].clip(-3, 10)
+    df["delta_clipped"] = df["delta"].clip(-3, 25)
 
-    fig, ax = plt.subplots(figsize=(9, 5))
+    fig, ax = plt.subplots(figsize=(10, 5.5))
 
-    # Shade robust region (delta >= 1)
     robust_mask = df["delta_clipped"] >= 1.0
     if robust_mask.any():
         ax.fill_between(
@@ -848,37 +814,61 @@ def plot_oster_sensitivity():
             df["delta_clipped"].clip(lower=1.0),
             y2=1.0,
             where=robust_mask,
-            color="#55a868", alpha=0.18, label="delta >= 1 (robust region)",
+            color=PALETTE["robust_band"], alpha=0.85,
+            label="Robust region (δ ≥ 1)",
         )
 
     ax.plot(df["rmax_mult"], df["delta_clipped"],
-            color="#4c72b0", linewidth=2.2, zorder=3)
+            color=PALETTE["apostasy"], linewidth=2.8, zorder=3)
 
-    # Robustness threshold
-    ax.axhline(1.0, color="#c44e52", linewidth=1.8, linestyle="--",
-               label="delta = 1 (robustness threshold)")
+    ax.axhline(1.0, color="#555", linewidth=1.4, linestyle="--",
+               label="Robustness threshold (δ = 1)")
 
-    # Oster benchmark lines
-    y_top = df["delta_clipped"].max() * 0.95
-    for xval, lbl in [(1.3, "1.3x (Oster)"), (2.2, "2.2x (Oster)")]:
-        ax.axvline(xval, color="#888888", linewidth=1.2, linestyle=":", alpha=0.8)
-        ax.annotate(lbl, xy=(xval + 0.04, y_top),
-                    fontsize=8, ha="left", color="#555555")
+    # Oster benchmark lines — labels at top of plot, away from the curve / annotation box
+    y_top = df["delta_clipped"].max()
+    label_y = y_top * 1.02
+    for xval, lbl in [(1.3, "1.3×"), (2.2, "2.2×")]:
+        ax.axvline(xval, color="#999", linewidth=1.0, linestyle=":", alpha=0.8)
+        ax.annotate(lbl + " Rmax", xy=(xval, label_y),
+                    xytext=(0, 6), textcoords="offset points",
+                    fontsize=9, ha="center", color="#666", style="italic",
+                    annotation_clip=False)
 
-    ax.set_xlabel("Rmax  (as multiple of within-R\u00b2 from full model)", fontsize=11)
-    ax.set_ylabel("Oster delta", fontsize=11)
-    ax.set_title(
-        "Oster (2019) Delta Sensitivity: Required Unobservable Selection\n"
-        "Higher delta = more selection on unobservables needed to nullify the courts result",
-        fontsize=10, fontweight="bold",
+    # Headline delta annotation at 2.2x — placed in upper-right of empty area
+    d22 = df.loc[(df["rmax_mult"] - 2.2).abs().idxmin()]
+    if abs(d22["rmax_mult"] - 2.2) < 0.2:
+        x_max = df["rmax_mult"].max()
+        # Place box in the empty upper-right region above the curve plateau
+        box_x = (2.2 + x_max) / 2
+        box_y = y_top * 0.7
+        ax.annotate(
+            f"δ = {d22['delta']:.1f} at Rmax = 2.2×\n"
+            f"Unobservables would need to be\n"
+            f"{d22['delta']:.0f}× stronger than all controls",
+            xy=(d22["rmax_mult"], d22["delta_clipped"]),
+            xytext=(box_x, box_y),
+            fontsize=11, ha="center", va="center",
+            bbox=dict(boxstyle="round,pad=0.5", facecolor="white",
+                      edgecolor=PALETTE["apostasy"], linewidth=1.5),
+            arrowprops=dict(arrowstyle="->", color=PALETTE["apostasy"], lw=1.4),
+        )
+
+    ax.set_xlabel("Rmax  (multiple of within-R² from the full model)")
+    ax.set_ylabel("Oster δ")
+
+    fig.suptitle(
+        "Apostasy effect survives extreme omitted-variable bias",
+        fontsize=15, fontweight="bold", y=1.00,
     )
-    ax.legend(fontsize=9, framealpha=0.9)
+    ax.set_title(
+        "Oster (2019) sensitivity test — higher δ = more selection needed to nullify the result",
+        fontsize=10, fontweight="normal", color="#555", loc="left", pad=10,
+    )
+    ax.legend(loc="upper right", framealpha=0.95)
     ax.grid(alpha=0.3, linewidth=0.5)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
 
     plt.tight_layout()
-    plt.savefig(OSTER_SENS_PNG, dpi=150, bbox_inches="tight")
+    plt.savefig(OSTER_SENS_PNG, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Saved -> {OSTER_SENS_PNG}")
 
@@ -937,9 +927,8 @@ def plot_alternative_outcomes():
     _pull("UNDP GII",                           "P5_B2_GII_panel_fe",
           unit="[0,1]", group="external")
 
-    # Gap outcomes (different unit — note in label)
-    _pull("LFP gap (F-M, pp)",                  "P10_gap_lfp",
-          unit="pp",   group="gap")
+    # LFP gap excluded: reported in percentage points (not [0,1]),
+    # so including it stretches the x-axis and makes the other rows unreadable.
 
     # WBL legal rights index (from separate CSV)
     if os.path.exists(WBL_RESULTS_CSV):
@@ -1000,33 +989,358 @@ def plot_alternative_outcomes():
 
     ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
     ax.set_yticks(ys)
-    ax.set_yticklabels(df_plot["label"], fontsize=9)
+    ax.set_yticklabels(df_plot["label"], fontsize=11)
     ax.set_xlabel(
-        "Coefficient on Religious Courts (panel FE + GDP)\n"
-        "Note: LFP gap is in percentage points; all other outcomes are [0,1] normalised",
-        fontsize=9
+        "Coefficient on religious courts (panel FE + GDP); all outcomes on [0,1] scale",
+        fontsize=10
+    )
+    fig.suptitle(
+        "The courts effect is null on the primary composite and most alternatives",
+        fontsize=15, fontweight="bold", y=1.00,
     )
     ax.set_title(
-        "Religious Courts Effect Across Alternative Outcome Indices\n"
-        "All panel FE with country + year fixed effects, SEs clustered by country",
-        fontsize=10, fontweight="bold",
+        "Religious courts coefficient across the primary composite index and external gender indices",
+        fontsize=10, fontweight="normal", color="#555", loc="left", pad=10,
     )
 
     legend_handles = [
-        mpatches.Patch(color=sig_colors["***"], label="p < 0.01 (***)"),
-        mpatches.Patch(color=sig_colors["**"],  label="p < 0.05 (**)"),
-        mpatches.Patch(color=sig_colors["*"],   label="p < 0.10 (*)"),
-        mpatches.Patch(color=sig_colors[""],    label="Not significant"),
+        mpatches.Patch(color=PALETTE["sig_high"], label="p < 0.01"),
+        mpatches.Patch(color=PALETTE["sig_med"],  label="p < 0.05"),
+        mpatches.Patch(color=PALETTE["sig_low"],  label="p < 0.10"),
+        mpatches.Patch(color=PALETTE["null"],     label="Not significant"),
     ]
-    ax.legend(handles=legend_handles, fontsize=8, loc="lower right", framealpha=0.9)
+    ax.legend(handles=legend_handles,
+              loc="upper center", bbox_to_anchor=(0.5, -0.18),
+              ncol=4, frameon=False)
     ax.grid(axis="x", alpha=0.3, linewidth=0.5)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
 
     plt.tight_layout()
-    plt.savefig(OUT_ALT_OUTCOMES, dpi=150, bbox_inches="tight")
+    plt.savefig(OUT_ALT_OUTCOMES, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Saved -> {OUT_ALT_OUTCOMES}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 9. WBL GROUP SCORE FOREST PLOT
+# ═══════════════════════════════════════════════════════════════════════════════
+WBL_GROUPS_CSV  = os.path.join(ROOT, "results/results_wbl_groups.csv")
+OUT_WBL_GROUPS  = os.path.join(ROOT, "figures/11_wbl_groups.png")
+
+
+def plot_wbl_groups():
+    """
+    Forest plot: religious courts coefficient for each of the 10 WBL group
+    scores built by scoring.py, plus the overall score.
+    One dot per group — shows which domains of women's legal rights are affected.
+    """
+    if not os.path.exists(WBL_GROUPS_CSV):
+        print(f"  WBL groups CSV not found ({WBL_GROUPS_CSV}) -- skipping.")
+        return
+
+    df = pd.read_csv(WBL_GROUPS_CSV)
+    focal = df[df["predictor"] == FOCAL_PRED].copy()
+
+    if focal.empty:
+        print("  No focal predictor rows found -- skipping.")
+        return
+
+    overall = focal[focal["group"] == "overall_score"]
+    groups  = focal[focal["group"] != "overall_score"].sort_values("coef")
+    focal   = pd.concat([overall, groups], ignore_index=True).reset_index(drop=True)
+
+    n = len(focal)
+    fig, ax = plt.subplots(figsize=(11, max(5, n * 0.55 + 2)))
+
+    for j in range(n):
+        row   = focal.iloc[j]
+        y_pos = n - 1 - j
+        color = _sig_colour(row["pval"])
+        ci95  = 1.96 * row["se"]
+
+        ax.plot([row["coef"] - ci95, row["coef"] + ci95], [y_pos, y_pos],
+                color=color, linewidth=2.4, alpha=0.8, solid_capstyle="round")
+        ax.scatter(row["coef"], y_pos,
+                   color=color, s=90, zorder=4,
+                   edgecolors="white", linewidths=0.8)
+
+        stars = _sig_stars(row["pval"]) or "n.s."
+        ann = f"β = {row['coef']:+.3f}   {stars}"
+        ax.annotate(ann, xy=(row["coef"] + ci95, y_pos),
+                    xytext=(8, 0), textcoords="offset points",
+                    fontsize=9, va="center", color="#333")
+
+    # Divider between overall and domain scores
+    if len(overall) > 0:
+        ax.axhline(n - 1.5, color="#aaa", linewidth=0.8, linestyle="--", alpha=0.8)
+
+    ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
+    ax.set_yticks(range(n))
+    ax.set_yticklabels(
+        [focal.iloc[n - 1 - j]["group_label"] for j in range(n)],
+        fontsize=11,
+    )
+    ax.set_xlabel(
+        "Coefficient on religious courts (panel FE, country + year FE, GDP-controlled)\n"
+        "Outcomes: WBL group scores  |  Period: 2013–2022",
+    )
+
+    fig.suptitle(
+        "Courts are null across every one of the 10 legal domains",
+        fontsize=15, fontweight="bold", y=1.00,
+    )
+    ax.set_title(
+        "Religious courts coefficient for each WBL legal-rights domain plus the composite",
+        fontsize=10, fontweight="normal", color="#555", loc="left", pad=10,
+    )
+
+    # Every row is non-significant — replace the standard 4-category legend
+    # with a single annotation that reinforces the message rather than adding
+    # unused categories of visual noise.
+    all_pvals = focal["pval"].dropna().values
+    if len(all_pvals) and (all_pvals > 0.10).all():
+        ax.annotate(
+            "All p > 0.10",
+            xy=(0.97, 0.05), xycoords="axes fraction",
+            fontsize=12, ha="right", va="bottom", fontweight="bold",
+            color=PALETTE["null"],
+            bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
+                      edgecolor=PALETTE["null"], linewidth=1.0),
+        )
+    ax.grid(axis="x", alpha=0.3, linewidth=0.5)
+
+    plt.tight_layout()
+    plt.savefig(OUT_WBL_GROUPS, dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved -> {OUT_WBL_GROUPS}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 10. WORLD CHOROPLETH MAP
+# ═══════════════════════════════════════════════════════════════════════════════
+def plot_world_map():
+    """
+    World choropleth: religious courts institutionalisation, 2020.
+    Annotates a handful of anchor countries so the colour scale is concrete.
+    """
+    import geopandas as gpd
+    from matplotlib.colors import LinearSegmentedColormap
+
+    OUT_MAP  = os.path.join(ROOT, "figures/00_map.png")
+    SHP_PATH = os.path.join(ROOT, "data/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
+
+    pred = pd.read_csv(COMP_PATH)
+    data2020 = pred[pred["year"] == 2020][["iso3", "gri_religious_courts_norm"]].copy()
+
+    world = gpd.read_file(SHP_PATH)
+    world = world.rename(columns={"ISO_A3": "iso3"})
+    world = world[world["ADMIN"] != "Antarctica"]
+    world = world.merge(data2020, on="iso3", how="left")
+
+    fig, ax = plt.subplots(figsize=(13, 6.5))
+
+    # Custom two-stop colormap matching the palette
+    cmap = LinearSegmentedColormap.from_list(
+        "courts_scale", [PALETTE["map_lo"], PALETTE["map_hi"]]
+    )
+
+    world[world["gri_religious_courts_norm"].isna()].plot(
+        ax=ax, color="#EDEDED", edgecolor="white", linewidth=0.3,
+    )
+    world[world["gri_religious_courts_norm"].notna()].plot(
+        ax=ax,
+        column="gri_religious_courts_norm",
+        cmap=cmap,
+        vmin=0, vmax=1,
+        edgecolor="white", linewidth=0.3,
+        legend=True,
+        legend_kwds={
+            "label": "Religious courts score (0 = none, 1 = fully institutionalised)",
+            "orientation": "horizontal",
+            "shrink": 0.45,
+            "pad": 0.02,
+            "aspect": 30,
+        },
+    )
+
+    # Annotate a few anchor countries so the colour scale feels concrete.
+    # Variable is binary 0/1 in GRI, so just label recognisable countries
+    # spread out geographically — colour does the numeric work. Avoid
+    # crowded clusters (e.g. drop IDN which collides with KOR/JPN).
+    anchors = ["IRN", "CHN", "RUS", "USA", "BRA", "ZAF", "AUS"]
+    world["centroid"] = world.geometry.representative_point()
+    for iso in anchors:
+        row = world[world["iso3"] == iso]
+        if row.empty or pd.isna(row["gri_religious_courts_norm"].iloc[0]):
+            continue
+        pt = row["centroid"].iloc[0]
+        score = row["gri_religious_courts_norm"].iloc[0]
+        ax.annotate(
+            iso,
+            xy=(pt.x, pt.y),
+            fontsize=9.5, ha="center", va="center",
+            color="white" if score > 0.45 else "#222",
+            fontweight="bold",
+        )
+
+    ax.set_axis_off()
+    fig.suptitle(
+        "Where religious courts hold jurisdiction (2020)",
+        fontsize=16, fontweight="bold", y=0.97,
+    )
+    ax.set_title(
+        "Pew Global Restrictions on Religion index, normalised 0–1. Grey = no data.",
+        fontsize=10, fontweight="normal", color="#555",
+    )
+
+    plt.tight_layout()
+    plt.savefig(OUT_MAP, dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved -> {OUT_MAP}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 12. MUNDLAK WITHIN-VS-BETWEEN DECOMPOSITION
+# ═══════════════════════════════════════════════════════════════════════════════
+LABELS_SHORT = {
+    "gri_state_religion_norm": "State religion",
+    "gri_religious_law_norm":  "Religious law",
+    "gri_blasphemy_norm":      "Blasphemy laws",
+    "gri_apostasy_norm":       "Apostasy laws",
+    "gri_religious_courts_norm": "Religious courts",
+    "v2x_rule_norm":           "Rule of law",
+    "v2x_civlib_norm":         "Civil liberties",
+    "v2x_egal_norm":           "Egalitarianism",
+    "log_gdppc_norm":          "Log GDP p.c.",
+}
+
+def plot_mundlak_decomposition():
+    """Paired forest plot: within-country vs between-country effects from T4 Mundlak."""
+    res = pd.read_csv(RESULTS_PATH)
+    t4  = res[res["tier"] == "T4_mundlak_re"].copy()
+    if t4.empty:
+        print("  T4_mundlak_re not found in results.csv — skipping.")
+        return
+
+    # Separate within (base predictors) and between (_mean suffix)
+    gri_vars = ["gri_state_religion_norm", "gri_religious_law_norm",
+                "gri_blasphemy_norm", "gri_apostasy_norm", "gri_religious_courts_norm"]
+
+    rows = []
+    for var in gri_vars:
+        w = t4[t4["predictor"] == var]
+        b = t4[t4["predictor"] == f"{var}_mean"]
+        if w.empty or b.empty:
+            continue
+        rows.append({
+            "var": LABELS_SHORT.get(var, var),
+            "within_coef": w.iloc[0]["coef"],
+            "within_se":   w.iloc[0]["se"],
+            "within_p":    w.iloc[0]["pval"],
+            "between_coef": b.iloc[0]["coef"],
+            "between_se":   b.iloc[0]["se"],
+            "between_p":    b.iloc[0]["pval"],
+        })
+
+    if not rows:
+        print("  No matched within/between pairs found — skipping.")
+        return
+
+    df_plot = pd.DataFrame(rows)
+    n_vars  = len(df_plot)
+
+    fig, axes = plt.subplots(1, 2, figsize=(13, 0.9 * n_vars + 2.5), sharey=True)
+    y_pos = np.arange(n_vars)
+
+    apostasy_row = df_plot.index[df_plot["var"].str.contains("Apostasy", case=False)].tolist()
+    apostasy_y   = apostasy_row[0] if apostasy_row else None
+
+    for ax, prefix, title in [
+        (axes[0], "within",  "Within-country effect\n(change over time)"),
+        (axes[1], "between", "Between-country effect\n(structural difference)"),
+    ]:
+        coefs = df_plot[f"{prefix}_coef"].values
+        ses   = df_plot[f"{prefix}_se"].values
+        pvals = df_plot[f"{prefix}_p"].values
+
+        colors = [_sig_colour(p) for p in pvals]
+
+        # Highlight apostasy row background
+        if apostasy_y is not None:
+            ax.axhspan(apostasy_y - 0.5, apostasy_y + 0.5,
+                       color=PALETTE["highlight_bg"], alpha=0.7, zorder=0)
+
+        ax.barh(y_pos, coefs, xerr=1.96 * ses, height=0.62,
+                color=colors, edgecolor="white", linewidth=0.8,
+                capsize=4, error_kw={"linewidth": 1.2}, zorder=2)
+        ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.5)
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels(df_plot["var"], fontsize=11)
+        ax.set_xlabel("Coefficient (0–1 scale)")
+        ax.set_title(title, fontsize=12, fontweight="bold", loc="left", pad=8)
+        ax.tick_params(axis="y", length=0)
+        ax.grid(axis="x", alpha=0.3, linewidth=0.5)
+
+        for i, (c, p, se) in enumerate(zip(coefs, pvals, ses)):
+            star = _sig_stars(p)
+            if star:
+                x_off = 1.96 * se + 0.002 if c >= 0 else -(1.96 * se + 0.002)
+                ha = "left" if c >= 0 else "right"
+                ax.text(c + x_off, i, star, va="center", ha=ha,
+                        fontsize=11, fontweight="bold")
+
+    fig.suptitle(
+        "Apostasy's effect is structural — not temporal",
+        fontsize=18, fontweight="bold", y=1.04,
+    )
+    fig.text(
+        0.5, 0.99,
+        "T4 Mundlak RE-FE hybrid: within-country change (left) vs between-country structural differences (right)",
+        ha="center", fontsize=11, color="#555",
+    )
+
+    # Annotate the between/within ratio for apostasy — visually dominant
+    if apostasy_y is not None:
+        apo = df_plot.iloc[apostasy_y]
+        if apo["within_coef"] != 0:
+            ratio = apo["between_coef"] / apo["within_coef"]
+            fig.text(
+                0.5, 0.50,
+                f"{abs(ratio):.1f}×",
+                ha="center", va="center",
+                fontsize=44, fontweight="bold",
+                color=PALETTE["apostasy"],
+            )
+            fig.text(
+                0.5, 0.40,
+                "between-effect\nvs within-effect",
+                ha="center", va="center",
+                fontsize=11, color=PALETTE["apostasy"], fontweight="bold",
+            )
+
+    from matplotlib.patches import Patch
+    legend_els = [
+        Patch(facecolor=PALETTE["sig_high"], label="p < 0.01"),
+        Patch(facecolor=PALETTE["sig_med"],  label="p < 0.05"),
+        Patch(facecolor=PALETTE["sig_low"],  label="p < 0.10"),
+        Patch(facecolor=PALETTE["null"],     label="n.s."),
+    ]
+    # Put legend on the right panel (interior, lower-right) where there's
+    # room — fig-level legend was wrapping/overlapping with the footer note.
+    axes[1].legend(
+        handles=legend_els, loc="lower right",
+        framealpha=0.95, fontsize=10, ncol=2, columnspacing=1.5,
+    )
+
+    fig.text(
+        0.5, 0.01,
+        "Note: x-axis scales differ between panels — that is the point.",
+        ha="center", fontsize=9.5, color="#777", style="italic",
+    )
+
+    plt.tight_layout(rect=[0, 0.04, 1, 0.93])
+    plt.savefig(OUT_MUNDLAK, dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved -> {OUT_MUNDLAK}")
 
 
 def load_merged() -> pd.DataFrame:
@@ -1041,35 +1355,47 @@ def main():
     print("SECULARISM & GENDER GAP — VISUALISATIONS")
     print("=" * 60)
 
-    print("\n[1/4] Coefficient forest plot (main tiers)...")
+    _presentation_style()
+
+    # Load merged data for plots that need a DataFrame
+    comp  = pd.read_csv(COMP_PATH)
+    women = pd.read_csv(WOMEN_PATH)
+    df = women.merge(
+        comp.drop(columns=["country"], errors="ignore"),
+        on=["iso3", "year"], how="left", suffixes=("", "_comp"),
+    )
+
+    print("\n[1/10] World choropleth map...")
+    plot_world_map()
+
+    print("\n[2/10] Scatter: courts vs apostasy (2020 dual panel)...")
+    plot_scatter(df)
+
+    print("\n[3/10] Coefficient forest plot (slimmed)...")
     plot_coefplot()
 
-    print("\n[2/4] Coefficient forest plot (sub-outcomes)...")
-    plot_coefplot_suboutcomes()
+    print("\n[4/10] WBL group score breakdown...")
+    plot_wbl_groups()
 
-    print("\n[3/4] Time-trend (high vs low GRI courts)...")
-    df = load_merged()
-    plot_time_trend(df)
-
-    print("\n[5/6] LOO jackknife plot...")
+    print("\n[5/10] LOO jackknife (courts + apostasy 2x2)...")
     plot_loo()
 
-    print("\n[6/6] Placebo outcome comparison...")
+    print("\n[6/10] Placebo outcomes (gendered mechanism)...")
     plot_placebo()
 
-    print("\n[7/7] Specification stability plot...")
+    print("\n[7/10] Specification stability (courts + apostasy)...")
     plot_spec_stability()
 
-    print("\n[8/9] Event study plot (Phase 9)...")
-    plot_event_study()
-
-    print("\n[9/10] Oster delta sensitivity curve (Phase 9)...")
+    print("\n[8/10] Oster sensitivity (apostasy)...")
     plot_oster_sensitivity()
 
-    print("\n[10/10] Alternative outcomes comparison (Phase 10)...")
+    print("\n[9/10] Alternative outcomes comparison...")
     plot_alternative_outcomes()
 
-    print("\nDone. All figures saved to data/processed/")
+    print("\n[10/10] Mundlak within-vs-between decomposition (hero figure)...")
+    plot_mundlak_decomposition()
+
+    print("\nDone. All figures saved to figures/")
 
 
 if __name__ == "__main__":

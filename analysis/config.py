@@ -26,7 +26,25 @@ EPR_CSV = EPR_DIR / "EPR-2021.csv"
 YEAR_MIN = 2007
 YEAR_MAX = 2022
 
-FOCAL_PRED = "gri_religious_courts_norm"
+FOCAL_PRED   = "gri_religious_courts_norm"
+FOCAL_PRED_2 = "gri_apostasy_norm"
+
+# Presentation palette — semantic colours used consistently across all figures
+PALETTE = {
+    "courts":        "#7F8C8D",   # slate grey — the null predictor
+    "apostasy":      "#C0392B",   # deep red — the signal predictor
+    "sig_high":      "#C0392B",   # p < 0.01
+    "sig_med":       "#E67E22",   # p < 0.05
+    "sig_low":       "#F1C40F",   # p < 0.10
+    "null":          "#95A5A6",   # not significant
+    "highlight_bg":  "#FDF2E9",   # pale highlight for hero rows
+    "map_lo":        "#FFF5E1",   # choropleth low
+    "map_hi":        "#8B1A1A",   # choropleth high
+    "female":        "#C0392B",
+    "male":          "#BDC3C7",
+    "pre_band":      "#EDF2F7",
+    "robust_band":   "#D4EDDA",
+}
 
 # ISO3 -> simplified UN region mapping (superset, ~187 countries)
 REGION_MAP = {
