@@ -6,17 +6,18 @@ Religious courts (the focal predictor) show **no within-country effect** across 
 
 ---
 
-## Core Estimators (5 tiers — all presented)
+## Core Estimators (4 tiers — all presented)
 
 | Tier | What it does | Key result |
 |------|-------------|------------|
 | **T1 OLS** (2014 & 2020, HC3 SEs) | Baseline cross-sectional correlation | Apostasy p<0.001; courts n.s. |
 | **T2 TWFE** (entity + year FE, clustered SEs) | Within-country identification (annual) | Apostasy p=0.035; courts p=0.312 |
 | **T3 System-GMM** (Blundell-Bond) | Dynamic panel with internal instruments | Fails diagnostics (rho=1.215 > OLS bound). Reported for transparency, excluded from conclusions |
-| **T5 Long-difference** (2013-2022 endpoint change, HC3 SEs) | Within-country identification (decade) | Composite +0.082 p=0.28 (null, corroborates T2/T4 within); apostasy -0.042 (invalid, 9 changers) |
 | **T4 Mundlak CRE** (within/between decomposition) | Separates structural vs temporal effects | Apostasy between-effect is **6.2x** the within-effect. Courts null in both |
 
-**Takeaway:** The five tiers consistently show courts is null and apostasy is significant. T4 reveals the effect is overwhelmingly cross-national (between-country), not driven by within-country change over time. T5 (decade long-difference) corroborates rather than resolves the within-country null: even over 10-year changes the composite is wrong-signed and not significant, which rules out the reading that the T2/T4 within null is driven by annual noise or WVS interpolator arithmetic.
+**Takeaway:** The four tiers consistently show courts is null and apostasy is significant. T4 reveals the effect is overwhelmingly cross-national (between-country), not driven by within-country change over time.
+
+**Long-difference robustness complement** (not a separate tier): a decade-change regression (Δoutcome 2013→2022 on Δfocal + Δcontrols, HC3 SEs, one obs per country) is reported alongside T2/T4 to test whether the within-country null could be an artefact of annual noise or WVS interpolator arithmetic. Composite LD β=+0.082 (p=0.28, N=163) — wrong-signed and not significant, same direction as T2/T4 within. Since endpoint differencing throws away annual variation and interpolator contamination by construction, the persistence of the null at the decade horizon rules out both as the binding explanation for the short-panel null. Reported in methodology_full.tex §5.8; underlying rows under `T5_long_diff_*` tiers in results.csv.
 
 ---
 

@@ -69,20 +69,24 @@ LaTeX write-up alone. Always open the relevant `.py` file(s) and verify.
   2026-04-15 (Item 2) T4 decomposes **10** regressors (6 GRI + 3 V-Dem +
   `log_gdppc_norm`) after `gri_gov_favour_norm` was added to `GRI_PANEL_COLS`;
   the prior count of 9 referenced in the Mundlak presentation slide is stale.
-- **T5 Long-Difference** (Item 3, 2026-04-15) collapses the panel to one
-  observation per country by endpoint subtraction ($\Delta = Y_{end} - Y_{start}$)
-  and fits `sm.OLS(dY ~ 1 + dX + dZ).fit(cov_type="HC3")`. Four windows run:
+- **T5 Long-Difference robustness** (Item 3, 2026-04-15; trimmed 2026-04-15
+  late-late evening after outside-judgement review).
+  `analysis/run_analysis.py:tier5_long_difference` collapses the panel to one
+  observation per country by endpoint subtraction and fits
+  `sm.OLS(dY ~ 1 + dX + dZ).fit(cov_type="HC3")`. Four windows run:
   2013–2022 (main), 2014–2022 (alt endpoint), 2013–2017 and 2017–2022 (5-yr
   sub-windows). Each window × `{no_gdp, with_gdp}` × 7 focals, plus a
-  `_grifull` companion spec for GRI sub-item focals (apostasy, courts) that
-  regresses on `GRI_PANEL_COLS + controls` for net-of-other-sub-items
-  identification. Tier tags: `T5_long_diff_{start}_{end}_{no_gdp|with_gdp}[_grifull]`.
-  Three-tier validity: `valid=False invalid_reason="few changers (<10)"`,
-  `valid=True invalid_reason="low_power (n_changers=N, <25)"`, or `valid=True
-  invalid_reason=""` for `n_changers ≥ 25`. Apostasy is flagged invalid
-  (n_changers=9); courts low-power (n_changers=19). Composite 2013→2022
-  with_gdp: β=+0.082 (p=0.28, N=163) — wrong-signed null, corroborates T2/T4
-  within-country null rather than resolving it.
+  `_grifull` companion spec for GRI sub-item focals. Three-tier validity:
+  `valid=False` if n_changers <10, `valid=True` with `low_power` warning
+  if 10–24, `valid=True` no flag if ≥25. Composite 2013→2022 with_gdp:
+  β=+0.082 (p=0.28, N=163) — wrong-signed null, corroborates T2/T4 within
+  rather than resolving it. Apostasy (9 changers) flagged invalid; courts
+  (19) low_power. **The paper treats T5 as a robustness complement to T2/T4
+  rather than a fifth tier**: tab:headline shows one "Long-difference
+  (2013–2022)" row below T4, §5.8 is a two-paragraph robustness subsection,
+  figure 13 lives in Appendix A (`sec:ld-details`), sub-window numbers stay
+  in results.csv only. Abstract and §1 describe LD as a robustness
+  complement, not a fifth tier.
 - **Δ(log_gdppc_norm) in T5** is on the min-max-normalised [0,1] scale, not
   log-points. Coefficients on Δ(log_gdppc_norm) are marginal effects per unit
   of the normalised decade-change, not income elasticities.
