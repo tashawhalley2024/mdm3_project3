@@ -246,7 +246,7 @@ def plot_scatter(df: pd.DataFrame):
     )
 
     fig.suptitle(
-        "Courts: no correlation. Apostasy: strong negative correlation.",
+        "Composite secularism and apostasy laws: clear negative correlations with women's welfare.",
         fontsize=16, fontweight="bold", y=1.04,
     )
     fig.text(
@@ -521,7 +521,7 @@ def plot_loo():
     if have_courts:
         loo_c = pd.read_csv(LOO_CSV)
         _render_loo_column(loo_c, axes[0, col], axes[1, col],
-                           PALETTE["courts"], "Religious courts")
+                           PALETTE["composite"], "Composite secularism")
         col += 1
     if have_apostasy:
         loo_a = pd.read_csv(LOO_APOSTASY_CSV)
@@ -756,14 +756,14 @@ def plot_spec_stability():
         print("  Results CSV not found -- skipping.")
         return
 
-    courts_rows = _collect_spec_rows(FOCAL_PRED,   SPEC_CSV)
-    apos_rows   = _collect_spec_rows(FOCAL_PRED_2, SPEC_APOSTASY_CSV)
+    composite_rows = _collect_spec_rows(FOCAL_PRED,   SPEC_CSV)
+    apos_rows      = _collect_spec_rows(FOCAL_PRED_2, SPEC_APOSTASY_CSV)
 
-    n_rows = max(len(courts_rows), len(apos_rows))
+    n_rows = max(len(composite_rows), len(apos_rows))
     fig, axes = plt.subplots(1, 2, figsize=(14, max(6, n_rows * 0.55 + 2)))
 
-    _render_spec_column(axes[0], courts_rows,
-                        "Religious courts", PALETTE["courts"])
+    _render_spec_column(axes[0], composite_rows,
+                        "Composite secularism", PALETTE["composite"])
     _render_spec_column(axes[1], apos_rows,
                         "Apostasy laws", PALETTE["apostasy"])
 
@@ -997,7 +997,7 @@ def plot_alternative_outcomes():
     ax.set_yticks(ys)
     ax.set_yticklabels(df_plot["label"], fontsize=11)
     ax.set_xlabel(
-        "Coefficient on religious courts (panel FE + GDP); all outcomes on [0,1] scale",
+        "Coefficient on composite secularism (panel FE + GDP); all outcomes on [0,1] scale",
         fontsize=10
     )
     fig.suptitle(
@@ -1005,7 +1005,7 @@ def plot_alternative_outcomes():
         fontsize=15, fontweight="bold", y=1.00,
     )
     ax.set_title(
-        "Religious courts coefficient across the primary composite index and external gender indices",
+        "Composite secularism coefficient across the primary outcome and external gender indices",
         fontsize=10, fontweight="normal", color="#555", loc="left", pad=10,
     )
 
@@ -1095,7 +1095,7 @@ def plot_wbl_groups():
         fontsize=15, fontweight="bold", y=1.00,
     )
     ax.set_title(
-        "Religious courts coefficient for each WBL legal-rights domain plus the composite",
+        "Composite secularism coefficient for each WBL legal-rights domain plus the overall WBL index",
         fontsize=10, fontweight="normal", color="#555", loc="left", pad=10,
     )
 
@@ -1393,13 +1393,13 @@ def main():
     print("\n[4/10] WBL group score breakdown...")
     plot_wbl_groups()
 
-    print("\n[5/10] LOO jackknife (courts + apostasy 2x2)...")
+    print("\n[5/10] LOO jackknife (composite + apostasy 2x2)...")
     plot_loo()
 
     print("\n[6/10] Placebo outcomes (gendered mechanism)...")
     plot_placebo()
 
-    print("\n[7/10] Specification stability (courts + apostasy)...")
+    print("\n[7/10] Specification stability (composite + apostasy)...")
     plot_spec_stability()
 
     print("\n[8/10] Oster sensitivity (apostasy)...")

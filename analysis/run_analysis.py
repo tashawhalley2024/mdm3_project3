@@ -3442,6 +3442,13 @@ def phase_wbl_groups() -> pd.DataFrame:
     group_cols = [g for g in WBL_GROUP_LABELS if g in merged.columns]
     pred_cols  = GRI_PANEL_COLS + CONTROLS_GDP
 
+    # Follow-up (merge-prep 2026-04-15): also emit composite focal rows so
+    # 11_wbl_groups.png regenerates under the composite-secularism headline
+    # rather than skipping. The composite is built in-memory here via the
+    # same build_secularism_composite call the main pipeline uses.
+    merged_with_composite = build_secularism_composite(merged)
+    composite_pred_cols = [FOCAL_PRED] + CONTROLS_GDP
+
     rows = []
     for group in group_cols:
         required = [group, "iso3", "year"] + pred_cols
@@ -3479,6 +3486,33 @@ def phase_wbl_groups() -> pd.DataFrame:
                 })
         except Exception as e:
             print(f"    Model failed: {e}")
+
+        # Parallel composite-focal regression for the same group.
+        required_c = [group, "iso3", "year"] + composite_pred_cols
+        sub_c = merged_with_composite[required_c].dropna(
+            subset=[group] + composite_pred_cols).copy()
+        if sub_c["iso3"].nunique() < 20 or len(sub_c) < 50:
+            continue
+        try:
+            panel_c = sub_c.set_index(["iso3", "year"])
+            y_c = panel_c[group]
+            X_c = sm.add_constant(panel_c[composite_pred_cols])
+            res_c = PanelOLS(y_c, X_c, entity_effects=True, time_effects=True
+                             ).fit(cov_type="clustered", cluster_entity=True)
+            for var in res_c.params.index:
+                rows.append({
+                    "group":      group,
+                    "group_label": WBL_GROUP_LABELS.get(group, group),
+                    "predictor":  var,
+                    "coef":       res_c.params[var],
+                    "se":         res_c.std_errors[var],
+                    "pval":       res_c.pvalues[var],
+                    "sig":        _sig(res_c.pvalues[var]),
+                    "n":          res_c.nobs,
+                    "r2":         float(getattr(res_c.rsquared, "within", res_c.rsquared)),
+                })
+        except Exception as e:
+            print(f"    Composite model failed for {group}: {e}")
 
     df_out = pd.DataFrame(rows)
     if not df_out.empty:
