@@ -284,6 +284,26 @@ def load_and_merge() -> pd.DataFrame:
         build_pca=False,
     )
 
+    # Follow-up #2: weight-sensitivity variants. Both report the composite
+    # under alternate dimension weightings so a reviewer can judge whether
+    # the equal-weight choice is load-bearing. 'instonly' drops the V-Dem
+    # attitudinal and WVS behavioural dimensions entirely; 'covwt' weights
+    # each dimension by its panel-wide non-null row fraction (WVS weight
+    # uses pre-interpolation wave-year coverage, so the variant is
+    # meaningful even though the main composite is built post-interpolation).
+    merged = build_secularism_composite(
+        merged,
+        weighting="institutional_only",
+        output_name="composite_secularism_instonly_norm",
+        build_pca=False,
+    )
+    merged = build_secularism_composite(
+        merged,
+        weighting="coverage",
+        output_name="composite_secularism_covwt_norm",
+        build_pca=False,
+    )
+
     # Log composite coverage AND changer counts — raw and WVS-real-only
     # (wvs_interpolated==0). The WVS-real-only count is the meaningful
     # "did anything actually move" diagnostic for the composite's
@@ -291,7 +311,9 @@ def load_and_merge() -> pd.DataFrame:
     # interpolator arithmetic.
     for col in ["composite_secularism_norm",
                 "composite_secularism_pca_norm",
-                "composite_secularism_real_norm"]:
+                "composite_secularism_real_norm",
+                "composite_secularism_instonly_norm",
+                "composite_secularism_covwt_norm"]:
         n_obs = merged[col].notna().sum()
         chg_raw = int((merged.groupby("iso3")[col].nunique(dropna=True) > 1).sum())
         if "wvs_interpolated" in merged.columns:
@@ -3747,6 +3769,8 @@ def main():
             all_results.extend(composite_tier_specs(df, FOCAL_PRED))
             all_results.extend(composite_tier_specs(df, FOCAL_PRED_PCA))
             all_results.extend(composite_tier_specs(df, "composite_secularism_real_norm"))
+            all_results.extend(composite_tier_specs(df, "composite_secularism_instonly_norm"))
+            all_results.extend(composite_tier_specs(df, "composite_secularism_covwt_norm"))
 
             vif_check(df)
             vif_by_spec(df)
