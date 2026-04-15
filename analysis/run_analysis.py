@@ -2623,18 +2623,26 @@ def phase9_event_study(df: pd.DataFrame, focal_pred: str = FOCAL_PRED,
 
 def phase9_wild_bootstrap(
     df: pd.DataFrame,
-    n_boot: int = 499,
+    n_boot: int = 1999,
     seed: int = 42,
     focal_pred: str = FOCAL_PRED,
 ) -> list[dict]:
     """Wild cluster bootstrap p-value for the changers-only PanelOLS.
 
     Addresses the small-cluster problem (~47 clusters) using Rademacher weights.
-    Null DGP: residuals from the model excluding FOCAL_PRED, scrambled by entity.
+    Null DGP: residuals from the model excluding focal_pred, scrambled by entity.
+
+    Gating: the Cameron-Miller / MacKinnon-Webb small-cluster literature places
+    the 42-cluster threshold below which cluster-robust inference is unreliable;
+    the wild bootstrap is a corrective but itself needs enough distinct entities
+    for the Rademacher permutation distribution to be informative. We require
+    n_changers >= 8 and len(ch) >= 50; smaller samples emit an invalid row and
+    skip the resampling loop.
     """
     print(f"\n{'='*60}")
     print("PHASE 9b -- WILD CLUSTER BOOTSTRAP (changers subsample)")
     print(f"{'='*60}")
+    print(f"  focal: {focal_pred}")
 
     rng       = np.random.default_rng(seed)
     # Item 2 (2026-04-15): focal-pred-aware predictor set
@@ -2648,9 +2656,22 @@ def phase9_wild_bootstrap(
     n_changers = ch["iso3"].nunique()
     print(f"  Changers: {n_changers} countries, {len(ch):,} obs")
 
-    if len(ch) < 50 or n_changers < 5:
-        print("  Too few changers for wild bootstrap -- skipping.")
-        return []
+    if len(ch) < 50 or n_changers < 8:
+        reason = f"n_changers={n_changers}, rows={len(ch)} below wild-bootstrap threshold"
+        print(f"  {reason} -- emitting invalid row.")
+        return [{
+            "tier":      "T2_changers_wild_bootstrap",
+            "year":      "all",
+            "predictor": focal_pred,
+            "coef":      np.nan,
+            "se":        np.nan,
+            "pval":      np.nan,
+            "n":         int(len(ch)),
+            "r2":        np.nan,
+            "n_changers": int(n_changers),
+            "valid":     False,
+            "invalid_reason": reason,
+        }]
 
     # Two-way demeaning (equivalent to country + year FE)
     ch_dm   = _two_way_demean(ch, OUTCOME, pred_cols)
@@ -2697,9 +2718,8 @@ def phase9_wild_bootstrap(
     p_wild = float(np.mean(np.array(t_boots) >= abs(t_obs))) if t_boots else np.nan
     print(f"  Wild bootstrap p-value: {p_wild:.4f}  (n_valid_boots={len(t_boots)})")
 
-    tier_suffix = "" if focal_pred == FOCAL_PRED else f"_{focal_pred.replace('gri_','').replace('_norm','')}"
     return [{
-        "tier":      f"T2_changers_wild_bootstrap{tier_suffix}",
+        "tier":      "T2_changers_wild_bootstrap",
         "year":      "all",
         "predictor": focal_pred,
         "coef":      float(beta_full[focal_idx]),
@@ -2707,6 +2727,9 @@ def phase9_wild_bootstrap(
         "pval":      float(p_wild),
         "n":         int(len(ch_dm)),
         "r2":        np.nan,
+        "n_changers": int(n_changers),
+        "valid":     True,
+        "invalid_reason": "",
     }]
 
 

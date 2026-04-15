@@ -308,6 +308,13 @@ The threat: reverse causality. Countries that improve women's welfare may subseq
 
 The threat: the result only appears under a specific modelling choice. The bivariate composite cross-section estimate is essentially identical to the full-model estimate with controls. Within-country, the composite coefficient stays small and wrong-signed across every panel variant, and the apostasy coefficient stays negative and significant in five of nine specifications and marginally so in two more. Neither result is a fragile garden-of-forking-paths artefact. The specification ladder is the cleanest answer to the question ``what if you had chosen a slightly different specification?'' The answer for both focal entries is that the patterns are stable.
 
+\subsection{Wild-Cluster Bootstrap (Few-Cluster Apostasy)}
+\label{sec:wildboot}
+
+The apostasy sub-item is identified off only nine changer countries in the T2 with-GDP sample. The small-cluster literature \citep{CameronMiller2015} places the threshold below which cluster-robust inference is unreliable at roughly 42 clusters; nine clusters is deeply in the problem zone, and the entity-clustered standard error on the T2 apostasy coefficient ($0.010$) almost certainly understates the true sampling uncertainty. To guard against this we run a wild-cluster bootstrap with Rademacher weights on the changer subsample, estimated off the residuals of the null model that excludes the focal predictor. The bootstrap uses 1{,}999 iterations and emits an invalid row when \texttt{n\_changers} falls below 8 or the changer subsample drops below 50 observations; the threshold of 8 is pragmatic (apostasy's 9-changer sample sits just above it), not a literature-derived cut-off.
+
+With 1{,}999 iterations, the wild-bootstrap $p$-values are $0.077$ for apostasy, $0.071$ for the main composite, and $0.174$ for the real-wave-only composite. Apostasy's wild-bootstrap $p$ aligns with its entity-clustered $p$ of $0.067$, which is directionally reassuring: the apostasy result does not obviously fall apart under the few-cluster concern. We do not treat this as a certificate of robustness: nine clusters is below every formal threshold in the literature, and the Rademacher permutation distribution has only $2^9 = 512$ distinct sign vectors, so $1{,}999$ bootstrap draws are heavily repeating the same permutations. The wild-bootstrap agreement is suggestive evidence, not definitive. The main composite's wild-bootstrap $p$ also aligns with its entity-clustered $p$ of $0.071$. The real-wave-only composite's wild-bootstrap $p$ of $0.174$ sits well above the $0.05$ threshold, consistent with the entity-clustered $p$ of $0.267$ and with the interpretation in \S\ref{sec:within-null} that the main composite's marginal within-country significance is partly interpolator-driven. We treat the wild-bootstrap numbers as the conservative benchmark for the T2 with-GDP within-country inference; in the present panel they do not overturn any of the entity-clustered readings.
+
 \section{Discussion}
 
 The four tiers and the robustness battery produce three substantive findings.
@@ -409,7 +416,7 @@ Restricting the panel to 2013--2019 (excluding the COVID years) produces results
 Check & Reason for exclusion \\
 \midrule
 Event studies (all focal predictors) & Designed for sharp policy events; institutional secularism variables move slowly, and the composite's within-country movement is partly interpolator-driven. Pre-trend tests are uninformative by construction at this $T$. \\
-Wild cluster bootstrap & Designed for $<50$ clusters \citep{CameronMiller2015}; the panel has $\sim 166$ clusters, well above the recommended threshold. Redundant with entity-clustered SEs. \\
+Wild cluster bootstrap on the full 166-cluster panel & Redundant with entity-clustered SEs at this cluster count. The wild-cluster bootstrap \emph{is} reported for the T2 changers subsample in \S\ref{sec:wildboot}, where the apostasy focal is identified off only nine changer clusters and the entity-clustered SE is likely too tight. \\
 Driscoll--Kraay as a separate headline & Reported in the main table as an SE variant rather than a separate tier. The bandwidth $= 2$ captures within-country autocorrelation over a 10-year window adequately; the DK tightening of the composite and apostasy within-country SEs is included in Table~\ref{tab:headline} for transparency. \\
 Mundlak CRE via pooled OLS (Phase 9d) & Identical estimator to T4 with pooled OLS instead of GLS. Same results, no added value. \\
 \bottomrule

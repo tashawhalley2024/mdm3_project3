@@ -57,6 +57,10 @@ HEADLINE_SPECS = [
     # Item 2 (Step 7): T4 same-sample (no_gdp mundlak on with_gdp sample)
     ("T4_mundlak_within_samesample",  "T4_mundlak_re_samesample",  "all",  None),
     ("T4_mundlak_between_samesample", "T4_mundlak_re_samesample",  "all",  "mean"),
+    # Follow-up #4 (2026-04-15): surface the wild-cluster bootstrap p for
+    # every focal. Tier tag is now unsuffixed (focal is disambiguated by
+    # the predictor column), so one HEADLINE_SPECS row picks it up for all.
+    ("T2_changers_wild_bootstrap",    "T2_changers_wild_bootstrap", "all",  None),
 ]
 
 
