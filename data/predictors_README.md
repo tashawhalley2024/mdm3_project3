@@ -68,6 +68,14 @@ Annual coverage 2007-2022. Higher = more religion embedded in state structures.
 | `gri_blasphemy_norm` | Blasphemy laws in effect (GRX22) |
 | `gri_apostasy_norm` | Apostasy laws in effect (GRX22) |
 
+**Historical note (2026-04-15)**: `gri_gov_favour_norm` was present in
+`predictors.csv` from the start but silently absent from `GRI_PANEL_COLS`
+in pre-77417d9 analysis versions, with no deliberate exclusion documented.
+Restored on 2026-04-15 as part of the Item 2 composite rebuild. Empirical
+sensitivity (excluding vs including the column from the composite)
+reported in `results/gov_favour_sensitivity.csv`: shifts T1 2020 with-GDP
+by -4.7%, T4 Mundlak between by -9.1%, T4 within by -27.6%.
+
 ---
 
 ## Sub-group 3a: Secular tolerance -- freedom of religion (V-Dem)
