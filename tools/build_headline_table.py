@@ -52,14 +52,22 @@ HEADLINE_SPECS = [
     ("T2_no_gdp_samesample",          "T2_no_gdp_samesample",      "all",  None),
     ("T2_with_gdp_samesample",        "T2_with_gdp_samesample",    "all",  None),
     ("T2_with_gdp_dk",                "T2_with_gdp_dk",            "all",  None),
+    # Item 3 (2026-04-15): Tier 5 long-difference — decade-change regression,
+    # one obs per country. Placed between T2 and T4 to reflect identification-
+    # strategy progression: T1 between (cross-section) → T2 within (annual)
+    # → T5 within (decade) → T4 between/within decomposition. Main window
+    # 2013–2022, alt-endpoint 2014–2022. 5-year sub-windows are in-text §5.8
+    # but not in the headline table.
+    ("T5_ld_2013_2022_no_gdp",        "T5_long_diff_2013_2022_no_gdp",   "2013_2022", None),
+    ("T5_ld_2013_2022_with_gdp",      "T5_long_diff_2013_2022_with_gdp", "2013_2022", None),
+    ("T5_ld_2014_2022_with_gdp",      "T5_long_diff_2014_2022_with_gdp", "2014_2022", None),
     ("T4_mundlak_within",             "T4_mundlak_re",             "all",  None),
     ("T4_mundlak_between",            "T4_mundlak_re",             "all",  "mean"),
     # Item 2 (Step 7): T4 same-sample (no_gdp mundlak on with_gdp sample)
     ("T4_mundlak_within_samesample",  "T4_mundlak_re_samesample",  "all",  None),
     ("T4_mundlak_between_samesample", "T4_mundlak_re_samesample",  "all",  "mean"),
-    # Follow-up #4 (2026-04-15): surface the wild-cluster bootstrap p for
-    # every focal. Tier tag is now unsuffixed (focal is disambiguated by
-    # the predictor column), so one HEADLINE_SPECS row picks it up for all.
+    # Follow-up #4 (2026-04-15): wild-cluster bootstrap p, adjacent to the T2
+    # rows it modifies (inference-robustness footnote on T2).
     ("T2_changers_wild_bootstrap",    "T2_changers_wild_bootstrap", "all",  None),
 ]
 

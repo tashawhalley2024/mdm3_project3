@@ -6,6 +6,9 @@ composite_secularism_norm,T2_with_gdp,0.061471,0.034061,0.071320,*,0.570558,0.14
 composite_secularism_norm,T2_no_gdp_samesample,0.061277,0.034232,0.073655,*,,,0.095292,1648.000000,166.000000,165.000000,0.038552,cluster_entity,
 composite_secularism_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 composite_secularism_norm,T2_with_gdp_dk,0.061471,0.011216,0.000000,***,,,0.095595,1648.000000,166.000000,165.000000,0.038552,driscoll_kraay_bw2,
+composite_secularism_norm,T5_ld_2013_2022_no_gdp,0.076661,0.073322,0.295772,,,,0.104524,170.000000,170.000000,165.000000,0.081045,HC3,
+composite_secularism_norm,T5_ld_2013_2022_with_gdp,0.082409,0.076064,0.278623,,,,0.112057,163.000000,163.000000,158.000000,0.081118,HC3,
+composite_secularism_norm,T5_ld_2014_2022_with_gdp,0.037056,0.071010,0.601785,,,,0.051846,163.000000,163.000000,156.000000,0.078941,HC3,
 composite_secularism_norm,T4_mundlak_within,0.061450,0.032344,0.057623,*,,,0.095562,1648.000000,166.000000,165.000000,0.038552,cluster_entity,
 composite_secularism_norm,T4_mundlak_between,-0.277680,0.058948,0.000003,***,,,,1648.000000,166.000000,165.000000,0.038552,cluster_entity,
 composite_secularism_norm,T4_mundlak_within_samesample,,,,,,,,,,,,,missing
@@ -18,6 +21,9 @@ composite_secularism_pca_norm,T2_with_gdp,0.015375,0.025422,0.545407,,1.000000,0
 composite_secularism_pca_norm,T2_no_gdp_samesample,0.015261,0.025723,0.553080,,,,0.024316,1648.000000,166.000000,165.000000,0.041910,cluster_entity,
 composite_secularism_pca_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 composite_secularism_pca_norm,T2_with_gdp_dk,0.015375,0.011078,0.165405,,,,0.024497,1648.000000,166.000000,165.000000,0.041910,driscoll_kraay_bw2,
+composite_secularism_pca_norm,T5_ld_2013_2022_no_gdp,-0.006208,0.054251,0.908897,,,,-0.009428,170.000000,170.000000,164.000000,0.090270,HC3,
+composite_secularism_pca_norm,T5_ld_2013_2022_with_gdp,-0.014843,0.055926,0.790699,,,,-0.022476,163.000000,163.000000,157.000000,0.090333,HC3,
+composite_secularism_pca_norm,T5_ld_2014_2022_with_gdp,-0.027237,0.050846,0.592183,,,,-0.043040,163.000000,163.000000,155.000000,0.089156,HC3,
 composite_secularism_pca_norm,T4_mundlak_within,0.015356,0.024140,0.524783,,,,0.024467,1648.000000,166.000000,165.000000,0.041910,cluster_entity,
 composite_secularism_pca_norm,T4_mundlak_between,-0.243078,0.047888,0.000000,***,,,,1648.000000,166.000000,165.000000,0.041910,cluster_entity,
 composite_secularism_pca_norm,T4_mundlak_within_samesample,,,,,,,,,,,,,missing
@@ -30,6 +36,9 @@ composite_secularism_real_norm,T2_with_gdp,0.027090,0.024411,0.267301,,,,0.04500
 composite_secularism_real_norm,T2_no_gdp_samesample,0.026954,0.024590,0.273192,,,,0.044776,1648.000000,166.000000,165.000000,0.048013,cluster_entity,
 composite_secularism_real_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 composite_secularism_real_norm,T2_with_gdp_dk,0.027090,0.008017,0.000746,***,,,0.045001,1648.000000,166.000000,165.000000,0.048013,driscoll_kraay_bw2,
+composite_secularism_real_norm,T5_ld_2013_2022_no_gdp,0.013661,0.056862,0.810134,,,,0.022934,170.000000,170.000000,159.000000,0.099788,HC3,
+composite_secularism_real_norm,T5_ld_2013_2022_with_gdp,0.019966,0.058384,0.732367,,,,0.033619,163.000000,163.000000,152.000000,0.100448,HC3,
+composite_secularism_real_norm,T5_ld_2014_2022_with_gdp,0.003056,0.063205,0.961443,,,,0.004830,163.000000,163.000000,152.000000,0.089196,HC3,
 composite_secularism_real_norm,T4_mundlak_within,0.027072,0.023181,0.243019,,,,0.044973,1648.000000,166.000000,165.000000,0.048013,cluster_entity,
 composite_secularism_real_norm,T4_mundlak_between,-0.225182,0.053698,0.000029,***,,,,1648.000000,166.000000,165.000000,0.048013,cluster_entity,
 composite_secularism_real_norm,T4_mundlak_within_samesample,,,,,,,,,,,,,missing
@@ -42,6 +51,9 @@ composite_secularism_instonly_norm,T2_with_gdp,0.006744,0.014631,0.644913,,,,0.0
 composite_secularism_instonly_norm,T2_no_gdp_samesample,0.006747,0.014619,0.644518,,,,0.011973,1648.000000,166.000000,147.000000,0.065842,cluster_entity,
 composite_secularism_instonly_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 composite_secularism_instonly_norm,T2_with_gdp_dk,0.006744,0.010443,0.518515,,,,0.011969,1648.000000,166.000000,147.000000,0.065842,driscoll_kraay_bw2,
+composite_secularism_instonly_norm,T5_ld_2013_2022_no_gdp,-0.006796,0.028079,0.808761,,,,-0.015332,170.000000,170.000000,128.000000,0.134102,HC3,
+composite_secularism_instonly_norm,T5_ld_2013_2022_with_gdp,-0.008142,0.029106,0.779673,,,,-0.018132,163.000000,163.000000,122.000000,0.132846,HC3,
+composite_secularism_instonly_norm,T5_ld_2014_2022_with_gdp,-0.017123,0.027783,0.537692,,,,-0.041599,163.000000,163.000000,117.000000,0.137073,HC3,
 composite_secularism_instonly_norm,T4_mundlak_within,0.006726,0.013893,0.628356,,,,0.011937,1648.000000,166.000000,147.000000,0.065842,cluster_entity,
 composite_secularism_instonly_norm,T4_mundlak_between,-0.174860,0.041372,0.000025,***,,,,1648.000000,166.000000,147.000000,0.065842,cluster_entity,
 composite_secularism_instonly_norm,T4_mundlak_within_samesample,,,,,,,,,,,,,missing
@@ -54,6 +66,9 @@ composite_secularism_covwt_norm,T2_with_gdp,0.038330,0.029928,0.200479,,,,0.0633
 composite_secularism_covwt_norm,T2_no_gdp_samesample,0.038225,0.030032,0.203287,,,,0.063207,1648.000000,166.000000,166.000000,0.042944,cluster_entity,
 composite_secularism_covwt_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 composite_secularism_covwt_norm,T2_with_gdp_dk,0.038330,0.009941,0.000120,***,,,0.063382,1648.000000,166.000000,166.000000,0.042944,driscoll_kraay_bw2,
+composite_secularism_covwt_norm,T5_ld_2013_2022_no_gdp,0.026345,0.063657,0.678981,,,,0.039876,170.000000,170.000000,165.000000,0.089971,HC3,
+composite_secularism_covwt_norm,T5_ld_2013_2022_with_gdp,0.032190,0.066879,0.630286,,,,0.048661,163.000000,163.000000,158.000000,0.090179,HC3,
+composite_secularism_covwt_norm,T5_ld_2014_2022_with_gdp,0.007015,0.058376,0.904348,,,,0.011224,163.000000,163.000000,158.000000,0.090272,HC3,
 composite_secularism_covwt_norm,T4_mundlak_within,0.038306,0.028419,0.177871,,,,0.063341,1648.000000,166.000000,166.000000,0.042944,cluster_entity,
 composite_secularism_covwt_norm,T4_mundlak_between,-0.236196,0.056210,0.000028,***,,,,1648.000000,166.000000,166.000000,0.042944,cluster_entity,
 composite_secularism_covwt_norm,T4_mundlak_within_samesample,,,,,,,,,,,,,missing
@@ -66,6 +81,9 @@ gri_apostasy_norm,T2_with_gdp,-0.018020,0.009838,0.067203,*,0.537624,0.142640,-0
 gri_apostasy_norm,T2_no_gdp_samesample,-0.017982,0.009825,0.067409,*,,,-0.042763,1648.000000,166.000000,9.000000,0.094152,cluster_entity,
 gri_apostasy_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 gri_apostasy_norm,T2_with_gdp_dk,-0.018020,0.006537,0.005914,***,,,-0.042853,1648.000000,166.000000,9.000000,0.094152,driscoll_kraay_bw2,
+gri_apostasy_norm,T5_ld_2013_2022_no_gdp,-0.035811,0.027490,0.192675,,,,-0.144990,170.000000,170.000000,10.000000,0.240663,HC3,
+gri_apostasy_norm,T5_ld_2013_2022_with_gdp,,,,,,,,,,,,,missing
+gri_apostasy_norm,T5_ld_2014_2022_with_gdp,,,,,,,,,,,,,missing
 gri_apostasy_norm,T4_mundlak_within,-0.018014,0.009356,0.054362,*,,,-0.042838,1648.000000,166.000000,9.000000,0.094152,cluster_entity,
 gri_apostasy_norm,T4_mundlak_between,-0.126217,0.038451,0.001051,***,,,-0.300154,1648.000000,166.000000,9.000000,0.094152,cluster_entity,
 gri_apostasy_norm,T4_mundlak_within_samesample,-0.017978,0.009340,0.054431,*,,,-0.042754,1648.000000,166.000000,9.000000,0.094152,cluster_entity,
@@ -78,6 +96,9 @@ gri_religious_courts_norm,T2_with_gdp,-0.007270,0.006853,0.288906,,1.000000,0.38
 gri_religious_courts_norm,T2_no_gdp_samesample,-0.007281,0.006842,0.287416,,,,-0.018246,1648.000000,166.000000,36.000000,0.175375,cluster_entity,
 gri_religious_courts_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 gri_religious_courts_norm,T2_with_gdp_dk,-0.007270,0.003488,0.037283,**,,,-0.018218,1648.000000,166.000000,36.000000,0.175375,driscoll_kraay_bw2,
+gri_religious_courts_norm,T5_ld_2013_2022_no_gdp,-0.010268,0.012352,0.405829,,,,-0.059284,170.000000,170.000000,20.000000,0.343200,HC3,
+gri_religious_courts_norm,T5_ld_2013_2022_with_gdp,-0.009588,0.013423,0.475043,,,,-0.054961,163.000000,163.000000,19.000000,0.341969,HC3,
+gri_religious_courts_norm,T5_ld_2014_2022_with_gdp,-0.008570,0.013048,0.511320,,,,-0.054035,163.000000,163.000000,21.000000,0.355756,HC3,
 gri_religious_courts_norm,T4_mundlak_within,-0.007272,0.006516,0.264613,,,,-0.018222,1648.000000,166.000000,36.000000,0.175375,cluster_entity,
 gri_religious_courts_norm,T4_mundlak_between,0.042349,0.022605,0.061186,*,,,0.106122,1648.000000,166.000000,36.000000,0.175375,cluster_entity,
 gri_religious_courts_norm,T4_mundlak_within_samesample,-0.007282,0.006504,0.263065,,,,-0.018248,1648.000000,166.000000,36.000000,0.175375,cluster_entity,
@@ -90,6 +111,9 @@ gri_gov_favour_norm,T2_with_gdp,0.013855,0.009505,0.145144,,,,0.027126,1648.0000
 gri_gov_favour_norm,T2_no_gdp_samesample,0.013884,0.009537,0.145641,,,,0.027182,1648.000000,166.000000,58.000000,0.106143,cluster_entity,
 gri_gov_favour_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 gri_gov_favour_norm,T2_with_gdp_dk,0.013855,0.002924,0.000002,***,,,0.027126,1648.000000,166.000000,58.000000,0.106143,driscoll_kraay_bw2,
+gri_gov_favour_norm,T5_ld_2013_2022_no_gdp,,,,,,,,,,,,,missing
+gri_gov_favour_norm,T5_ld_2013_2022_with_gdp,,,,,,,,,,,,,missing
+gri_gov_favour_norm,T5_ld_2014_2022_with_gdp,,,,,,,,,,,,,missing
 gri_gov_favour_norm,T4_mundlak_within,0.013843,0.009038,0.125801,,,,0.027102,1648.000000,166.000000,58.000000,0.106143,cluster_entity,
 gri_gov_favour_norm,T4_mundlak_between,-0.055351,0.032499,0.088729,*,,,-0.108365,1648.000000,166.000000,58.000000,0.106143,cluster_entity,
 gri_gov_favour_norm,T4_mundlak_within_samesample,0.013873,0.009066,0.126144,,,,0.027160,1648.000000,166.000000,58.000000,0.106143,cluster_entity,
@@ -102,6 +126,9 @@ gri_state_religion_norm,T2_with_gdp,0.006487,0.014727,0.659647,,,,0.012391,1648.
 gri_state_religion_norm,T2_no_gdp_samesample,0.006456,0.014703,0.660657,,,,0.012332,1648.000000,166.000000,24.000000,0.083923,cluster_entity,
 gri_state_religion_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 gri_state_religion_norm,T2_with_gdp_dk,0.006487,0.007460,0.384663,,,,0.012391,1648.000000,166.000000,24.000000,0.083923,driscoll_kraay_bw2,
+gri_state_religion_norm,T5_ld_2013_2022_no_gdp,,,,,,,,,,,,,missing
+gri_state_religion_norm,T5_ld_2013_2022_with_gdp,,,,,,,,,,,,,missing
+gri_state_religion_norm,T5_ld_2014_2022_with_gdp,,,,,,,,,,,,,missing
 gri_state_religion_norm,T4_mundlak_within,0.006494,0.014004,0.642938,,,,0.012403,1648.000000,166.000000,24.000000,0.083923,cluster_entity,
 gri_state_religion_norm,T4_mundlak_between,-0.012211,0.040863,0.765114,,,,-0.023324,1648.000000,166.000000,24.000000,0.083923,cluster_entity,
 gri_state_religion_norm,T4_mundlak_within_samesample,0.006462,0.013977,0.643879,,,,0.012344,1648.000000,166.000000,24.000000,0.083923,cluster_entity,
@@ -114,6 +141,9 @@ gri_religious_law_norm,T2_with_gdp,0.006207,0.007219,0.389995,,,,0.012537,1648.0
 gri_religious_law_norm,T2_no_gdp_samesample,0.006185,0.007216,0.391471,,,,0.012493,1648.000000,166.000000,91.000000,0.104105,cluster_entity,
 gri_religious_law_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 gri_religious_law_norm,T2_with_gdp_dk,0.006207,0.003366,0.065349,*,,,0.012537,1648.000000,166.000000,91.000000,0.104105,driscoll_kraay_bw2,
+gri_religious_law_norm,T5_ld_2013_2022_no_gdp,,,,,,,,,,,,,missing
+gri_religious_law_norm,T5_ld_2013_2022_with_gdp,,,,,,,,,,,,,missing
+gri_religious_law_norm,T5_ld_2014_2022_with_gdp,,,,,,,,,,,,,missing
 gri_religious_law_norm,T4_mundlak_within,0.006211,0.006865,0.365758,,,,0.012544,1648.000000,166.000000,91.000000,0.104105,cluster_entity,
 gri_religious_law_norm,T4_mundlak_between,0.081789,0.044611,0.066927,*,,,0.165192,1648.000000,166.000000,91.000000,0.104105,cluster_entity,
 gri_religious_law_norm,T4_mundlak_within_samesample,0.006189,0.006860,0.367106,,,,0.012500,1648.000000,166.000000,91.000000,0.104105,cluster_entity,
@@ -126,6 +156,9 @@ gri_blasphemy_norm,T2_with_gdp,-0.000741,0.003501,0.832331,,,,-0.002596,1648.000
 gri_blasphemy_norm,T2_no_gdp_samesample,-0.000743,0.003495,0.831757,,,,-0.002600,1648.000000,166.000000,64.000000,0.263782,cluster_entity,
 gri_blasphemy_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
 gri_blasphemy_norm,T2_with_gdp_dk,-0.000741,0.002078,0.721337,,,,-0.002596,1648.000000,166.000000,64.000000,0.263782,driscoll_kraay_bw2,
+gri_blasphemy_norm,T5_ld_2013_2022_no_gdp,,,,,,,,,,,,,missing
+gri_blasphemy_norm,T5_ld_2013_2022_with_gdp,,,,,,,,,,,,,missing
+gri_blasphemy_norm,T5_ld_2014_2022_with_gdp,,,,,,,,,,,,,missing
 gri_blasphemy_norm,T4_mundlak_within,-0.000748,0.003329,0.822312,,,,-0.002618,1648.000000,166.000000,64.000000,0.263782,cluster_entity,
 gri_blasphemy_norm,T4_mundlak_between,-0.043966,0.018963,0.020545,**,,,-0.153949,1648.000000,166.000000,64.000000,0.263782,cluster_entity,
 gri_blasphemy_norm,T4_mundlak_within_samesample,-0.000748,0.003322,0.821918,,,,-0.002619,1648.000000,166.000000,64.000000,0.263782,cluster_entity,
