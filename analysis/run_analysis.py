@@ -750,6 +750,170 @@ def tier4_mundlak_re(df: pd.DataFrame) -> list[dict]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# 5b. TIER 5 – LONG-DIFFERENCE REGRESSION  (Item 3, 2026-04-15)
+# ═══════════════════════════════════════════════════════════════════════════════
+def _tier5_one_spec(df: pd.DataFrame, focal_pred: str,
+                     pred_cols: list, start_y: int, end_y: int,
+                     tier_tag: str) -> list[dict]:
+    """One long-difference regression at (start_y → end_y) with given pred_cols.
+
+    Returns list of result-row dicts (one per coefficient including the
+    constant). Caller supplies the tier_tag; diagnostics are attached to the
+    `focal_pred` row only.
+    """
+    cols_needed = [OUTCOME] + pred_cols
+    sub = df[df["year"].isin([start_y, end_y])][
+        ["iso3", "year"] + cols_needed
+    ].dropna(subset=cols_needed).copy()
+
+    start_df = sub[sub["year"] == start_y].drop(columns="year").set_index("iso3")
+    end_df   = sub[sub["year"] == end_y].drop(columns="year").set_index("iso3")
+    start_df = start_df[~start_df.index.duplicated(keep="first")]
+    end_df   = end_df[~end_df.index.duplicated(keep="first")]
+    common   = start_df.index.intersection(end_df.index)
+    if len(common) < 30:
+        print(f"  [{tier_tag}] N={len(common)} < 30 — skipping.")
+        return []
+
+    deltas = end_df.loc[common, cols_needed] - start_df.loc[common, cols_needed]
+    y = deltas[OUTCOME]
+    X = sm.add_constant(deltas[pred_cols])
+    try:
+        model = sm.OLS(y, X).fit(cov_type="HC3")
+    except Exception as e:
+        print(f"  [{tier_tag}] regression failed: {e}")
+        return []
+
+    delta_focal = deltas[focal_pred]
+    n_countries = int(len(deltas))
+    n_changers  = int((delta_focal.abs() > 1e-8).sum())
+    delta_sd    = float(delta_focal.std(skipna=True))
+    try:
+        cond_x = float(np.linalg.cond(X.values.astype(float)))
+    except Exception:
+        cond_x = np.nan
+
+    beta_f = float(model.params[focal_pred])
+    se_f   = float(model.bse[focal_pred])
+    p_f    = float(model.pvalues[focal_pred])
+    print(f"  [{tier_tag}] "
+          f"N={n_countries}, Δfocal≠0 in {n_changers}, "
+          f"Δfocal SD={delta_sd:.4f}, cond(X)={cond_x:.1f}")
+    print(f"    β[{focal_pred}] = {beta_f:+.5f}  SE={se_f:.5f}  "
+          f"p={p_f:.4f} {_sig(p_f)}")
+
+    # Three-tier validity: invalid if <10 changers, low_power if 10–24, valid ≥25.
+    # Single-changer threshold was knife-edge (courts at 19 vs composites at 150+);
+    # low_power warning preserves the row for reporting with an explicit caveat.
+    valid = True
+    invalid_reason = ""
+    if n_changers < 10:
+        valid = False
+        invalid_reason = f"few changers ({n_changers} < 10)"
+    elif n_changers < 25:
+        invalid_reason = f"low_power (n_changers={n_changers}, <25)"
+    if not np.isnan(cond_x) and cond_x > 1e6:
+        valid = False
+        invalid_reason = f"ill-conditioned (cond={cond_x:.1e})"
+
+    rows = []
+    for var in model.params.index:
+        std_c = (_std_coef(float(model.params[var]), deltas[var], y)
+                 if var in deltas.columns else np.nan)
+        rows.append({
+            "tier":       tier_tag,
+            "year":       f"{start_y}_{end_y}",
+            "predictor":  var,
+            "coef":       float(model.params[var]),
+            "se":         float(model.bse[var]),
+            "pval":       float(model.pvalues[var]),
+            "n":          int(model.nobs),
+            "r2":         float(model.rsquared),
+            "n_clusters": n_countries,
+            "n_changers": (n_changers if var == focal_pred else np.nan),
+            "within_sd":  (delta_sd if var == focal_pred else np.nan),
+            "std_coef":   std_c,
+            "se_type":    "HC3",
+            "valid":      valid,
+            "invalid_reason": invalid_reason,
+        })
+    return rows
+
+
+def tier5_long_difference(df: pd.DataFrame, focal_pred: str) -> list[dict]:
+    """Long-difference regression: Δoutcome on Δfocal + Δcontrols.
+
+    Collapses the panel to one observation per country by endpoint-subtraction
+    (end_year - start_year). Estimates within-country structural change at the
+    medium-run horizon, purging short-term noise (including WVS linear-
+    interpolation arithmetic at inter-wave years).
+
+    Lit precedent: Acemoglu (2001 QJE) on colonial institutions; Besley–Persson
+    (2011) on state capacity. Canonical fallback when short-panel TWFE
+    produces a within-country null potentially driven by annual noise rather
+    than genuine structural absence.
+
+    Windows run: (2013, 2022) main, (2014, 2022) alt-endpoint, (2013, 2017)
+    and (2017, 2022) 5-year sub-windows. Each window × {no_gdp, with_gdp}.
+    For composite focals the predictor form is `[focal_pred] + controls`,
+    following composite_tier_specs (the composite is a linear combination of
+    GRI + V-Dem + WVS, so including the underlying GRI alongside would be
+    severely multicollinear). For GRI sub-item focals (apostasy, courts) a
+    companion `_grifull` spec is also emitted that regresses on
+    `GRI_PANEL_COLS + controls`, giving the sub-item effect net of the other
+    GRI dimensions — these are orthogonal enough that multicollinearity is
+    not a concern.
+
+    Tier tags: `T5_long_diff_{start}_{end}_{no_gdp|with_gdp}` (standalone) and
+    `T5_long_diff_{start}_{end}_{no_gdp|with_gdp}_grifull` (GRI decomposition,
+    emitted only for focal_pred in GRI_PANEL_COLS).
+
+    SEs: HC3 (one obs per country; the country is the cluster unit but each
+    country appears exactly once, so HC3 is the appropriate heteroskedasticity
+    adjustment).
+
+    Caveat on Δ(log_gdppc_norm): `log_gdppc_norm` is log GDP per capita
+    robust-min-max normalised to ~[0,1]. Its Δ is on the normalised scale, not
+    log-points, so the coefficient is NOT an income elasticity — it is the
+    marginal effect per unit of the normalised decade-change.
+
+    Diagnostics: n_clusters = N countries with both endpoints; n_changers =
+    countries with |Δfocal| > 1e-8; within_sd = SD of Δfocal across countries.
+    Three-tier validity: `invalid` if n_changers < 10, `low_power` warning
+    (valid=True, warning carried in invalid_reason) if 10 ≤ n_changers < 25,
+    `valid` (no flag) otherwise. Also flagged invalid if cond(X) > 1e6.
+    """
+    if focal_pred not in df.columns:
+        print(f"  [T5 long_diff] {focal_pred} not in df; skipping.")
+        return []
+
+    print(f"\n{'='*60}")
+    print(f"TIER 5 – LONG-DIFFERENCE REGRESSION ({focal_pred})")
+    print(f"{'='*60}")
+
+    results: list[dict] = []
+    windows = [(2013, 2022), (2014, 2022), (2013, 2017), (2017, 2022)]
+    control_sets = [("no_gdp", CONTROLS), ("with_gdp", CONTROLS_GDP)]
+
+    for (start_y, end_y) in windows:
+        for (label, controls) in control_sets:
+            # Standalone spec: [focal_pred] + controls
+            standalone_tag = f"T5_long_diff_{start_y}_{end_y}_{label}"
+            results.extend(_tier5_one_spec(
+                df, focal_pred, [focal_pred] + controls,
+                start_y, end_y, standalone_tag))
+            # GRI-decomposition companion (only for GRI sub-item focals)
+            if focal_pred in GRI_PANEL_COLS:
+                grifull_tag = f"T5_long_diff_{start_y}_{end_y}_{label}_grifull"
+                results.extend(_tier5_one_spec(
+                    df, focal_pred, GRI_PANEL_COLS + controls,
+                    start_y, end_y, grifull_tag))
+
+    print(f"  Emitted {len(results)} T5 rows for {focal_pred}")
+    return results
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # 6. TIER 3 – SYSTEM-GMM  (Blundell-Bond 1998)
 # ═══════════════════════════════════════════════════════════════════════════════
 def tier3_system_gmm(df: pd.DataFrame) -> list[dict]:
@@ -3818,6 +3982,18 @@ def main():
             all_results.extend(tier2_panel_fe(df))
             all_results.extend(tier4_mundlak_re(df))
             all_results.extend(tier3_system_gmm(df))
+
+            # Item 3 (2026-04-15): Tier 5 long-difference — endpoint change
+            # regression, one obs per country. Runs for each focal the paper
+            # already carries; windows = 2013–2022 (main), 2014–2022 (alt
+            # endpoint), 2013–2017 and 2017–2022 (5-year sub-windows).
+            # SEs HC3. Tier tag T5_long_diff_{start}_{end}_{no_gdp|with_gdp}.
+            for _ld_focal in [FOCAL_PRED, FOCAL_PRED_PCA,
+                              "composite_secularism_real_norm",
+                              "composite_secularism_instonly_norm",
+                              "composite_secularism_covwt_norm",
+                              FOCAL_PRED_2, FOCAL_PRED_LEGACY]:
+                all_results.extend(tier5_long_difference(df, _ld_focal))
 
             # Item 2 (2026-04-15): composite tier specs — standalone PanelOLS
             # with composite as focal. Emits rows under the same tier tags as
