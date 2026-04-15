@@ -21,6 +21,17 @@ composite_secularism_pca_norm,T4_mundlak_within,0.015356,0.024140,0.524783,,,,0.
 composite_secularism_pca_norm,T4_mundlak_between,-0.243078,0.047888,0.000000,***,,,,1648.000000,166.000000,165.000000,0.041910,cluster_entity,
 composite_secularism_pca_norm,T4_mundlak_within_samesample,,,,,,,,,,,,,missing
 composite_secularism_pca_norm,T4_mundlak_between_samesample,,,,,,,,,,,,,missing
+composite_secularism_real_norm,T1_2014_with_gdp,-0.172791,0.045030,0.000124,***,,,,166.000000,,,,HC3,
+composite_secularism_real_norm,T1_2020_with_gdp,-0.192790,0.051201,0.000166,***,,,,164.000000,,,,HC3,
+composite_secularism_real_norm,T2_no_gdp,0.028618,0.025335,0.258821,,,,0.048072,1700.000000,170.000000,169.000000,0.047896,cluster_entity,
+composite_secularism_real_norm,T2_with_gdp,0.027090,0.024411,0.267301,,,,0.045001,1648.000000,166.000000,165.000000,0.048013,cluster_entity,
+composite_secularism_real_norm,T2_no_gdp_samesample,0.026954,0.024590,0.273192,,,,0.044776,1648.000000,166.000000,165.000000,0.048013,cluster_entity,
+composite_secularism_real_norm,T2_with_gdp_samesample,,,,,,,,,,,,,= T2_with_gdp
+composite_secularism_real_norm,T2_with_gdp_dk,0.027090,0.008017,0.000746,***,,,0.045001,1648.000000,166.000000,165.000000,0.048013,driscoll_kraay_bw2,
+composite_secularism_real_norm,T4_mundlak_within,0.027072,0.023181,0.243019,,,,0.044973,1648.000000,166.000000,165.000000,0.048013,cluster_entity,
+composite_secularism_real_norm,T4_mundlak_between,-0.225182,0.053698,0.000029,***,,,,1648.000000,166.000000,165.000000,0.048013,cluster_entity,
+composite_secularism_real_norm,T4_mundlak_within_samesample,,,,,,,,,,,,,missing
+composite_secularism_real_norm,T4_mundlak_between_samesample,,,,,,,,,,,,,missing
 gri_apostasy_norm,T1_2014_with_gdp,-0.141878,0.028184,0.000000,***,,,,166.000000,,,,,
 gri_apostasy_norm,T1_2020_with_gdp,-0.119279,0.039511,0.002537,***,,,,164.000000,,,,,
 gri_apostasy_norm,T2_no_gdp,-0.016927,0.009080,0.062495,*,0.499957,0.142640,-0.040636,1700.000000,170.000000,11.000000,0.098248,cluster_entity,

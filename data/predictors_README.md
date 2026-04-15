@@ -99,7 +99,8 @@ the working dataframe; they are NOT stored on disk.
 | Column | Construction |
 |--------|-------------|
 | `composite_secularism_norm` | Equal-weight z-score of three dimensions; primary headline |
-| `composite_secularism_pca_norm` | First principal component over the 11 inputs; robustness variant |
+| `composite_secularism_pca_norm` | First principal component over the 11 inputs (EM-imputed); robustness variant |
+| `composite_secularism_real_norm` | Equal-weight z-score with WVS columns masked to NaN on `wvs_interpolated == 1` rows; robustness variant that purges interpolator arithmetic from the behavioural dimension |
 
 **Dimensions and orientation** (all set to "higher = more religion / less secular"):
 - **Institutional** — 6 GRI sub-items (state religion, gov favouritism,

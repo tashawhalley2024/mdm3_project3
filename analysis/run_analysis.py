@@ -273,12 +273,25 @@ def load_and_merge() -> pd.DataFrame:
     # analysis/utils.py:build_secularism_composite for details.
     merged = build_secularism_composite(merged)
 
+    # Follow-up #1: real (no-WVS-interpolation) variant. WVS values are
+    # masked to NaN on rows where wvs_interpolated==1 before the behavioural
+    # dimension is z-scored, so the composite's within-country variation
+    # does not include interpolator arithmetic.
+    merged = build_secularism_composite(
+        merged,
+        drop_interpolated_wvs=True,
+        output_name="composite_secularism_real_norm",
+        build_pca=False,
+    )
+
     # Log composite coverage AND changer counts — raw and WVS-real-only
     # (wvs_interpolated==0). The WVS-real-only count is the meaningful
     # "did anything actually move" diagnostic for the composite's
     # behavioural dimension; raw changer counts are dominated by
     # interpolator arithmetic.
-    for col in ["composite_secularism_norm", "composite_secularism_pca_norm"]:
+    for col in ["composite_secularism_norm",
+                "composite_secularism_pca_norm",
+                "composite_secularism_real_norm"]:
         n_obs = merged[col].notna().sum()
         chg_raw = int((merged.groupby("iso3")[col].nunique(dropna=True) > 1).sum())
         if "wvs_interpolated" in merged.columns:
@@ -3733,6 +3746,7 @@ def main():
             # up alongside the GRI decomposition rows. Both composite variants.
             all_results.extend(composite_tier_specs(df, FOCAL_PRED))
             all_results.extend(composite_tier_specs(df, FOCAL_PRED_PCA))
+            all_results.extend(composite_tier_specs(df, "composite_secularism_real_norm"))
 
             vif_check(df)
             vif_by_spec(df)
@@ -3808,6 +3822,8 @@ def main():
                                                    out_path=EVENTSTUDY_PATH_PCA))
             all_results.extend(phase9_wild_bootstrap(df))
             all_results.extend(phase9_wild_bootstrap(df, focal_pred=FOCAL_PRED_2))
+            all_results.extend(phase9_wild_bootstrap(
+                df, focal_pred="composite_secularism_real_norm"))
             all_results.extend(phase9_driscoll_kraay(df))
             all_results.extend(phase9_mundlak_cre(df))
             all_results.extend(phase9_male_composite_placebo(df))

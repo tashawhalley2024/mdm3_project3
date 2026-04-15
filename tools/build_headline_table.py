@@ -27,7 +27,8 @@ FOCAL_PREDS = [
     # and apostasy are preserved as robustness focals; other GRI sub-items
     # appear as secondary rows for completeness.
     "composite_secularism_norm",            # headline: equal-weight z-score
-    "composite_secularism_pca_norm",        # robustness: PCA variant
+    "composite_secularism_pca_norm",        # robustness: PCA variant (EM-imputed)
+    "composite_secularism_real_norm",       # robustness: no-WVS-interp (real-wave-only)
     "gri_apostasy_norm",                    # strongest sub-item
     "gri_religious_courts_norm",            # legacy headline, preserved
     "gri_gov_favour_norm",                  # newly activated in GRI_PANEL_COLS
