@@ -72,98 +72,181 @@ def _zscore_nan(s: pd.Series) -> pd.Series:
     return (s - mu) / sd
 
 
-def build_secularism_composite(df: pd.DataFrame) -> pd.DataFrame:
-    """Add composite_secularism_norm and composite_secularism_pca_norm to df.
+def _prepare_composite_inputs(
+    df: pd.DataFrame,
+    *,
+    drop_interpolated_wvs: bool = False,
+) -> pd.DataFrame:
+    """Return the 11-col prepared frame for composite construction.
 
-    Three dimensions, all oriented so higher = more religion / less secular:
-      institutional: 6 GRI cols (incl. gri_gov_favour_norm)
-      attitudinal:   v2clrelig_norm (SIGN-FLIPPED before z-scoring)
-      behavioural:   4 WVS cols (imprel, godimp, godbel, confch)
-
-    Equal-weight variant (headline):
-      Z-score within each dimension (NaN-aware, skipna). Average the
-      available dimension z-scores per row (dimension-fallback: if one
-      dimension is entirely NaN for a row, use the mean of the remaining
-      two). Pass through robust_minmax to [0, 1].
-
-    PCA variant (robustness):
-      Column-mean-impute each input column across its observed values, then
-      standardise (z-score each col), then fit PCA(n_components=1) on the
-      11-col matrix. Post-hoc sign-align so the loading on
-      gri_state_religion_norm is positive. Pass through robust_minmax to
-      [0, 1].
-
-      CAVEAT: Column-mean imputation on heterogeneous-coverage inputs
-      (WVS coverage ~44% pre-interpolation, GRI 100%) causes imputed
-      columns to have lower post-fill variance. The first PC therefore
-      loads more heavily on the fully-covered institutional columns,
-      degenerating the PCA toward a GRI-weighted average. This is a known
-      limitation of the PCA variant; the equal-weight composite is the
-      headline for that reason.
-
-    Sign-alignment is verified by asserting
-    corr(composite, gri_state_religion_norm) > 0 after robust_minmax; if
-    the check fails the composite is flipped and a warning is logged.
-
-    Columns added:
-      composite_secularism_norm, composite_secularism_pca_norm
+    v2clrelig is sign-flipped (stored as v2clrelig_norm_flipped). If
+    drop_interpolated_wvs is True, the 4 WVS cols are masked to NaN on
+    rows where wvs_interpolated == 1.
     """
-    from sklearn.decomposition import PCA  # lazy import
-
-    out = df.copy()
-
-    # ── 1. Sign-flip v2clrelig so every input is oriented "higher = more religion"
-    if "v2clrelig_norm" in out.columns:
-        v_flipped = 1.0 - out["v2clrelig_norm"]
+    if "v2clrelig_norm" in df.columns:
+        v_flipped = 1.0 - df["v2clrelig_norm"]
     else:
-        v_flipped = pd.Series(np.nan, index=out.index)
+        v_flipped = pd.Series(np.nan, index=df.index)
 
-    # ── 2. Equal-weight z-score composite ───────────────────────────────
-    inst_z = sum(_zscore_nan(out[c]) for c in COMPOSITE_INSTITUTIONAL_COLS
-                 if c in out.columns) / \
-             sum(1 for c in COMPOSITE_INSTITUTIONAL_COLS if c in out.columns)
-    att_z  = _zscore_nan(v_flipped)
-    beh_z  = sum(_zscore_nan(out[c]) for c in COMPOSITE_BEHAVIOURAL_COLS
-                 if c in out.columns) / \
-             sum(1 for c in COMPOSITE_BEHAVIOURAL_COLS if c in out.columns)
+    prepared = pd.DataFrame(index=df.index)
+    for c in COMPOSITE_INSTITUTIONAL_COLS:
+        prepared[c] = df[c] if c in df.columns else np.nan
+    prepared["v2clrelig_norm_flipped"] = v_flipped
+    for c in COMPOSITE_BEHAVIOURAL_COLS:
+        prepared[c] = df[c] if c in df.columns else np.nan
 
-    # Dimension-fallback: row-average only the non-NaN dimension z-scores
-    dims = pd.DataFrame({"inst": inst_z, "att": att_z, "beh": beh_z})
-    composite_raw = dims.mean(axis=1, skipna=True)  # pandas skipna handles fallback
+    if drop_interpolated_wvs and "wvs_interpolated" in df.columns:
+        mask = df["wvs_interpolated"] == 1
+        for c in COMPOSITE_BEHAVIOURAL_COLS:
+            if c in prepared.columns:
+                prepared.loc[mask, c] = np.nan
+
+    return prepared
+
+
+def _compute_coverage_weights(df: pd.DataFrame) -> tuple:
+    """Panel-wide non-null row fractions per dimension.
+
+    Returns (w_inst, w_att, w_beh). WVS coverage uses wvs_interpolated == 0
+    (pre-interpolation wave years only) when that column is present, so the
+    coverage variant remains meaningful even when the main composite is
+    built post-interpolation.
+    """
+    inst_cols = [c for c in COMPOSITE_INSTITUTIONAL_COLS if c in df.columns]
+    if inst_cols:
+        w_inst = float(df[inst_cols].notna().all(axis=1).mean())
+    else:
+        w_inst = 0.0
+
+    if "v2clrelig_norm" in df.columns:
+        w_att = float(df["v2clrelig_norm"].notna().mean())
+    else:
+        w_att = 0.0
+
+    beh_cols = [c for c in COMPOSITE_BEHAVIOURAL_COLS if c in df.columns]
+    if beh_cols:
+        beh_observed = df[beh_cols].notna().all(axis=1)
+        if "wvs_interpolated" in df.columns:
+            beh_real = df["wvs_interpolated"] == 0
+            w_beh = float((beh_observed & beh_real).mean())
+        else:
+            w_beh = float(beh_observed.mean())
+    else:
+        w_beh = 0.0
+
+    return w_inst, w_att, w_beh
+
+
+def _build_equal_weight(
+    prepared: pd.DataFrame,
+    *,
+    weighting: str = "equal",
+    coverage_weights: tuple = None,
+    sign_align_series: pd.Series = None,
+) -> pd.Series:
+    """Build the equal/instonly/covwt composite from prepared 11-col frame.
+
+    weighting:
+      'equal'             -- row-mean of (inst_z, att_z, beh_z), dimension-fallback.
+      'institutional_only' -- return inst_z only; att/beh dropped.
+      'coverage'          -- weighted sum by coverage_weights (from the
+                             original df), renormalised over observed
+                             dimensions per row.
+
+    Returns a Series on [0, 1] after robust_minmax, sign-aligned against
+    sign_align_series (typically gri_state_religion_norm).
+    """
+    inst_cols = [c for c in COMPOSITE_INSTITUTIONAL_COLS if c in prepared.columns]
+    beh_cols = [c for c in COMPOSITE_BEHAVIOURAL_COLS if c in prepared.columns]
+
+    inst_z = (sum(_zscore_nan(prepared[c]) for c in inst_cols) / len(inst_cols)
+              if inst_cols else pd.Series(np.nan, index=prepared.index))
+    att_z = (_zscore_nan(prepared["v2clrelig_norm_flipped"])
+             if "v2clrelig_norm_flipped" in prepared.columns
+             else pd.Series(np.nan, index=prepared.index))
+    beh_z = (sum(_zscore_nan(prepared[c]) for c in beh_cols) / len(beh_cols)
+             if beh_cols else pd.Series(np.nan, index=prepared.index))
+
+    if weighting == "equal":
+        dims = pd.DataFrame({"inst": inst_z, "att": att_z, "beh": beh_z})
+        composite_raw = dims.mean(axis=1, skipna=True)
+    elif weighting == "institutional_only":
+        composite_raw = inst_z
+    elif weighting == "coverage":
+        if coverage_weights is None:
+            raise ValueError("coverage_weights required for weighting='coverage'")
+        w_inst, w_att, w_beh = coverage_weights
+        dims = pd.DataFrame({"inst": inst_z, "att": att_z, "beh": beh_z})
+        weights = pd.Series({"inst": w_inst, "att": w_att, "beh": w_beh})
+        dims_mask = dims.notna().astype(float)
+        weighted_sum = (dims.fillna(0.0) * weights).sum(axis=1)
+        denom = (dims_mask * weights).sum(axis=1)
+        composite_raw = weighted_sum / denom.where(denom > 0, np.nan)
+    else:
+        raise ValueError(f"Unknown weighting: {weighting!r}")
+
     composite_norm = robust_minmax(composite_raw)
 
-    # Sign-align check
-    if "gri_state_religion_norm" in out.columns:
+    if sign_align_series is not None:
         tmp = pd.DataFrame({"c": composite_norm,
-                            "g": out["gri_state_religion_norm"]}).dropna()
+                            "g": sign_align_series}).dropna()
         if len(tmp) > 10:
             corr_val = tmp["c"].corr(tmp["g"])
             if corr_val < 0:
                 print(f"  [build_secularism_composite] WARNING: equal-weight "
-                      f"composite had negative corr with gri_state_religion "
-                      f"({corr_val:.3f}); flipping sign.")
+                      f"composite (weighting={weighting}) had negative corr "
+                      f"with gri_state_religion ({corr_val:.3f}); flipping.")
                 composite_norm = 1.0 - composite_norm
 
-    out["composite_secularism_norm"] = composite_norm
+    return composite_norm
 
-    # ── 3. PCA composite (column-mean-impute → standardise → first PC) ──
-    pca_cols = (COMPOSITE_INSTITUTIONAL_COLS
-                + ["v2clrelig_norm_flipped"]
-                + COMPOSITE_BEHAVIOURAL_COLS)
-    pca_df = pd.DataFrame(index=out.index)
-    for c in COMPOSITE_INSTITUTIONAL_COLS + COMPOSITE_BEHAVIOURAL_COLS:
-        if c in out.columns:
-            pca_df[c] = out[c]
-        else:
-            pca_df[c] = np.nan
-    pca_df["v2clrelig_norm_flipped"] = v_flipped
 
-    # Column-mean impute
-    means = pca_df.mean(axis=0, skipna=True)
-    pca_imp = pca_df.fillna(means)
+def _build_pca(
+    prepared: pd.DataFrame,
+    *,
+    imputation: str = "em",
+    sign_align_series: pd.Series = None,
+    seed: int = 42,
+) -> tuple:
+    """Build PCA composite from the prepared 11-col frame.
 
-    # Standardise each column (z-score)
-    stds = pca_imp.std(axis=0, skipna=False)
+    imputation:
+      'mean'     -- column-mean impute (legacy; biased toward high-coverage cols).
+      'listwise' -- drop any row with a NaN input; PCA fit on complete cases.
+                    Rows outside the complete-case set get NaN in the output.
+      'em'       -- sklearn IterativeImputer (EM-style round-robin regression
+                    imputation); preserves N while relaxing the mean-imputation
+                    variance shrinkage.
+
+    Returns (composite_norm, loadings, explained_variance_ratio, n_used).
+    """
+    from sklearn.decomposition import PCA
+
+    pca_df = prepared.copy()
+
+    if imputation == "mean":
+        means = pca_df.mean(axis=0, skipna=True)
+        pca_imp = pca_df.fillna(means)
+        fit_idx = pca_imp.index
+    elif imputation == "listwise":
+        pca_imp = pca_df.dropna()
+        fit_idx = pca_imp.index
+    elif imputation == "em":
+        from sklearn.experimental import enable_iterative_imputer  # noqa: F401
+        from sklearn.impute import IterativeImputer
+        imp = IterativeImputer(random_state=seed, max_iter=50, sample_posterior=False)
+        arr = imp.fit_transform(pca_df.values)
+        pca_imp = pd.DataFrame(arr, columns=pca_df.columns, index=pca_df.index)
+        fit_idx = pca_imp.index
+    else:
+        raise ValueError(f"Unknown imputation: {imputation!r}")
+
+    empty = pd.Series(np.nan, index=prepared.index)
+    nan_loadings = pd.Series(np.nan, index=pca_df.columns)
+    if len(pca_imp) < 10:
+        return empty, nan_loadings, float("nan"), len(pca_imp)
+
+    stds = pca_imp.std(axis=0)
     stds_safe = stds.where(stds > 1e-12, 1.0)
     pca_std = (pca_imp - pca_imp.mean(axis=0)) / stds_safe
 
@@ -171,45 +254,116 @@ def build_secularism_composite(df: pd.DataFrame) -> pd.DataFrame:
         pca = PCA(n_components=1)
         pc1 = pca.fit_transform(pca_std.values).ravel()
         loadings = pd.Series(pca.components_[0], index=pca_std.columns)
+        expvar = float(pca.explained_variance_ratio_[0])
     except Exception as e:
-        print(f"  [build_secularism_composite] PCA failed: {e}; "
-              "writing NaN column")
-        out["composite_secularism_pca_norm"] = np.nan
-        return out
+        print(f"  [build_secularism_composite] PCA ({imputation}) failed: {e}")
+        return empty, nan_loadings, float("nan"), len(pca_imp)
 
-    # Sign-align: loading on gri_state_religion_norm should be positive
-    if "gri_state_religion_norm" in loadings.index and \
-            loadings["gri_state_religion_norm"] < 0:
+    if ("gri_state_religion_norm" in loadings.index
+            and loadings["gri_state_religion_norm"] < 0):
         pc1 = -pc1
         loadings = -loadings
 
-    pc1_series = pd.Series(pc1, index=pca_std.index)
-    # Mask rows where ALL original inputs were NaN (nothing to say about them)
-    all_nan_mask = pca_df.isna().all(axis=1)
-    pc1_series.loc[all_nan_mask] = np.nan
+    pc1_series = pd.Series(np.nan, index=prepared.index)
+    pc1_series.loc[fit_idx] = pc1
+
+    if imputation != "listwise":
+        all_nan_mask = pca_df.isna().all(axis=1)
+        pc1_series.loc[all_nan_mask] = np.nan
 
     composite_pca_norm = robust_minmax(pc1_series)
 
-    # Belt-and-braces sign check on the normalised output
-    if "gri_state_religion_norm" in out.columns:
+    if sign_align_series is not None:
         tmp = pd.DataFrame({"c": composite_pca_norm,
-                            "g": out["gri_state_religion_norm"]}).dropna()
+                            "g": sign_align_series}).dropna()
         if len(tmp) > 10:
             corr_val = tmp["c"].corr(tmp["g"])
             if corr_val < 0:
-                print(f"  [build_secularism_composite] WARNING: PCA "
-                      f"composite had negative corr with gri_state_religion "
-                      f"({corr_val:.3f}); flipping sign.")
+                print(f"  [build_secularism_composite] WARNING: PCA composite "
+                      f"(imputation={imputation}) had negative corr with "
+                      f"gri_state_religion ({corr_val:.3f}); flipping.")
                 composite_pca_norm = 1.0 - composite_pca_norm
 
-    out["composite_secularism_pca_norm"] = composite_pca_norm
+    return composite_pca_norm, loadings, expvar, len(pca_imp)
 
-    # Log PCA loadings for audit trail
-    print(f"  [build_secularism_composite] PCA first-PC explained variance: "
-          f"{pca.explained_variance_ratio_[0]:.3f}")
-    print(f"  [build_secularism_composite] PCA loadings:")
-    for col, load in loadings.sort_values(ascending=False).items():
-        print(f"    {col:40s} {load:+.3f}")
+
+def build_secularism_composite(
+    df: pd.DataFrame,
+    *,
+    drop_interpolated_wvs: bool = False,
+    weighting: str = "equal",
+    pca_imputation: str = "em",
+    output_name: str = "composite_secularism_norm",
+    pca_output_name: str = "composite_secularism_pca_norm",
+    build_pca: bool = True,
+) -> pd.DataFrame:
+    """Attach composite secularism columns to df.
+
+    Three dimensions, all oriented so higher = more religion / less secular:
+      institutional: 6 GRI cols (incl. gri_gov_favour_norm)
+      attitudinal:   v2clrelig_norm (SIGN-FLIPPED before z-scoring)
+      behavioural:   4 WVS cols (imprel, godimp, godbel, confch)
+
+    Parameters
+    ----------
+    drop_interpolated_wvs : bool
+        If True, mask the 4 WVS cols to NaN on rows with wvs_interpolated == 1
+        before building the behavioural dimension. Produces the 'real' variant.
+    weighting : {'equal', 'institutional_only', 'coverage'}
+        'equal' (default) -- row-mean of the three dimension z-scores, with
+        pandas dimension-fallback if one dimension is NaN for a row.
+        'institutional_only' -- drop att/beh dimensions; composite = inst_z.
+        'coverage' -- weight each dimension by its panel-wide non-null row
+        fraction. WVS weight uses pre-interpolation coverage
+        (wvs_interpolated == 0), so the variant is meaningful even when the
+        main composite is built on post-interpolation WVS.
+    pca_imputation : {'mean', 'listwise', 'em'}
+        Imputation strategy for the PCA robustness column. 'em' (default) uses
+        sklearn IterativeImputer; 'listwise' drops rows with any NaN;
+        'mean' is the legacy column-mean imputation kept for comparison.
+    output_name : str
+        Column name for the equal-weight / instonly / covwt composite.
+    pca_output_name : str
+        Column name for the PCA composite.
+    build_pca : bool
+        If False, skip the PCA variant (used for secondary composites).
+
+    Sign-alignment: for each composite, the final Series is verified to
+    correlate positively with gri_state_religion_norm on the row intersection;
+    if the check fails the Series is flipped and a warning is printed.
+    """
+    out = df.copy()
+    prepared = _prepare_composite_inputs(
+        out, drop_interpolated_wvs=drop_interpolated_wvs,
+    )
+    sign_anchor = (out["gri_state_religion_norm"]
+                   if "gri_state_religion_norm" in out.columns else None)
+
+    coverage_weights = None
+    if weighting == "coverage":
+        coverage_weights = _compute_coverage_weights(out)
+
+    composite_norm = _build_equal_weight(
+        prepared,
+        weighting=weighting,
+        coverage_weights=coverage_weights,
+        sign_align_series=sign_anchor,
+    )
+    out[output_name] = composite_norm
+
+    if build_pca:
+        composite_pca_norm, loadings, expvar, n_used = _build_pca(
+            prepared, imputation=pca_imputation, sign_align_series=sign_anchor,
+        )
+        out[pca_output_name] = composite_pca_norm
+
+        if loadings.notna().any():
+            print(f"  [build_secularism_composite] PCA ({pca_imputation}) "
+                  f"first-PC explained variance: {expvar:.3f} (N={n_used})")
+            print(f"  [build_secularism_composite] PCA ({pca_imputation}) "
+                  f"loadings:")
+            for col, load in loadings.sort_values(ascending=False).items():
+                print(f"    {col:40s} {load:+.3f}")
 
     return out
 

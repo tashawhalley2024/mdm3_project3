@@ -1,0 +1,14 @@
+input,loading_em,loading_listwise,loading_mean
+gri_apostasy_norm,0.3134,0.2773,0.3136
+gri_blasphemy_norm,0.2524,0.2495,0.2492
+gri_gov_favour_norm,0.1923,0.1656,0.2028
+gri_religious_courts_norm,0.0768,0.1070,0.0990
+gri_religious_law_norm,0.2917,0.2709,0.2965
+gri_state_religion_norm,0.2334,0.1278,0.2333
+v2clrelig_norm_flipped,0.3502,0.3331,0.3482
+wvs_confch_norm,0.3515,0.3829,0.3535
+wvs_godbel_norm,0.3371,0.3695,0.3198
+wvs_godimp_norm,0.3705,0.3987,0.3749
+wvs_imprel_norm,0.3982,0.4232,0.3965
+_explained_variance_ratio,0.4653,0.3983,0.3879
+_n_rows_fit,2057.0000,874.0000,2057.0000

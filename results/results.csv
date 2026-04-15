@@ -239,23 +239,23 @@ T2_with_gdp,all,composite_secularism_norm,0.061471,0.034061,0.071320,*,0.570558,
 T2_with_gdp_dk,all,composite_secularism_norm,0.061471,0.011216,0.000000,***,,,0.095595,1648,0.008739,166.000000,165.000000,0.038552,driscoll_kraay_bw2,True,,,
 T4_mundlak_re,all,composite_secularism_norm,0.061450,0.032344,0.057623,*,,,0.095562,1648,0.377901,166.000000,165.000000,0.038552,cluster_entity,True,,,
 T4_mundlak_re,all,composite_secularism_norm_mean,-0.277680,0.058948,0.000003,***,,,,1648,0.377901,166.000000,165.000000,0.038552,cluster_entity,True,,,
-T1_no_gdp,2014,composite_secularism_pca_norm,-0.198194,0.042441,0.000003,***,,,,170,0.538086,,,,HC3,True,,,
-T1_with_gdp,2014,composite_secularism_pca_norm,-0.198075,0.044012,0.000007,***,,,,166,0.563807,,,,HC3,True,,,
-T1_no_gdp,2020,composite_secularism_pca_norm,-0.226088,0.039191,0.000000,***,,,,170,0.494350,,,,HC3,True,,,
-T1_with_gdp,2020,composite_secularism_pca_norm,-0.197945,0.043707,0.000006,***,,,,164,0.517764,,,,HC3,True,,,
-T2_gri_only,all,composite_secularism_pca_norm,0.013256,0.024279,0.585141,,,,0.020500,1860,0.000354,186.000000,176.000000,0.038471,cluster_entity,True,,,
-T2_gri_only_dk,all,composite_secularism_pca_norm,0.013256,0.012534,0.290398,,,,0.020500,1860,0.000354,186.000000,176.000000,0.038471,driscoll_kraay_bw2,True,,,
-T2_gri_only_samesample,all,composite_secularism_pca_norm,0.014433,0.023558,0.540183,,,,0.022875,1648,0.000474,166.000000,164.000000,0.039690,cluster_entity,True,,,
-T2_gri_gdp,all,composite_secularism_pca_norm,0.012040,0.023482,0.608225,,,,0.018715,1807,0.000772,182.000000,172.000000,0.038282,cluster_entity,True,,,
-T2_gri_gdp_dk,all,composite_secularism_pca_norm,0.012040,0.012813,0.347545,,,,0.018715,1807,0.000772,182.000000,172.000000,0.038282,driscoll_kraay_bw2,True,,,
-T2_gri_gdp_samesample,all,composite_secularism_pca_norm,0.014594,0.023456,0.533928,,,,0.023129,1648,0.000508,166.000000,164.000000,0.039690,cluster_entity,True,,,
-T2_no_gdp,all,composite_secularism_pca_norm,0.011488,0.024560,0.640014,,1.000000,0.685584,0.018085,1700,0.001231,170.000000,168.000000,0.039855,cluster_entity,True,,,
-T2_no_gdp_dk,all,composite_secularism_pca_norm,0.011488,0.009356,0.219660,,,,0.018085,1700,0.001231,170.000000,168.000000,0.039855,driscoll_kraay_bw2,True,,,
-T2_no_gdp_samesample,all,composite_secularism_pca_norm,0.009121,0.022868,0.690059,,,,0.014456,1648,0.002195,166.000000,164.000000,0.039690,cluster_entity,True,,,
-T2_with_gdp,all,composite_secularism_pca_norm,0.009203,0.022728,0.685584,,1.000000,0.685584,0.014586,1648,0.002199,166.000000,164.000000,0.039690,cluster_entity,True,,,
-T2_with_gdp_dk,all,composite_secularism_pca_norm,0.009203,0.010997,0.402797,,,,0.014586,1648,0.002199,166.000000,164.000000,0.039690,driscoll_kraay_bw2,True,,,
-T4_mundlak_re,all,composite_secularism_pca_norm,0.009186,0.021582,0.670427,,,,0.014559,1648,0.376314,166.000000,164.000000,0.039690,cluster_entity,True,,,
-T4_mundlak_re,all,composite_secularism_pca_norm_mean,-0.213047,0.047380,0.000007,***,,,,1648,0.376314,166.000000,164.000000,0.039690,cluster_entity,True,,,
+T1_no_gdp,2014,composite_secularism_pca_norm,-0.202279,0.042567,0.000002,***,,,,170,0.539290,,,,HC3,True,,,
+T1_with_gdp,2014,composite_secularism_pca_norm,-0.210857,0.043123,0.000001,***,,,,166,0.570216,,,,HC3,True,,,
+T1_no_gdp,2020,composite_secularism_pca_norm,-0.244412,0.042026,0.000000,***,,,,170,0.502984,,,,HC3,True,,,
+T1_with_gdp,2020,composite_secularism_pca_norm,-0.225267,0.046204,0.000001,***,,,,164,0.532849,,,,HC3,True,,,
+T2_gri_only,all,composite_secularism_pca_norm,0.019315,0.023228,0.405786,,,,0.030830,1860,0.000922,186.000000,177.000000,0.042667,cluster_entity,True,,,
+T2_gri_only_dk,all,composite_secularism_pca_norm,0.019315,0.009946,0.052310,*,,,0.030830,1860,0.000922,186.000000,177.000000,0.042667,driscoll_kraay_bw2,True,,,
+T2_gri_only_samesample,all,composite_secularism_pca_norm,0.020641,0.026131,0.429726,,,,0.032887,1648,0.001074,166.000000,165.000000,0.041910,cluster_entity,True,,,
+T2_gri_gdp,all,composite_secularism_pca_norm,0.019111,0.023956,0.425123,,,,0.030259,1807,0.001374,182.000000,173.000000,0.042127,cluster_entity,True,,,
+T2_gri_gdp_dk,all,composite_secularism_pca_norm,0.019111,0.012623,0.130227,,,,0.030259,1807,0.001374,182.000000,173.000000,0.042127,driscoll_kraay_bw2,True,,,
+T2_gri_gdp_samesample,all,composite_secularism_pca_norm,0.020818,0.025941,0.422391,,,,0.033169,1648,0.001115,166.000000,165.000000,0.041910,cluster_entity,True,,,
+T2_no_gdp,all,composite_secularism_pca_norm,0.017082,0.025269,0.499134,,1.000000,0.545407,0.027404,1700,0.001648,170.000000,169.000000,0.042507,cluster_entity,True,,,
+T2_no_gdp_dk,all,composite_secularism_pca_norm,0.017082,0.007050,0.015510,**,,,0.027404,1700,0.001648,170.000000,169.000000,0.042507,driscoll_kraay_bw2,True,,,
+T2_no_gdp_samesample,all,composite_secularism_pca_norm,0.015261,0.025723,0.553080,,,,0.024316,1648,0.002572,166.000000,165.000000,0.041910,cluster_entity,True,,,
+T2_with_gdp,all,composite_secularism_pca_norm,0.015375,0.025422,0.545407,,1.000000,0.545407,0.024497,1648,0.002579,166.000000,165.000000,0.041910,cluster_entity,True,,,
+T2_with_gdp_dk,all,composite_secularism_pca_norm,0.015375,0.011078,0.165405,,,,0.024497,1648,0.002579,166.000000,165.000000,0.041910,driscoll_kraay_bw2,True,,,
+T4_mundlak_re,all,composite_secularism_pca_norm,0.015356,0.024140,0.524783,,,,0.024467,1648,0.378983,166.000000,165.000000,0.041910,cluster_entity,True,,,
+T4_mundlak_re,all,composite_secularism_pca_norm_mean,-0.243078,0.047888,0.000000,***,,,,1648,0.378983,166.000000,165.000000,0.041910,cluster_entity,True,,,
 ROB_no_wvs_interp_no_gdp,all,const,0.620621,0.026093,0.000000,***,,,,850,0.041587,157.000000,,,cluster_entity,True,,,
 ROB_no_wvs_interp_no_gdp,all,gri_state_religion_norm,0.037068,0.042727,0.385944,,,,0.086351,850,0.041587,157.000000,11.000000,0.070125,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0371 (index units),
 ROB_no_wvs_interp_no_gdp,all,gri_gov_favour_norm,0.027086,0.013118,0.039321,**,,,0.057560,850,0.041587,157.000000,30.000000,0.101921,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0271 (index units),
@@ -484,36 +484,36 @@ P6_placebo_lfpm_norm,all,v2x_rule_norm,0.005131,0.050292,0.918755,,,,,1637,0.037
 P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.023533,0.037273,0.527890,,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
 P6_placebo_lfpm_norm,all,v2x_egal_norm,0.065794,0.052976,0.214448,,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
 P6_placebo_lfpm_norm,all,log_gdppc_norm,0.341507,0.212901,0.108918,,,,,1637,0.037146,,,,,True,,1-unit change in normalised log-GDP associates with +0.3415 in the outcome (normalised scale),Male LFP rate (placebo DV)
-P6_placebo_wdi_lifexpf_norm,all,const,0.673704,0.049935,0.000000,***,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
-P6_placebo_wdi_lifexpf_norm,all,composite_secularism_pca_norm,0.032432,0.032538,0.319057,,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
-P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.013954,0.026589,0.599800,,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
-P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,0.010624,0.026151,0.684621,,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
-P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,-0.024593,0.041716,0.555598,,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
-P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,-0.066693,0.095554,0.485312,,,,,1648,0.006439,,,,,True,,1-unit change in normalised log-GDP associates with -0.0667 in the outcome (normalised scale),Female life expectancy (female DV)
-P6_placebo_wdi_lfpf_norm,all,const,0.628166,0.047296,0.000000,***,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
-P6_placebo_wdi_lfpf_norm,all,composite_secularism_pca_norm,0.007733,0.028803,0.788381,,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
-P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.019735,0.031899,0.536234,,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
-P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.044340,0.025880,0.086874,*,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
-P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,0.015934,0.041807,0.703166,,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
-P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.114133,0.074285,0.124649,,,,,1637,0.022823,,,,,True,,1-unit change in normalised log-GDP associates with +0.1141 in the outcome (normalised scale),Female LFP rate (female DV)
-P6_placebo_wbl_treatment_index,all,const,0.673856,0.040588,0.000000,***,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
-P6_placebo_wbl_treatment_index,all,composite_secularism_pca_norm,0.009203,0.022728,0.685584,,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
-P6_placebo_wbl_treatment_index,all,v2x_rule_norm,0.004525,0.028695,0.874720,,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
-P6_placebo_wbl_treatment_index,all,v2x_civlib_norm,-0.020898,0.029978,0.485852,,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
-P6_placebo_wbl_treatment_index,all,v2x_egal_norm,-0.002941,0.040350,0.941911,,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
-P6_placebo_wbl_treatment_index,all,log_gdppc_norm,-0.003648,0.072495,0.959873,,,,,1648,0.002199,,,,,True,,1-unit change in normalised log-GDP associates with -0.0036 in the outcome (normalised scale),Women's treatment index (female DV)
-P6_placebo_lifexpm_norm,all,const,0.711425,0.046150,0.000000,***,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
-P6_placebo_lifexpm_norm,all,composite_secularism_pca_norm,0.034569,0.022502,0.124691,,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
-P6_placebo_lifexpm_norm,all,v2x_rule_norm,-0.004727,0.021391,0.825119,,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
-P6_placebo_lifexpm_norm,all,v2x_civlib_norm,0.021999,0.021897,0.315215,,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
-P6_placebo_lifexpm_norm,all,v2x_egal_norm,-0.007225,0.034072,0.832098,,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
-P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.012298,0.089611,0.890861,,,,,1648,0.007078,,,,,True,,1-unit change in normalised log-GDP associates with +0.0123 in the outcome (normalised scale),Male life expectancy (placebo DV)
-P6_placebo_lfpm_norm,all,const,0.328501,0.109716,0.002799,***,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
-P6_placebo_lfpm_norm,all,composite_secularism_pca_norm,-0.022793,0.045479,0.616323,,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
-P6_placebo_lfpm_norm,all,v2x_rule_norm,0.002675,0.050066,0.957403,,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
-P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.016321,0.037561,0.663979,,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
-P6_placebo_lfpm_norm,all,v2x_egal_norm,0.073196,0.051776,0.157660,,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
-P6_placebo_lfpm_norm,all,log_gdppc_norm,0.327634,0.208525,0.116354,,,,,1637,0.032537,,,,,True,,1-unit change in normalised log-GDP associates with +0.3276 in the outcome (normalised scale),Male LFP rate (placebo DV)
+P6_placebo_wdi_lifexpf_norm,all,const,0.671869,0.049836,0.000000,***,,,,1648,0.008552,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,composite_secularism_pca_norm,0.040165,0.029543,0.174180,,,,,1648,0.008552,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.014045,0.026181,0.591719,,,,,1648,0.008552,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,0.012863,0.025389,0.612497,,,,,1648,0.008552,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,-0.025087,0.041597,0.546542,,,,,1648,0.008552,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,-0.068790,0.095558,0.471715,,,,,1648,0.008552,,,,,True,,1-unit change in normalised log-GDP associates with -0.0688 in the outcome (normalised scale),Female life expectancy (female DV)
+P6_placebo_wdi_lfpf_norm,all,const,0.626014,0.046623,0.000000,***,,,,1637,0.023388,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,composite_secularism_pca_norm,0.013369,0.022150,0.546229,,,,,1637,0.023388,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.019972,0.032044,0.533194,,,,,1637,0.023388,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.045634,0.025463,0.073313,*,,,,1637,0.023388,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,0.015867,0.042172,0.706781,,,,,1637,0.023388,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.112979,0.074446,0.129333,,,,,1637,0.023388,,,,,True,,1-unit change in normalised log-GDP associates with +0.1130 in the outcome (normalised scale),Female LFP rate (female DV)
+P6_placebo_wbl_treatment_index,all,const,0.671597,0.042087,0.000000,***,,,,1648,0.002579,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,composite_secularism_pca_norm,0.015375,0.025422,0.545407,,,,,1648,0.002579,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_rule_norm,0.004254,0.028106,0.879713,,,,,1648,0.002579,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_civlib_norm,-0.019476,0.029647,0.511332,,,,,1648,0.002579,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_egal_norm,-0.003022,0.040187,0.940066,,,,,1648,0.002579,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,log_gdppc_norm,-0.005013,0.071783,0.944336,,,,,1648,0.002579,,,,,True,,1-unit change in normalised log-GDP associates with -0.0050 in the outcome (normalised scale),Women's treatment index (female DV)
+P6_placebo_lifexpm_norm,all,const,0.712968,0.046421,0.000000,***,,,,1648,0.007667,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,composite_secularism_pca_norm,0.034811,0.020566,0.090727,*,,,,1648,0.007667,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_rule_norm,-0.004033,0.021370,0.850325,,,,,1648,0.007667,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_civlib_norm,0.022804,0.021380,0.286319,,,,,1648,0.007667,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_egal_norm,-0.007870,0.034214,0.818098,,,,,1648,0.007667,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.011611,0.090163,0.897554,,,,,1648,0.007667,,,,,True,,1-unit change in normalised log-GDP associates with +0.0116 in the outcome (normalised scale),Male life expectancy (placebo DV)
+P6_placebo_lfpm_norm,all,const,0.327751,0.108757,0.002626,***,,,,1637,0.032645,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,composite_secularism_pca_norm,-0.023367,0.031092,0.452450,,,,,1637,0.032645,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_rule_norm,0.002220,0.050505,0.964952,,,,,1637,0.032645,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.015684,0.037763,0.677960,,,,,1637,0.032645,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_egal_norm,0.073639,0.051872,0.155931,,,,,1637,0.032645,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,log_gdppc_norm,0.328017,0.207879,0.114801,,,,,1637,0.032645,,,,,True,,1-unit change in normalised log-GDP associates with +0.3280 in the outcome (normalised scale),Male LFP rate (placebo DV)
 T2_with_cedaw,all,const,0.657795,0.070692,0.000000,***,,,,1628,0.015512,,,,,True,,,
 T2_with_cedaw,all,gri_state_religion_norm,0.006663,0.014748,0.651480,,,,,1628,0.015512,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0067 (index units),
 T2_with_cedaw,all,gri_gov_favour_norm,0.013347,0.009585,0.163989,,,,,1628,0.015512,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0133 (index units),
@@ -589,12 +589,12 @@ P9_event_study,all,et_0,0.003939,0.006299,0.531876,,,,,1648,0.003668,,,,,True,,,
 P9_event_study,all,et_1,-0.001380,0.006306,0.826757,,,,,1648,0.003668,,,,,True,,,
 P9_event_study,all,et_2,-0.002103,0.006343,0.740285,,,,,1648,0.003668,,,,,True,,,
 P9_event_study,all,et_3,-0.001604,0.007243,0.824826,,,,,1648,0.003668,,,,,True,,,
-P9_event_study,all,et_-3,0.000956,0.003377,0.777111,,,,,1648,0.003519,,,,,True,,,
-P9_event_study,all,et_-2,-0.001274,0.003728,0.732705,,,,,1648,0.003519,,,,,True,,,
-P9_event_study,all,et_0,0.001898,0.003788,0.616440,,,,,1648,0.003519,,,,,True,,,
-P9_event_study,all,et_1,0.003228,0.004529,0.476140,,,,,1648,0.003519,,,,,True,,,
-P9_event_study,all,et_2,0.001030,0.004870,0.832554,,,,,1648,0.003519,,,,,True,,,
-P9_event_study,all,et_3,-0.001664,0.004945,0.736544,,,,,1648,0.003519,,,,,True,,,
+P9_event_study,all,et_-3,-0.000479,0.003521,0.891743,,,,,1648,0.004783,,,,,True,,,
+P9_event_study,all,et_-2,-0.002615,0.003479,0.452444,,,,,1648,0.004783,,,,,True,,,
+P9_event_study,all,et_0,0.003337,0.003702,0.367547,,,,,1648,0.004783,,,,,True,,,
+P9_event_study,all,et_1,0.003311,0.004377,0.449579,,,,,1648,0.004783,,,,,True,,,
+P9_event_study,all,et_2,0.001177,0.005068,0.816448,,,,,1648,0.004783,,,,,True,,,
+P9_event_study,all,et_3,0.002657,0.005301,0.616306,,,,,1648,0.004783,,,,,True,,,
 T2_changers_wild_bootstrap,all,composite_secularism_norm,0.063071,0.033049,0.064128,*,,,,1195,,,,,,True,,,
 T2_changers_wild_bootstrap_apostasy,all,gri_apostasy_norm,-0.033824,0.011722,0.074148,*,,,,90,,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0338 (index units),
 T2_driscoll_kraay,all,const,0.669886,0.020917,0.000000,***,,,,1648,0.015550,166.000000,,,driscoll_kraay_bw4,True,,,

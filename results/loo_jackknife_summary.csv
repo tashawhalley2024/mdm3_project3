@@ -3,4 +3,4 @@ gri_religious_courts_norm,loo_jackknife.csv,166,-0.006949,0.006877,-0.008311,-0.
 composite_secularism_norm,loo_jackknife.csv,166,0.061471,0.034061,0.044309,0.072118,0.061461,0.002614,0,161,Central African Republic,CAF,-0.017162
 gri_apostasy_norm,loo_jackknife_apostasy.csv,166,-0.018020,0.009838,-0.025807,-0.012913,-0.018013,0.000884,0,164,Nigeria,NGA,-0.007787
 gri_religious_courts_norm,loo_jackknife_religious_courts.csv,166,-0.007270,0.006853,-0.008656,-0.001620,-0.007266,0.000539,0,166,Saudi Arabia,SAU,0.005650
-composite_secularism_pca_norm,loo_jackknife_pca.csv,166,0.009203,0.022728,0.003559,0.015645,0.009203,0.001730,0,166,Saudi Arabia,SAU,0.006441
+composite_secularism_pca_norm,loo_jackknife_pca.csv,166,0.015375,0.025422,0.005280,0.022517,0.015373,0.001931,0,166,Central African Republic,CAF,-0.010095
