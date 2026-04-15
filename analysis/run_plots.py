@@ -118,6 +118,8 @@ WBL_RESULTS_CSV = os.path.join(ROOT, "results/results_wbl.csv")
 OUT_ALT_OUTCOMES = os.path.join(ROOT, "figures/10_alt_outcomes.png")
 
 OUT_MUNDLAK = os.path.join(ROOT, "figures/12_mundlak_decomposition.png")
+OUT_LONGDIFF = os.path.join(ROOT, "figures/13_long_difference.png")
+WBL_OUTCOME_PATH = os.path.join(ROOT, "data/outcome_wbl.csv")
 
 # FOCAL_PRED and REGION_MAP imported from src.config above
 
@@ -1355,6 +1357,175 @@ def plot_mundlak_decomposition():
     print(f"  Saved -> {OUT_MUNDLAK}")
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# 13. LONG-DIFFERENCE (Item 3): forest + decade-change scatter
+# ═══════════════════════════════════════════════════════════════════════════════
+def plot_long_difference():
+    """Two-panel figure for the T5 long-difference tier.
+
+    Left: forest plot of T5 β and 95% CI across composite + variants + apostasy
+    + courts at the 2013→2022 with_gdp main window. Invalid rows (apostasy,
+    n_changers=9) greyed; low_power rows (courts, 16-22 changers) standard
+    colour with annotation.
+    Right: decade-change scatter (Δwbl_treatment_index vs Δcomposite_secularism),
+    one point per country, region-coloured, with OLS fit line and 95% CI band.
+    """
+    if not os.path.exists(RESULTS_PATH):
+        print(f"  {RESULTS_PATH} not found — skipping LD plot.")
+        return
+    res = pd.read_csv(RESULTS_PATH)
+    t5 = res[res["tier"] == "T5_long_diff_2013_2022_with_gdp"].copy()
+    if t5.empty:
+        print("  No T5 rows in results.csv — skipping LD plot.")
+        return
+
+    focal_order = [
+        ("composite_secularism_norm",         "Composite (eq-wt)"),
+        ("composite_secularism_pca_norm",     "Composite (PCA)"),
+        ("composite_secularism_real_norm",    "Composite (no WVS interp)"),
+        ("composite_secularism_instonly_norm","Composite (inst only)"),
+        ("composite_secularism_covwt_norm",   "Composite (cov-wt)"),
+        ("gri_apostasy_norm",                 "Apostasy law"),
+        ("gri_religious_courts_norm",         "Religious courts"),
+    ]
+    forest_rows = []
+    for focal, label in focal_order:
+        # Prefer the standalone tier tag; grifull is separate (suffix _grifull).
+        sub = t5[(t5["predictor"] == focal) & (~t5["tier"].str.endswith("_grifull"))]
+        if sub.empty:
+            continue
+        r = sub.iloc[0]
+        nch = None
+        if not pd.isna(r["n_changers"]):
+            nch = int(r["n_changers"])
+        forest_rows.append({
+            "label": label,
+            "focal": focal,
+            "coef":  float(r["coef"]),
+            "se":    float(r["se"]),
+            "ci":    1.96 * float(r["se"]),
+            "p":     float(r["pval"]),
+            "n":     int(r["n"]),
+            "n_changers": nch,
+            "valid": bool(r["valid"]),
+        })
+
+    # Decade-change data for scatter panel — recompute from source so the
+    # point cloud matches the LD regression exactly.
+    try:
+        pred_df = pd.read_csv(COMP_PATH)
+        pred_df = build_secularism_composite(pred_df, build_pca=False)
+    except Exception as e:
+        print(f"  [LD scatter] composite build failed: {e}; scatter will be empty.")
+        pred_df = None
+    wbl_df = pd.read_csv(WBL_OUTCOME_PATH) if os.path.exists(WBL_OUTCOME_PATH) else None
+
+    deltas = None
+    ols = None
+    if pred_df is not None and wbl_df is not None:
+        merged = wbl_df[["iso3", "year", "wbl_treatment_index"]].merge(
+            pred_df[["iso3", "year", "composite_secularism_norm"]],
+            on=["iso3", "year"], how="inner")
+        merged = merged[merged["year"].isin([2013, 2022])].dropna()
+        start = merged[merged["year"] == 2013].drop_duplicates("iso3").set_index("iso3")[
+            ["wbl_treatment_index", "composite_secularism_norm"]]
+        end   = merged[merged["year"] == 2022].drop_duplicates("iso3").set_index("iso3")[
+            ["wbl_treatment_index", "composite_secularism_norm"]]
+        common = start.index.intersection(end.index)
+        if len(common) >= 30:
+            deltas = (end.loc[common] - start.loc[common]).copy()
+            deltas["region"] = [get_region(x) for x in deltas.index]
+            X = sm.add_constant(deltas["composite_secularism_norm"])
+            ols = sm.OLS(deltas["wbl_treatment_index"], X).fit(cov_type="HC3")
+
+    # ── Render ─────────────────────────────────────────────────────────────
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6.5))
+    fig.suptitle(
+        "Decade-change regression corroborates the within-country null",
+        fontsize=15, fontweight="bold", y=1.03,
+    )
+    fig.text(
+        0.5, 0.97,
+        "T5 long-difference: Δoutcome on Δfocal + Δcontrols, 2013→2022 with GDP, HC3 SEs, one obs per country.",
+        ha="center", fontsize=10.5, color="#555",
+    )
+
+    # Left: forest plot
+    ax = axes[0]
+    ys = np.arange(len(forest_rows))
+    for i, r in enumerate(forest_rows):
+        color = _sig_colour(r["p"]) if r["valid"] else "#bbbbbb"
+        alpha = 1.0 if r["valid"] else 0.45
+        ax.plot([r["coef"] - r["ci"], r["coef"] + r["ci"]], [i, i],
+                color=color, linewidth=2.2, alpha=alpha,
+                solid_capstyle="round", zorder=2)
+        ax.scatter(r["coef"], i, color=color, s=80, edgecolors="white",
+                   linewidths=0.8, zorder=3, alpha=alpha)
+        stars = _sig_stars(r["p"]) or "n.s."
+        note_parts = [f"{r['coef']:+.3f}", stars]
+        if r["n_changers"] is not None:
+            note_parts.append(f"(nΔ={r['n_changers']})")
+        if not r["valid"]:
+            note_parts.append("[invalid]")
+        ax.annotate("  ".join(note_parts),
+                    xy=(r["coef"] + r["ci"], i),
+                    xytext=(8, 0), textcoords="offset points",
+                    fontsize=9.5, va="center", color="#222")
+    ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
+    ax.set_yticks(ys)
+    ax.set_yticklabels([r["label"] for r in forest_rows], fontsize=10)
+    ax.invert_yaxis()
+    ax.set_xlabel("Long-difference β (2013→2022, with GDP)")
+    ax.set_title("Coefficient across focal variants", fontsize=12,
+                 fontweight="bold", loc="left", pad=8)
+    ax.grid(axis="x", alpha=0.3, linewidth=0.5)
+
+    # Right: decade-change scatter (headline composite)
+    ax2 = axes[1]
+    if deltas is not None and ols is not None:
+        for region, color in REGION_COLORS.items():
+            sub = deltas[deltas["region"] == region]
+            if sub.empty:
+                continue
+            ax2.scatter(sub["composite_secularism_norm"],
+                        sub["wbl_treatment_index"],
+                        c=color, label=region, s=48, alpha=0.72,
+                        edgecolors="white", linewidth=0.5)
+        x_grid = np.linspace(
+            float(deltas["composite_secularism_norm"].min()),
+            float(deltas["composite_secularism_norm"].max()), 100)
+        X_grid = sm.add_constant(x_grid)
+        y_hat  = ols.predict(X_grid)
+        ci     = ols.get_prediction(X_grid).conf_int(alpha=0.05)
+        ax2.plot(x_grid, y_hat, color="#444", linewidth=2.0, zorder=5)
+        ax2.fill_between(x_grid, ci[:, 0], ci[:, 1],
+                          color="#444", alpha=0.12, zorder=4)
+        ax2.axhline(0, color="grey", linewidth=0.6, linestyle=":", alpha=0.6)
+        ax2.axvline(0, color="grey", linewidth=0.6, linestyle=":", alpha=0.6)
+        beta = float(ols.params["composite_secularism_norm"])
+        se   = float(ols.bse["composite_secularism_norm"])
+        pv   = float(ols.pvalues["composite_secularism_norm"])
+        stars = _sig_stars(pv) or "n.s."
+        ax2.set_title(
+            f"Δ(WBL) vs Δ(Composite)   β={beta:+.3f}  SE={se:.3f}  "
+            f"p={pv:.3f} {stars}  N={int(ols.nobs)}",
+            fontsize=11, fontweight="bold", loc="left", pad=8)
+        ax2.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0),
+                   frameon=False, fontsize=9)
+    else:
+        ax2.text(0.5, 0.5, "Scatter data unavailable", ha="center",
+                 va="center", transform=ax2.transAxes, fontsize=11,
+                 color="#777")
+    ax2.set_xlabel("Δ Composite secularism (2013→2022)")
+    ax2.set_ylabel("Δ WBL treatment index (2013→2022)")
+    ax2.grid(alpha=0.3, linewidth=0.5)
+
+    plt.tight_layout(rect=[0, 0.02, 1, 0.93])
+    plt.savefig(OUT_LONGDIFF, dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved -> {OUT_LONGDIFF}")
+
+
 def load_merged() -> pd.DataFrame:
     comp  = pd.read_csv(COMP_PATH)
     women = pd.read_csv(WOMEN_PATH)
@@ -1408,8 +1579,11 @@ def main():
     print("\n[9/10] Alternative outcomes comparison...")
     plot_alternative_outcomes()
 
-    print("\n[10/10] Mundlak within-vs-between decomposition (hero figure)...")
+    print("\n[10/11] Mundlak within-vs-between decomposition (hero figure)...")
     plot_mundlak_decomposition()
+
+    print("\n[11/11] Long-difference (T5, decade-change 2013->2022)...")
+    plot_long_difference()
 
     print("\nDone. All figures saved to figures/")
 
