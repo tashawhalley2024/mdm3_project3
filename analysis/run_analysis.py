@@ -37,10 +37,21 @@ except ImportError:
 
 warnings.filterwarnings("ignore")
 
+# ── Reproducibility: fix RNG state for wild bootstrap, etc. ─────────────────────
+SEED = 20250415
+np.random.seed(SEED)
+import random as _py_random
+_py_random.seed(SEED)
+try:
+    _DEFAULT_RNG = np.random.default_rng(SEED)
+except Exception:
+    _DEFAULT_RNG = None
+
 # ── Import shared config ────────────────────────────────────────────────────────
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from config import REGION_MAP, FOCAL_PRED, FOCAL_PRED_2
-from utils import robust_minmax
+from config import (REGION_MAP, FOCAL_PRED, FOCAL_PRED_2,
+                    FOCAL_PRED_PCA, FOCAL_PRED_LEGACY)
+from utils import robust_minmax, build_secularism_composite
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -52,16 +63,33 @@ OUT_PATH    = os.path.join(ROOT, "results/results.csv")
 LOG_PATH    = os.path.join(ROOT, "results/analysis.log")
 
 # Phase 9 outputs
-EVENTSTUDY_PATH     = os.path.join(ROOT, "results/event_study.csv")
-OSTER_SENS_PATH     = os.path.join(ROOT, "results/oster_sensitivity.csv")
-EVENTSTUDY_PATH_APO = os.path.join(ROOT, "results/event_study_apostasy.csv")
-OSTER_SENS_PATH_APO = os.path.join(ROOT, "results/oster_sensitivity_apostasy.csv")
+EVENTSTUDY_PATH        = os.path.join(ROOT, "results/event_study.csv")
+OSTER_SENS_PATH        = os.path.join(ROOT, "results/oster_sensitivity.csv")
+EVENTSTUDY_PATH_APO    = os.path.join(ROOT, "results/event_study_apostasy.csv")
+OSTER_SENS_PATH_APO    = os.path.join(ROOT, "results/oster_sensitivity_apostasy.csv")
+# Item 2 (2026-04-15): preserve legacy courts outputs and PCA-variant outputs
+# with suffixed filenames so the composite-headlined runs do not silently
+# overwrite the prior courts results.
+EVENTSTUDY_PATH_LEGACY = os.path.join(ROOT, "results/event_study_religious_courts.csv")
+OSTER_SENS_PATH_LEGACY = os.path.join(ROOT, "results/oster_sensitivity_religious_courts.csv")
+EVENTSTUDY_PATH_PCA    = os.path.join(ROOT, "results/event_study_pca.csv")
+OSTER_SENS_PATH_PCA    = os.path.join(ROOT, "results/oster_sensitivity_pca.csv")
 
 # ── Column groups ──────────────────────────────────────────────────────────────
+# Item 2 (2026-04-15): added gri_gov_favour_norm (Pew GRI Q2, 77/198 changer
+# countries, 4 distinct values — was silently dropped from every regression
+# previously). T4 Mundlak _mean count is therefore 10, not 9; update the
+# Mundlak presentation slide (see TODO Item 7) to match.
 GRI_PANEL_COLS = [
-    "gri_state_religion_norm", "gri_religious_law_norm",
-    "gri_blasphemy_norm", "gri_apostasy_norm", "gri_religious_courts_norm",
+    "gri_state_religion_norm", "gri_gov_favour_norm",
+    "gri_religious_law_norm", "gri_religious_courts_norm",
+    "gri_blasphemy_norm", "gri_apostasy_norm",
 ]
+# Composition (Item 2 2a): merged in load_and_merge() from
+# religion_composition_normalised.csv; observed in 2010 and 2020 only (12%
+# coverage), so NOT included in GRI_PANEL_COLS by default — would crash T2
+# samples. Available to T1 2020 cross-section and to the composite builder.
+COMPOSITION_COLS = ["pct_unaffiliated_norm", "pct_other_norm"]
 CONTROLS        = ["v2x_rule_norm", "v2x_civlib_norm", "v2x_egal_norm"]
 CONTROLS_GDP    = CONTROLS + ["log_gdppc_norm"]   # Phase 2: GDP-extended controls
 OUTCOME         = "wbl_treatment_index"
@@ -79,7 +107,108 @@ SUB_OUTCOMES = {
 
 # ── Utility: significance star ─────────────────────────────────────────────────
 def _sig(p):
+    try:
+        if pd.isna(p):
+            return ""
+    except Exception:
+        pass
     return "***" if p < 0.01 else ("**" if p < 0.05 else ("*" if p < 0.10 else ""))
+
+
+# ── Panel diagnostics: cluster count, changer count, within-country SD ──────────
+def _panel_diagnostics(sub: pd.DataFrame, pred_col: str,
+                       entity_col: str = "iso3") -> dict:
+    """Return (n_clusters, n_changers, within_sd) for a fitted panel sample.
+
+    `sub` may have (iso3, year) as MultiIndex OR as columns. `pred_col` is the
+    column whose within-country variation we measure. Constants and interaction
+    regressors that live only in the model matrix (not in `sub`) are skipped.
+    """
+    try:
+        if pred_col not in sub.columns:
+            # Try to recover from the index (e.g. after set_index)
+            if hasattr(sub, "reset_index"):
+                tmp = sub.reset_index()
+                if pred_col not in tmp.columns:
+                    return {"n_clusters": np.nan, "n_changers": np.nan,
+                            "within_sd": np.nan}
+                sub = tmp
+            else:
+                return {"n_clusters": np.nan, "n_changers": np.nan,
+                        "within_sd": np.nan}
+
+        if entity_col not in sub.columns:
+            # MultiIndex case
+            if hasattr(sub.index, "get_level_values") and entity_col in getattr(
+                    sub.index, "names", []):
+                ent = sub.index.get_level_values(entity_col)
+            else:
+                return {"n_clusters": np.nan, "n_changers": np.nan,
+                        "within_sd": np.nan}
+        else:
+            ent = sub[entity_col]
+
+        s = sub[pred_col] if pred_col in sub.columns else np.nan
+        if not isinstance(s, pd.Series):
+            return {"n_clusters": np.nan, "n_changers": np.nan,
+                    "within_sd": np.nan}
+
+        tmp = pd.DataFrame({"ent": ent.values, "x": s.values})
+        n_clusters = int(tmp["ent"].nunique())
+        by_ent = tmp.groupby("ent")["x"]
+        # a "changer" cluster has more than one distinct value (within tol)
+        n_changers = int((by_ent.nunique(dropna=True) > 1).sum())
+        within_sd = float(by_ent.transform(lambda x: x - x.mean()).std(skipna=True))
+        return {"n_clusters": n_clusters, "n_changers": n_changers,
+                "within_sd": within_sd}
+    except Exception:
+        return {"n_clusters": np.nan, "n_changers": np.nan, "within_sd": np.nan}
+
+
+def _std_coef(coef: float, pred_series: pd.Series, out_series: pd.Series) -> float:
+    """Standardised coefficient: coef * sd(pred) / sd(outcome) (in-sample SDs)."""
+    try:
+        sd_x = float(pd.Series(pred_series).astype(float).std(skipna=True))
+        sd_y = float(pd.Series(out_series).astype(float).std(skipna=True))
+        if sd_y == 0 or np.isnan(sd_x) or np.isnan(sd_y):
+            return np.nan
+        return float(coef) * sd_x / sd_y
+    except Exception:
+        return np.nan
+
+
+def _empty_diag() -> dict:
+    return {"n_clusters": np.nan, "n_changers": np.nan, "within_sd": np.nan,
+            "std_coef": np.nan, "valid": True, "invalid_reason": ""}
+
+
+def _preds_for_focal(focal_pred: str, controls: list) -> list:
+    """Return pred_cols for a regression focused on `focal_pred`.
+
+    Added 2026-04-15 (Item 2). The existing tier2/tier4/phase functions were
+    written under the assumption that `focal_pred` was always one of
+    `GRI_PANEL_COLS`. After the composite swap, `focal_pred` may be a
+    derived column (composite_secularism_norm or _pca_norm) that is NOT in
+    GRI_PANEL_COLS. Feeding GRI_PANEL_COLS + composite to the same
+    regression would be severely multicollinear (composite is a linear
+    combination of GRI + v2clrelig + WVS), so we swap:
+
+      - focal_pred IS in GRI_PANEL_COLS → keep multi-predictor spec
+        (pred_cols = GRI_PANEL_COLS + controls). Used for the GRI
+        decomposition the paper has always reported.
+      - focal_pred is a composite / derived → use [focal_pred] + controls
+        alone (no GRI sub-items). The composite coefficient is then the
+        standalone headline effect, not a residual-variation effect.
+
+    This function is called only by phase functions that take
+    `focal_pred` as a parameter (LOO, placebo, Oster, event study,
+    sensitivity). Tier 1/2/4 core specs keep the multi-predictor form
+    unchanged — they produce the GRI decomposition headline that
+    build_headline_table collects alongside the composite row.
+    """
+    if focal_pred in GRI_PANEL_COLS:
+        return GRI_PANEL_COLS + controls
+    return [focal_pred] + controls
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -120,6 +249,46 @@ def load_and_merge() -> pd.DataFrame:
         print("  WARNING: log_gdppc_norm not found in comp -- rebuild secularism_composition")
 
     print(f"  GRI obs (non-NA): {merged['gri_religious_courts_norm'].notna().sum():,}")
+
+    # ── Item 2 (2a): merge in composition (pct_unaffiliated, pct_other) ──
+    # Composition is observed in 2010 and 2020 only (~12% coverage); it is
+    # kept out of GRI_PANEL_COLS so it does not crash T2 samples. The
+    # composite builder consumes it only through the behavioural dimension
+    # if/when it becomes available in all years.
+    comp_file = os.path.join(ROOT, "data/religion_composition_normalised.csv")
+    if os.path.exists(comp_file):
+        comp_religion = pd.read_csv(comp_file)[[
+            "iso3", "year", "pct_unaffiliated_norm", "pct_other_norm"
+        ]]
+        merged = merged.merge(comp_religion, on=["iso3", "year"], how="left")
+        n_comp = merged["pct_unaffiliated_norm"].notna().sum()
+        print(f"  Composition obs (non-NA): {n_comp:,} rows "
+              f"(sparse: observed in 2010 & 2020 only)")
+    else:
+        print(f"  WARNING: {comp_file} not found; composition cols will be missing")
+
+    # ── Item 2 (2b): build composite secularism indices ─────────────────
+    # Equal-weight z-score (headline) + PCA variant (robustness). Both
+    # oriented so higher = more religious / less secular. See
+    # analysis/utils.py:build_secularism_composite for details.
+    merged = build_secularism_composite(merged)
+
+    # Log composite coverage AND changer counts — raw and WVS-real-only
+    # (wvs_interpolated==0). The WVS-real-only count is the meaningful
+    # "did anything actually move" diagnostic for the composite's
+    # behavioural dimension; raw changer counts are dominated by
+    # interpolator arithmetic.
+    for col in ["composite_secularism_norm", "composite_secularism_pca_norm"]:
+        n_obs = merged[col].notna().sum()
+        chg_raw = int((merged.groupby("iso3")[col].nunique(dropna=True) > 1).sum())
+        if "wvs_interpolated" in merged.columns:
+            real_mask = merged["wvs_interpolated"].fillna(0).astype(float) == 0
+            chg_real = int((merged[real_mask].groupby("iso3")[col]
+                            .nunique(dropna=True) > 1).sum())
+        else:
+            chg_real = -1
+        print(f"  {col}: N={n_obs:,}, changers raw={chg_raw}/198, "
+              f"WVS-real-only={chg_real}/198")
 
     # Pre-merge legal origins so all phases can use LO dummies without re-loading
     if os.path.exists(LO_PATH):
@@ -231,14 +400,34 @@ def tier1_cross_sectional(df: pd.DataFrame) -> list[dict]:
 # 4. TIER 2 – PANEL FIXED-EFFECTS OLS  (with & without GDP)
 # ═══════════════════════════════════════════════════════════════════════════════
 def tier2_panel_fe(df: pd.DataFrame) -> list[dict]:
+    """Tier 2 panel FE OLS with two-way FE.
+
+    Emits, for every spec and every predictor:
+      - main result (clustered-by-entity SEs)
+      - Driscoll-Kraay HAC variant (tier tag T2_{label}_dk) — addresses spatial
+        correlation the entity-cluster SE misses.
+      - panel diagnostics (n_clusters, n_changers, within_sd) and std_coef.
+
+    Also re-runs the three GDP-varying specs on the `with_gdp` sample to give a
+    same-sample comparison (tier tag T2_{label}_samesample) isolating the effect
+    of adding GDP from sample composition.
+    """
     results = []
 
-    for label, controls in [
+    # First pass to establish the with_gdp sample index (for same-sample variant)
+    with_gdp_required = [OUTCOME, "iso3", "year"] + GRI_PANEL_COLS + CONTROLS_GDP
+    with_gdp_sub = df[with_gdp_required].dropna(
+        subset=[OUTCOME] + GRI_PANEL_COLS + CONTROLS_GDP).copy()
+    with_gdp_index = pd.MultiIndex.from_frame(with_gdp_sub[["iso3", "year"]])
+
+    specs = [
         ("gri_only",    []),
         ("gri_gdp",     ["log_gdppc_norm"]),
         ("no_gdp",      CONTROLS),
         ("with_gdp",    CONTROLS_GDP),
-    ]:
+    ]
+
+    for label, controls in specs:
         print(f"\n{'='*60}")
         print(f"STEP 3 – PANEL FE [{label}] (country + year FE, 2013-2023)")
         print(f"{'='*60}")
@@ -250,9 +439,9 @@ def tier2_panel_fe(df: pd.DataFrame) -> list[dict]:
         print(f"  N = {len(sub):,} obs, {sub['iso3'].nunique()} countries, "
               f"{sub['year'].nunique()} years")
 
-        sub = sub.set_index(["iso3", "year"])
-        y = sub[OUTCOME]
-        X = sm.add_constant(sub[pred_cols])
+        sub_idx = sub.set_index(["iso3", "year"])
+        y = sub_idx[OUTCOME]
+        X = sm.add_constant(sub_idx[pred_cols])
 
         model = PanelOLS(y, X, entity_effects=True, time_effects=True)
         res   = model.fit(cov_type="clustered", cluster_entity=True)
@@ -260,6 +449,14 @@ def tier2_panel_fe(df: pd.DataFrame) -> list[dict]:
 
         tier_tag = f"T2_{label}"
         for var in res.params.index:
+            # Compute per-predictor diagnostics & std coef (skip for constant)
+            if var in pred_cols:
+                diag = _panel_diagnostics(sub, var)
+                std_c = _std_coef(res.params[var], sub[var], sub[OUTCOME])
+            else:
+                diag = {"n_clusters": int(sub["iso3"].nunique()),
+                        "n_changers": np.nan, "within_sd": np.nan}
+                std_c = np.nan
             results.append({
                 "tier": tier_tag,
                 "year": "all",
@@ -269,7 +466,88 @@ def tier2_panel_fe(df: pd.DataFrame) -> list[dict]:
                 "pval": res.pvalues[var],
                 "n": res.nobs,
                 "r2": res.rsquared,
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd":  diag["within_sd"],
+                "std_coef":   std_c,
+                "se_type":    "cluster_entity",
+                "valid":      True,
+                "invalid_reason": "",
             })
+
+        # ── Driscoll-Kraay HAC variant (bandwidth ≈ T^{1/4} ≈ 2 for T=10) ──
+        try:
+            res_dk = model.fit(cov_type="kernel", kernel="bartlett", bandwidth=2)
+            dk_tag = f"T2_{label}_dk"
+            for var in res_dk.params.index:
+                if var in pred_cols:
+                    diag = _panel_diagnostics(sub, var)
+                    std_c = _std_coef(res_dk.params[var], sub[var], sub[OUTCOME])
+                else:
+                    diag = {"n_clusters": int(sub["iso3"].nunique()),
+                            "n_changers": np.nan, "within_sd": np.nan}
+                    std_c = np.nan
+                results.append({
+                    "tier": dk_tag,
+                    "year": "all",
+                    "predictor": var,
+                    "coef": res_dk.params[var],
+                    "se": res_dk.std_errors[var],
+                    "pval": res_dk.pvalues[var],
+                    "n": res_dk.nobs,
+                    "r2": res_dk.rsquared,
+                    "n_clusters": diag["n_clusters"],
+                    "n_changers": diag["n_changers"],
+                    "within_sd":  diag["within_sd"],
+                    "std_coef":   std_c,
+                    "se_type":    "driscoll_kraay_bw2",
+                    "valid":      True,
+                    "invalid_reason": "",
+                })
+        except Exception as e:
+            print(f"  [DK variant failed for {label}: {e}]")
+
+        # ── Same-sample variant: re-fit on with_gdp sample index ──────────
+        try:
+            sub_ss = sub.merge(
+                with_gdp_sub[["iso3", "year"]], on=["iso3", "year"], how="inner"
+            )
+            if len(sub_ss) > 0 and len(sub_ss) != len(sub):
+                sub_ss_idx = sub_ss.set_index(["iso3", "year"])
+                y_ss = sub_ss_idx[OUTCOME]
+                X_ss = sm.add_constant(sub_ss_idx[pred_cols])
+                res_ss = PanelOLS(
+                    y_ss, X_ss, entity_effects=True, time_effects=True
+                ).fit(cov_type="clustered", cluster_entity=True)
+                ss_tag = f"T2_{label}_samesample"
+                print(f"  [same-sample N={res_ss.nobs:,}]")
+                for var in res_ss.params.index:
+                    if var in pred_cols:
+                        diag = _panel_diagnostics(sub_ss, var)
+                        std_c = _std_coef(res_ss.params[var], sub_ss[var], sub_ss[OUTCOME])
+                    else:
+                        diag = {"n_clusters": int(sub_ss["iso3"].nunique()),
+                                "n_changers": np.nan, "within_sd": np.nan}
+                        std_c = np.nan
+                    results.append({
+                        "tier": ss_tag,
+                        "year": "all",
+                        "predictor": var,
+                        "coef": res_ss.params[var],
+                        "se": res_ss.std_errors[var],
+                        "pval": res_ss.pvalues[var],
+                        "n": res_ss.nobs,
+                        "r2": res_ss.rsquared,
+                        "n_clusters": diag["n_clusters"],
+                        "n_changers": diag["n_changers"],
+                        "within_sd":  diag["within_sd"],
+                        "std_coef":   std_c,
+                        "se_type":    "cluster_entity",
+                        "valid":      True,
+                        "invalid_reason": "",
+                    })
+        except Exception as e:
+            print(f"  [same-sample variant failed for {label}: {e}]")
 
     return results
 
@@ -313,6 +591,13 @@ def tier4_mundlak_re(df: pd.DataFrame) -> list[dict]:
     print(f"  Predictors: {len(pred_cols)} original + {len(cmean_cols)} country means"
           f" + {len(yr_cols)} year dummies")
 
+    # Preserve a non-indexed copy of `sub` for _panel_diagnostics after
+    # the MultiIndex is set; the diagnostic function needs iso3 as a column.
+    sub_flat = sub.copy()
+    # Keep the (iso3, year) keys of the main T4 sample so the samesample
+    # variant below can merge against them.
+    pan_main_keys = sub_flat[["iso3", "year"]].drop_duplicates().copy()
+
     sub = sub.set_index(["iso3", "year"])
     y = sub[OUTCOME]
     X = sm.add_constant(sub[pred_cols + cmean_cols + yr_cols])
@@ -326,7 +611,18 @@ def tier4_mundlak_re(df: pd.DataFrame) -> list[dict]:
     for v in GRI_PANEL_COLS:
         print(f"    {v}: coef={res.params[v]:.5f}  p={res.pvalues[v]:.4f}")
 
+    # Item 2 (Step 6): per-predictor diagnostics wired through so every T4
+    # row in results.csv carries n_clusters, n_changers, within_sd, std_coef.
+    # _mean predictors inherit diagnostics from their parent time-varying col.
     for var in res.params.index:
+        parent = var[:-5] if var.endswith("_mean") else var
+        if parent in pred_cols:
+            diag = _panel_diagnostics(sub_flat, parent)
+            std_c = _std_coef(res.params[var], sub_flat[parent], sub_flat[OUTCOME])
+        else:
+            diag = {"n_clusters": int(sub_flat["iso3"].nunique()),
+                    "n_changers": np.nan, "within_sd": np.nan}
+            std_c = np.nan
         results.append({
             "tier":      "T4_mundlak_re",
             "year":      "all",
@@ -336,7 +632,84 @@ def tier4_mundlak_re(df: pd.DataFrame) -> list[dict]:
             "pval":      res.pvalues[var],
             "n":         res.nobs,
             "r2":        res.rsquared,
+            "n_clusters": diag["n_clusters"],
+            "n_changers": diag["n_changers"],
+            "within_sd":  diag["within_sd"],
+            "std_coef":   std_c,
+            "se_type":    "cluster_entity",
+            "valid":      True,
+            "invalid_reason": "",
         })
+
+    # ── Item 2 (Step 7): T4 same-sample variant ────────────────────────
+    # Rerun mundlak with pred_cols = GRI + CONTROLS (no log_gdppc) on the
+    # SAME sample as the main T4 (with_gdp). Rebuild from df from scratch
+    # to avoid duplicate-column issues inherited from the main block.
+    try:
+        no_gdp_pred_cols = GRI_PANEL_COLS + CONTROLS  # no log_gdppc_norm
+        # Rebuild from df using the with_gdp sample rows (same as main T4).
+        with_gdp_keys = pan_main_keys  # defined below — (iso3, year) frame
+        required_ss = [OUTCOME, "iso3", "year"] + no_gdp_pred_cols
+        sub_ss_raw = df[required_ss].dropna(
+            subset=[OUTCOME] + no_gdp_pred_cols).copy()
+        sub_ss_raw = sub_ss_raw.merge(
+            with_gdp_keys, on=["iso3", "year"], how="inner")
+
+        # Mundlak country means on the intersected sample
+        cmean_cols_ss = []
+        for col in no_gdp_pred_cols:
+            mc = col + "_mean"
+            sub_ss_raw[mc] = sub_ss_raw.groupby("iso3")[col].transform("mean")
+            cmean_cols_ss.append(mc)
+        cmean_cols_ss = [c for c in cmean_cols_ss
+                         if sub_ss_raw[c].std() > 1e-8]
+
+        yr_ss = pd.get_dummies(sub_ss_raw["year"], prefix="yr",
+                                drop_first=True).astype(float)
+        yr_cols_ss = list(yr_ss.columns)
+        ss_combined = pd.concat(
+            [sub_ss_raw.reset_index(drop=True), yr_ss.reset_index(drop=True)],
+            axis=1)
+
+        ss_flat = ss_combined.copy()
+        ss_indexed = ss_combined.set_index(["iso3", "year"])
+        y_ss = ss_indexed[OUTCOME]
+        X_ss = sm.add_constant(
+            ss_indexed[no_gdp_pred_cols + cmean_cols_ss + yr_cols_ss])
+        res_ss = RandomEffects(y_ss, X_ss).fit(
+            cov_type="clustered", cluster_entity=True)
+
+        print(f"\n  T4 SAME-SAMPLE no-GDP variant: N={res_ss.nobs:,}, "
+              f"{ss_flat['iso3'].nunique()} countries")
+        for var in res_ss.params.index:
+            parent = var[:-5] if var.endswith("_mean") else var
+            if parent in no_gdp_pred_cols:
+                diag = _panel_diagnostics(ss_flat, parent)
+                std_c = _std_coef(float(res_ss.params[var]),
+                                   ss_flat[parent], ss_flat[OUTCOME])
+            else:
+                diag = {"n_clusters": int(ss_flat["iso3"].nunique()),
+                        "n_changers": np.nan, "within_sd": np.nan}
+                std_c = np.nan
+            results.append({
+                "tier":      "T4_mundlak_re_samesample",
+                "year":      "all",
+                "predictor": var,
+                "coef":      float(res_ss.params[var]),
+                "se":        float(res_ss.std_errors[var]),
+                "pval":      float(res_ss.pvalues[var]),
+                "n":         res_ss.nobs,
+                "r2":        res_ss.rsquared,
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd":  diag["within_sd"],
+                "std_coef":   std_c,
+                "se_type":    "cluster_entity",
+                "valid":      True,
+                "invalid_reason": "",
+            })
+    except Exception as e:
+        print(f"  [T4 same-sample variant failed: {e}]")
 
     return results
 
@@ -455,18 +828,44 @@ def tier3_system_gmm(df: pd.DataFrame) -> list[dict]:
         print(f"    rho_GMM = {rho_gmm:.4f}  (estimate)")
         print(f"    rho_OLS = {rho_ols:.4f}  (upper bound)")
         print(f"    {bounds_note}")
+    else:
+        in_bounds = False
+
+    # ── 5c. Invalidity flag: T3 fails Roodman → mark every row invalid ───────
+    t3_valid = bool(in_bounds)
+    t3_reason = "" if t3_valid else "roodman_bounds_fail"
 
     # ── 6. Build results list (per-coefficient rows) ────────────────────────
+    # Item 2 (Step 6): per-predictor diagnostics. Cosmetic for T3 since
+    # Roodman bounds fail means every row is flagged invalid, but included
+    # for cross-tier consistency.
     for _, row in m.regression_table.iterrows():
+        var = row["variable"]
+        # pydynpd regression_table may have L1. prefixes; strip for diagnostics lookup
+        parent = var.split(".")[-1] if "." in str(var) else var
+        if parent in pred_cols:
+            diag = _panel_diagnostics(sub, parent)
+            std_c = _std_coef(row["coefficient"], sub[parent], sub[OUTCOME])
+        else:
+            diag = {"n_clusters": int(sub["iso3"].nunique()),
+                    "n_changers": np.nan, "within_sd": np.nan}
+            std_c = np.nan
         results.append({
             "tier":      "T3_system_gmm",
             "year":      "all",
-            "predictor": row["variable"],
+            "predictor": var,
             "coef":      row["coefficient"],
             "se":        row["std_err"],
             "pval":      row["p_value"],
             "n":         m.num_obs,
             "r2":        np.nan,
+            "n_clusters": diag["n_clusters"],
+            "n_changers": diag["n_changers"],
+            "within_sd":  diag["within_sd"],
+            "std_coef":   std_c,
+            "se_type":    "gmm_windmeijer",
+            "valid":     t3_valid,
+            "invalid_reason": t3_reason,
         })
 
     # ── 7. Diagnostic rows (prefixed _ for easy filtering) ──────────────────
@@ -487,6 +886,8 @@ def tier3_system_gmm(df: pd.DataFrame) -> list[dict]:
             "pval":      np.nan,
             "n":         m.num_obs,
             "r2":        np.nan,
+            "valid":     t3_valid,
+            "invalid_reason": t3_reason,
         })
 
     return results
@@ -824,7 +1225,7 @@ def phase5_robustness(df: pd.DataFrame) -> list[dict]:
                 res_ext = PanelOLS(pfe[OUTCOME], sm.add_constant(pfe[pred_ext]),
                                    entity_effects=True, time_effects=True
                                    ).fit(cov_type="clustered", cluster_entity=True)
-                for key_v in [FOCAL_PRED, CLRELIG]:
+                for key_v in [FOCAL_PRED_LEGACY, CLRELIG]:
                     if key_v in res_ext.params:
                         c, se, p = (res_ext.params[key_v],
                                     res_ext.std_errors[key_v],
@@ -931,11 +1332,11 @@ def phase5_legal_origins(df: pd.DataFrame) -> list[dict]:
         model = sm.OLS(y, X).fit(cov_type="HC3")
         print(f"  R²={model.rsquared:.3f}")
 
-        if FOCAL_PRED in model.params:
-            c, se, p = (model.params[FOCAL_PRED],
-                        model.bse[FOCAL_PRED],
-                        model.pvalues[FOCAL_PRED])
-            print(f"    {FOCAL_PRED}: coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
+        if FOCAL_PRED_LEGACY in model.params:
+            c, se, p = (model.params[FOCAL_PRED_LEGACY],
+                        model.bse[FOCAL_PRED_LEGACY],
+                        model.pvalues[FOCAL_PRED_LEGACY])
+            print(f"    {FOCAL_PRED_LEGACY}: coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
 
         for var in model.params.index:
             results.append({
@@ -975,15 +1376,15 @@ def phase5_legal_origins(df: pd.DataFrame) -> list[dict]:
             res = PanelOLS(y, X, entity_effects=True, time_effects=True).fit(
                 cov_type="clustered", cluster_entity=True
             )
-            if FOCAL_PRED in res.params:
-                c, se, p = (res.params[FOCAL_PRED],
-                            res.std_errors[FOCAL_PRED],
-                            res.pvalues[FOCAL_PRED])
+            if FOCAL_PRED_LEGACY in res.params:
+                c, se, p = (res.params[FOCAL_PRED_LEGACY],
+                            res.std_errors[FOCAL_PRED_LEGACY],
+                            res.pvalues[FOCAL_PRED_LEGACY])
                 print(f"  courts coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
                 results.append({
                     "tier":      f"P5_legal_origins_panel_{label.replace(' ', '_')}",
                     "year":      "all",
-                    "predictor": FOCAL_PRED,
+                    "predictor": FOCAL_PRED_LEGACY,
                     "coef":      c,
                     "se":        se,
                     "pval":      p,
@@ -1023,14 +1424,152 @@ def vif_check(df: pd.DataFrame):
     print(vif_data.to_string(index=False, float_format="{:.2f}".format))
 
 
+# ── VIF + condition number PER T2 spec (headline diagnostic) ───────────────────
+VIF_BY_SPEC_PATH = os.path.join(ROOT, "results/vif_by_spec.csv")
+
+
+def vif_by_spec(df: pd.DataFrame) -> pd.DataFrame:
+    """Compute VIF and design-matrix condition number for each T2 spec.
+
+    Writes results/vif_by_spec.csv.
+    """
+    from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+    print(f"\n{'='*60}")
+    print("VIF BY SPEC  (per-spec multicollinearity diagnostic)")
+    print(f"{'='*60}")
+
+    rows = []
+    specs = [
+        ("T2_gri_only",  GRI_PANEL_COLS),
+        ("T2_gri_gdp",   GRI_PANEL_COLS + ["log_gdppc_norm"]),
+        ("T2_no_gdp",    GRI_PANEL_COLS + CONTROLS),
+        ("T2_with_gdp",  GRI_PANEL_COLS + CONTROLS_GDP),
+    ]
+    for label, cols in specs:
+        sub = df[[OUTCOME] + cols].dropna()
+        if sub.empty:
+            continue
+        X = sm.add_constant(sub[cols]).values
+        # design matrix condition number
+        try:
+            cond_num = float(np.linalg.cond(X))
+        except Exception:
+            cond_num = np.nan
+        for i, feat in enumerate(["const"] + cols):
+            try:
+                v = float(variance_inflation_factor(X, i))
+            except Exception:
+                v = np.nan
+            rows.append({"spec": label, "feature": feat, "VIF": v,
+                         "cond_num": cond_num, "n": len(sub)})
+    out = pd.DataFrame(rows)
+    out.to_csv(VIF_BY_SPEC_PATH, index=False, float_format="%.4f")
+    print(f"  Wrote {VIF_BY_SPEC_PATH} ({len(out)} rows)")
+    # print the WORST VIF per spec
+    if not out.empty:
+        worst = (out[out["feature"] != "const"]
+                 .sort_values("VIF", ascending=False)
+                 .groupby("spec").head(1)
+                 .sort_values("spec"))
+        print("\n  Worst-VIF feature per spec:")
+        print(worst.to_string(index=False, float_format="{:.2f}".format))
+    return out
+
+
+# ── Robustness: headline T2 excluding interpolated WVS rows ───────────────────
+WVS_NOINTERP_PATH = os.path.join(ROOT, "results/robustness_no_wvs_interp.csv")
+
+
+def robustness_no_wvs_interp(df: pd.DataFrame) -> list[dict]:
+    """Re-run T2_no_gdp and T2_with_gdp excluding rows where WVS values were
+    linearly interpolated (wvs_interpolated == 1).
+
+    Only meaningful if the current specs actually use WVS regressors, which
+    T2_{no_gdp, with_gdp} do NOT — but many heterogeneity / Phase-5 specs do,
+    and the focal-outcome panel is still affected via auxiliary columns merged
+    from outcome_composite.csv. We report both for transparency.
+    """
+    print(f"\n{'='*60}")
+    print("ROBUSTNESS -- exclude interpolated WVS rows (wvs_interpolated==1)")
+    print(f"{'='*60}")
+
+    if "wvs_interpolated" not in df.columns:
+        print("  wvs_interpolated column not present; skipping.")
+        return []
+
+    mask_real = df["wvs_interpolated"].fillna(0).astype(float) == 0
+    df_real = df[mask_real].copy()
+    n_lost = len(df) - len(df_real)
+    print(f"  Rows kept: {len(df_real):,} / {len(df):,}  "
+          f"(dropped {n_lost:,} interpolated rows)")
+
+    results = []
+    for label, controls in [
+        ("no_gdp",   CONTROLS),
+        ("with_gdp", CONTROLS_GDP),
+    ]:
+        pred_cols = GRI_PANEL_COLS + controls
+        sub = df_real[[OUTCOME, "iso3", "year"] + pred_cols].dropna(
+            subset=[OUTCOME] + pred_cols).copy()
+        if len(sub) < 100:
+            print(f"  [{label}] too few obs after filter ({len(sub)}) — skipped")
+            continue
+        sub_idx = sub.set_index(["iso3", "year"])
+        y = sub_idx[OUTCOME]
+        X = sm.add_constant(sub_idx[pred_cols])
+        try:
+            res = PanelOLS(y, X, entity_effects=True, time_effects=True
+                           ).fit(cov_type="clustered", cluster_entity=True)
+        except Exception as e:
+            print(f"  [{label}] fit failed: {e}")
+            continue
+        tag = f"ROB_no_wvs_interp_{label}"
+        for var in res.params.index:
+            if var in pred_cols:
+                diag = _panel_diagnostics(sub, var)
+                std_c = _std_coef(res.params[var], sub[var], sub[OUTCOME])
+            else:
+                diag = {"n_clusters": int(sub["iso3"].nunique()),
+                        "n_changers": np.nan, "within_sd": np.nan}
+                std_c = np.nan
+            results.append({
+                "tier": tag,
+                "year": "all",
+                "predictor": var,
+                "coef": res.params[var],
+                "se": res.std_errors[var],
+                "pval": res.pvalues[var],
+                "n": res.nobs,
+                "r2": res.rsquared,
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd":  diag["within_sd"],
+                "std_coef":   std_c,
+                "se_type":    "cluster_entity",
+                "valid":      True,
+                "invalid_reason": "",
+            })
+    if results:
+        pd.DataFrame(results).to_csv(WVS_NOINTERP_PATH, index=False,
+                                      float_format="%.6f")
+        print(f"  Wrote {WVS_NOINTERP_PATH} ({len(results)} rows)")
+    return results
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # PHASE 6 — ADVANCED ROBUSTNESS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-LOO_PATH         = os.path.join(ROOT, "results/loo_jackknife.csv")
-PLACEBO_PATH     = os.path.join(ROOT, "results/placebo.csv")
-LOO_PATH_APO     = os.path.join(ROOT, "results/loo_jackknife_apostasy.csv")
-PLACEBO_PATH_APO = os.path.join(ROOT, "results/placebo_apostasy.csv")
+LOO_PATH           = os.path.join(ROOT, "results/loo_jackknife.csv")
+PLACEBO_PATH       = os.path.join(ROOT, "results/placebo.csv")
+LOO_PATH_APO       = os.path.join(ROOT, "results/loo_jackknife_apostasy.csv")
+PLACEBO_PATH_APO   = os.path.join(ROOT, "results/placebo_apostasy.csv")
+# Item 2 (2026-04-15): preserve legacy courts + PCA robustness outputs
+LOO_PATH_LEGACY     = os.path.join(ROOT, "results/loo_jackknife_religious_courts.csv")
+PLACEBO_PATH_LEGACY = os.path.join(ROOT, "results/placebo_religious_courts.csv")
+LOO_PATH_PCA        = os.path.join(ROOT, "results/loo_jackknife_pca.csv")
+PLACEBO_PATH_PCA    = os.path.join(ROOT, "results/placebo_pca.csv")
 # FOCAL_PRED imported from config
 
 
@@ -1096,7 +1635,10 @@ def phase6_loo_jackknife(df: pd.DataFrame, focal_pred: str = FOCAL_PRED,
     print(f"PHASE 6b -- LEAVE-ONE-OUT JACKKNIFE (panel FE, {focal_pred})")
     print(f"{'='*60}")
 
-    pred_cols = GRI_PANEL_COLS + CONTROLS_GDP
+    # Item 2 (2026-04-15): focal-pred-aware predictor set. If focal_pred is
+    # the composite (not in GRI_PANEL_COLS), use standalone spec to avoid
+    # multicollinearity; otherwise keep the GRI decomposition spec.
+    pred_cols = _preds_for_focal(focal_pred, CONTROLS_GDP)
     required  = [OUTCOME, "iso3", "year"] + pred_cols
     base = df[required].dropna(subset=[OUTCOME] + pred_cols).copy()
 
@@ -1170,7 +1712,95 @@ def phase6_loo_jackknife(df: pd.DataFrame, focal_pred: str = FOCAL_PRED,
     loo_df.to_csv(out_path, index=False, float_format="%.6f")
     print(f"\n  LOO results saved -> {out_path}")
 
+    # ── Structured summary + tornado plot ──────────────────────────────────
+    try:
+        loo_summarise(loo_df, focal_pred=focal_pred, source_path=out_path)
+    except Exception as e:
+        print(f"  [LOO summarise failed: {e}]")
+
     return loo_df
+
+
+def loo_summarise(loo_df: pd.DataFrame, focal_pred: str,
+                  source_path: str) -> None:
+    """Produce a one-line summary CSV row and a tornado PNG for a LOO run.
+
+    Summary CSV path: results/loo_jackknife_summary.csv  (one row per call,
+    appended / overwritten keyed on (focal_pred, source_path)).
+    Tornado PNG path: figures/loo_tornado_<focal>.png
+    """
+    summary_path = os.path.join(ROOT, "results/loo_jackknife_summary.csv")
+    fig_dir = os.path.join(ROOT, "figures")
+    os.makedirs(fig_dir, exist_ok=True)
+
+    if loo_df.empty or "coef" not in loo_df.columns:
+        print("  [LOO summarise: empty df, nothing to do]")
+        return
+    base_coef = float(loo_df["base_coef"].iloc[0]) if "base_coef" in loo_df else np.nan
+    base_se   = float(loo_df["base_se"].iloc[0])   if "base_se"   in loo_df else np.nan
+    coef_min  = float(loo_df["coef"].min())
+    coef_max  = float(loo_df["coef"].max())
+    n_sign_flip = int((np.sign(loo_df["coef"]) != np.sign(base_coef)).sum()) \
+        if not np.isnan(base_coef) else np.nan
+    n_insig = int((loo_df["pval"] >= 0.05).sum())
+    # largest absolute Δ-coef row
+    idx_worst = loo_df["coef_change"].abs().idxmax()
+    worst_country = loo_df.loc[idx_worst, "country"] if "country" in loo_df else ""
+    worst_iso3    = loo_df.loc[idx_worst, "iso3"]    if "iso3" in loo_df    else ""
+    worst_delta   = float(loo_df.loc[idx_worst, "coef_change"])
+    row = {
+        "focal_pred": focal_pred,
+        "source": os.path.basename(source_path),
+        "n_loo_runs": int(len(loo_df)),
+        "base_coef": base_coef,
+        "base_se": base_se,
+        "coef_min": coef_min,
+        "coef_max": coef_max,
+        "coef_mean": float(loo_df["coef"].mean()),
+        "coef_sd":   float(loo_df["coef"].std()),
+        "n_sign_flips": n_sign_flip,
+        "n_p_ge_05":   n_insig,
+        "worst_country": worst_country,
+        "worst_iso3":    worst_iso3,
+        "worst_delta":   worst_delta,
+    }
+    if os.path.exists(summary_path):
+        prev = pd.read_csv(summary_path)
+        prev = prev[~((prev["focal_pred"] == focal_pred)
+                      & (prev["source"] == os.path.basename(source_path)))]
+        out = pd.concat([prev, pd.DataFrame([row])], ignore_index=True)
+    else:
+        out = pd.DataFrame([row])
+    out.to_csv(summary_path, index=False, float_format="%.6f")
+    print(f"  LOO summary appended -> {summary_path}")
+
+    # Tornado plot: Δcoef per country, sorted
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        plot_df = loo_df.copy().sort_values("coef_change")
+        labels = plot_df["iso3"].astype(str).values
+        deltas = plot_df["coef_change"].astype(float).values
+        fig_h = max(4.0, 0.12 * len(plot_df))
+        fig, ax = plt.subplots(figsize=(7, fig_h))
+        colors = ["#c0392b" if d < 0 else "#2980b9" for d in deltas]
+        ax.barh(range(len(plot_df)), deltas, color=colors)
+        ax.axvline(0, color="k", lw=0.7)
+        ax.set_yticks(range(len(plot_df)))
+        ax.set_yticklabels(labels, fontsize=5)
+        ax.set_xlabel(f"Δ coef on {focal_pred} (LOO − baseline)")
+        ax.set_title(f"LOO jackknife tornado: {focal_pred}\n"
+                     f"baseline {base_coef:+.4f}")
+        ax.grid(axis="x", ls=":", alpha=0.5)
+        fig.tight_layout()
+        slug = focal_pred.replace("gri_", "").replace("_norm", "")
+        fig_path = os.path.join(fig_dir, f"loo_tornado_{slug}.png")
+        fig.savefig(fig_path, dpi=120)
+        plt.close(fig)
+        print(f"  LOO tornado plot -> {fig_path}")
+    except Exception as e:
+        print(f"  [tornado plot failed: {e}]")
 
 
 def phase6_placebo_outcomes(df: pd.DataFrame, focal_pred: str = FOCAL_PRED,
@@ -1213,7 +1843,8 @@ def phase6_placebo_outcomes(df: pd.DataFrame, focal_pred: str = FOCAL_PRED,
     print(f"  lfpm obs:    {df_male['lfpm_norm'].notna().sum():,}")
 
     results = []
-    pred_cols = GRI_PANEL_COLS + CONTROLS_GDP
+    # Item 2 (2026-04-15): focal-pred-aware predictor set
+    pred_cols = _preds_for_focal(focal_pred, CONTROLS_GDP)
 
     # Female equivalents in the dataset (from women_treatment_index components)
     _candidate_female_dvs = {
@@ -1282,8 +1913,11 @@ def phase6_placebo_outcomes(df: pd.DataFrame, focal_pred: str = FOCAL_PRED,
 # PHASE 7 — CEDAW CONTROL, SUB-PERIOD / CHANGERS, OSTER DELTA
 # ═══════════════════════════════════════════════════════════════════════════════
 
-SPEC_PATH     = os.path.join(ROOT, "results/spec_ladder.csv")
-SPEC_PATH_APO = os.path.join(ROOT, "results/spec_ladder_apostasy.csv")
+SPEC_PATH        = os.path.join(ROOT, "results/spec_ladder.csv")
+SPEC_PATH_APO    = os.path.join(ROOT, "results/spec_ladder_apostasy.csv")
+# Item 2 (2026-04-15): legacy courts + PCA robustness spec ladders
+SPEC_PATH_LEGACY = os.path.join(ROOT, "results/spec_ladder_religious_courts.csv")
+SPEC_PATH_PCA    = os.path.join(ROOT, "results/spec_ladder_pca.csv")
 
 # Extended controls including CEDAW
 CONTROLS_CEDAW = CONTROLS_GDP + ["cedaw_years_since_norm"]
@@ -1310,9 +1944,9 @@ def _run_panel_fe(df: pd.DataFrame, pred_cols: list[str],
         )
         return {
             "label":  label,
-            "coef":   res.params[FOCAL_PRED],
-            "se":     res.std_errors[FOCAL_PRED],
-            "pval":   res.pvalues[FOCAL_PRED],
+            "coef":   res.params[FOCAL_PRED_LEGACY],
+            "se":     res.std_errors[FOCAL_PRED_LEGACY],
+            "pval":   res.pvalues[FOCAL_PRED_LEGACY],
             "n_obs":  res.nobs,
             "n_ctry": sub["iso3"].nunique(),
             "r2":     res.rsquared,
@@ -1361,8 +1995,8 @@ def phase7_cedaw_and_subsamples(df: pd.DataFrame) -> list[dict]:
                 cov_type="clustered", cluster_entity=True
             )
             print(res.summary)
-            courts_r = res.params[FOCAL_PRED]
-            courts_p = res.pvalues[FOCAL_PRED]
+            courts_r = res.params[FOCAL_PRED_LEGACY]
+            courts_p = res.pvalues[FOCAL_PRED_LEGACY]
             cedaw_r  = res.params.get("cedaw_years_since_norm", np.nan)
             cedaw_p  = res.pvalues.get("cedaw_years_since_norm", np.nan)
             print(f"\n  Key result: courts coef={courts_r:.5f} p={courts_p:.4f} {_sig(courts_p)}")
@@ -1422,8 +2056,8 @@ def phase7_cedaw_and_subsamples(df: pd.DataFrame) -> list[dict]:
                 cov_type="clustered", cluster_entity=True
             )
             print(res.summary)
-            courts_r = res.params[FOCAL_PRED]
-            courts_p = res.pvalues[FOCAL_PRED]
+            courts_r = res.params[FOCAL_PRED_LEGACY]
+            courts_p = res.pvalues[FOCAL_PRED_LEGACY]
             print(f"\n  Key result: courts coef={courts_r:.5f} p={courts_p:.4f} {_sig(courts_p)}")
             for var in res.params.index:
                 results.append({
@@ -1445,7 +2079,7 @@ def phase7_cedaw_and_subsamples(df: pd.DataFrame) -> list[dict]:
     required  = [OUTCOME, "iso3", "year"] + pred_cols
     base = df[required].dropna(subset=[OUTCOME] + pred_cols).copy()
 
-    courts_sd   = base.groupby("iso3")[FOCAL_PRED].std().fillna(0)
+    courts_sd   = base.groupby("iso3")[FOCAL_PRED_LEGACY].std().fillna(0)
     changers    = courts_sd[courts_sd > 0.02].index.tolist()
     non_changers = courts_sd[courts_sd <= 0.02].index.tolist()
 
@@ -1470,8 +2104,8 @@ def phase7_cedaw_and_subsamples(df: pd.DataFrame) -> list[dict]:
                 cov_type="clustered", cluster_entity=True
             )
             print(res.summary)
-            courts_r = res.params[FOCAL_PRED]
-            courts_p = res.pvalues[FOCAL_PRED]
+            courts_r = res.params[FOCAL_PRED_LEGACY]
+            courts_p = res.pvalues[FOCAL_PRED_LEGACY]
             print(f"\n  [{sub_name}] courts coef={courts_r:.5f} p={courts_p:.4f} {_sig(courts_p)}")
             for var in res.params.index:
                 results.append({
@@ -1523,8 +2157,11 @@ def phase7_oster_delta(df: pd.DataFrame, focal_pred: str = FOCAL_PRED,
     print("  Null: beta* = 0.  Threshold: delta >= 1 means robust.")
     print()
 
-    # Establish common sample: rows non-missing for ALL variables in full model
-    full_preds = GRI_PANEL_COLS + CONTROLS_GDP   # already includes FOCAL_PRED
+    # Establish common sample: rows non-missing for ALL variables in full model.
+    # Item 2 (2026-04-15): focal-pred-aware full spec. For composite focal,
+    # full_preds = [composite] + CONTROLS_GDP (standalone headline); for
+    # GRI-item focal, full_preds = GRI_PANEL_COLS + CONTROLS_GDP (includes focal).
+    full_preds = _preds_for_focal(focal_pred, CONTROLS_GDP)
     required   = [OUTCOME, "iso3", "year"] + full_preds
     base = df[required].dropna(subset=[OUTCOME] + full_preds).copy()
     print(f"  Common sample: N={len(base):,} obs, {base['iso3'].nunique()} countries")
@@ -1672,10 +2309,10 @@ def phase8_country_trends(df: pd.DataFrame) -> list[dict]:
         res = PanelOLS(y, X, entity_effects=True, time_effects=True).fit(
             cov_type="clustered", cluster_entity=True
         )
-        focal_dt = FOCAL_PRED + "_dt"
+        focal_dt = FOCAL_PRED_LEGACY + "_dt"
         if focal_dt in res.params:
             c, se, p = res.params[focal_dt], res.std_errors[focal_dt], res.pvalues[focal_dt]
-            print(f"\n  {FOCAL_PRED}: coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
+            print(f"\n  {FOCAL_PRED_LEGACY}: coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
         print(res.summary)
 
         for var in res.params.index:
@@ -1718,8 +2355,8 @@ def phase8_lo_interaction(df: pd.DataFrame) -> list[dict]:
     required  = [OUTCOME, "iso3", "year", "lo_english", "lo_socialist"] + pred_cols
     sub = df[required].dropna(subset=[OUTCOME] + pred_cols).copy()
 
-    sub["courts_x_english"]   = sub[FOCAL_PRED] * sub["lo_english"]
-    sub["courts_x_socialist"] = sub[FOCAL_PRED] * sub["lo_socialist"]
+    sub["courts_x_english"]   = sub[FOCAL_PRED_LEGACY] * sub["lo_english"]
+    sub["courts_x_socialist"] = sub[FOCAL_PRED_LEGACY] * sub["lo_socialist"]
     interaction_cols = ["courts_x_english", "courts_x_socialist"]
     full_preds       = pred_cols + interaction_cols
 
@@ -1734,7 +2371,7 @@ def phase8_lo_interaction(df: pd.DataFrame) -> list[dict]:
         )
         print(res.summary)
         print("\n  Key interaction terms:")
-        for var in [FOCAL_PRED] + interaction_cols:
+        for var in [FOCAL_PRED_LEGACY] + interaction_cols:
             if var in res.params:
                 c, se, p = res.params[var], res.std_errors[var], res.pvalues[var]
                 print(f"    {var:<35s} coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
@@ -1965,7 +2602,8 @@ def phase9_wild_bootstrap(
     print(f"{'='*60}")
 
     rng       = np.random.default_rng(seed)
-    pred_cols = GRI_PANEL_COLS + CONTROLS_GDP
+    # Item 2 (2026-04-15): focal-pred-aware predictor set
+    pred_cols = _preds_for_focal(focal_pred, CONTROLS_GDP)
     required  = [OUTCOME, "iso3", "year"] + pred_cols
     base = df[required].dropna(subset=[OUTCOME] + pred_cols).copy()
 
@@ -2060,13 +2698,21 @@ def phase9_driscoll_kraay(df: pd.DataFrame) -> list[dict]:
         model  = PanelOLS(y, X, entity_effects=True, time_effects=True)
         res_dk = model.fit(cov_type="kernel", bandwidth=4)
 
-        c  = res_dk.params[FOCAL_PRED]
-        se = res_dk.std_errors[FOCAL_PRED]
-        p  = res_dk.pvalues[FOCAL_PRED]
+        c  = res_dk.params[FOCAL_PRED_LEGACY]
+        se = res_dk.std_errors[FOCAL_PRED_LEGACY]
+        p  = res_dk.pvalues[FOCAL_PRED_LEGACY]
         print(f"  DK (bandwidth=4): courts coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
         print(res_dk.summary)
 
+        # Item 2 (Step 6): per-predictor diagnostics
         for var in res_dk.params.index:
+            if var in pred_cols:
+                diag = _panel_diagnostics(sub, var)
+                std_c = _std_coef(float(res_dk.params[var]), sub[var], sub[OUTCOME])
+            else:
+                diag = {"n_clusters": int(sub["iso3"].nunique()),
+                        "n_changers": np.nan, "within_sd": np.nan}
+                std_c = np.nan
             results.append({
                 "tier":      "T2_driscoll_kraay",
                 "year":      "all",
@@ -2076,6 +2722,13 @@ def phase9_driscoll_kraay(df: pd.DataFrame) -> list[dict]:
                 "pval":      float(res_dk.pvalues[var]),
                 "n":         res_dk.nobs,
                 "r2":        float(res_dk.rsquared),
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd":  diag["within_sd"],
+                "std_coef":   std_c,
+                "se_type":    "driscoll_kraay_bw4",
+                "valid":      True,
+                "invalid_reason": "",
             })
     except Exception as exc:
         print(f"  Driscoll-Kraay failed: {exc}")
@@ -2131,7 +2784,18 @@ def phase9_mundlak_cre(df: pd.DataFrame) -> list[dict]:
             print(f"    {v}: coef={model.params[v]:.5f}  "
                   f"p={model.pvalues[v]:.4f}  {_sig(model.pvalues[v])}")
 
+        # Item 2 (Step 6): per-predictor diagnostics. _cmean predictors
+        # (this function's naming, note the trailing _cmean not _mean)
+        # inherit diagnostics from their parent time-varying col.
         for var in model.params.index:
+            parent = var[:-6] if var.endswith("_cmean") else var
+            if parent in pred_cols:
+                diag = _panel_diagnostics(sub, parent)
+                std_c = _std_coef(float(model.params[var]), sub[parent], sub[OUTCOME])
+            else:
+                diag = {"n_clusters": int(sub["iso3"].nunique()),
+                        "n_changers": np.nan, "within_sd": np.nan}
+                std_c = np.nan
             results.append({
                 "tier":      "T2_mundlak_cre",
                 "year":      "all",
@@ -2141,6 +2805,13 @@ def phase9_mundlak_cre(df: pd.DataFrame) -> list[dict]:
                 "pval":      model.pvalues[var],
                 "n":         int(model.nobs),
                 "r2":        model.rsquared,
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd":  diag["within_sd"],
+                "std_coef":   std_c,
+                "se_type":    "cluster_entity",
+                "valid":      True,
+                "invalid_reason": "",
             })
     except Exception as exc:
         print(f"  Mundlak CRE failed: {exc}")
@@ -2220,9 +2891,9 @@ def phase9_male_composite_placebo(df: pd.DataFrame) -> list[dict]:
         res = PanelOLS(y, X, entity_effects=True, time_effects=True).fit(
             cov_type="clustered", cluster_entity=True
         )
-        c  = float(res.params[FOCAL_PRED])
-        se = float(res.std_errors[FOCAL_PRED])
-        p  = float(res.pvalues[FOCAL_PRED])
+        c  = float(res.params[FOCAL_PRED_LEGACY])
+        se = float(res.std_errors[FOCAL_PRED_LEGACY])
+        p  = float(res.pvalues[FOCAL_PRED_LEGACY])
         print(f"  Male composite (placebo DV): courts coef={c:+.5f}  "
               f"se={se:.5f}  p={p:.4f}  {_sig(p)}")
         print(res.summary)
@@ -2245,13 +2916,13 @@ def phase9_male_composite_placebo(df: pd.DataFrame) -> list[dict]:
             plac_existing = pd.read_csv(PLACEBO_PATH)
             already_there = (
                 (plac_existing.get("tier", "") == "P9_male_composite_placebo") &
-                (plac_existing.get("predictor", "") == FOCAL_PRED)
+                (plac_existing.get("predictor", "") == FOCAL_PRED_LEGACY)
             ).any()
             if not already_there:
                 new_row = pd.DataFrame([{
                     "tier":     "P9_male_composite_placebo",
                     "year":     "all",
-                    "predictor": FOCAL_PRED,
+                    "predictor": FOCAL_PRED_LEGACY,
                     "dv_label": "Male welfare index (placebo DV)",
                     "coef": c, "se": se, "pval": p,
                     "n": res.nobs, "r2": float(res.rsquared),
@@ -2281,7 +2952,8 @@ def phase9_oster_sensitivity(df: pd.DataFrame, focal_pred: str = FOCAL_PRED,
     print("PHASE 9f -- OSTER DELTA SENSITIVITY CURVE")
     print(f"{'='*60}")
 
-    full_preds = GRI_PANEL_COLS + CONTROLS_GDP
+    # Item 2 (2026-04-15): focal-pred-aware full spec
+    full_preds = _preds_for_focal(focal_pred, CONTROLS_GDP)
     required   = [OUTCOME, "iso3", "year"] + full_preds
     base = df[required].dropna(subset=[OUTCOME] + full_preds).copy()
     print(f"  Common sample: N={len(base):,} obs, {base['iso3'].nunique()} countries")
@@ -2356,7 +3028,7 @@ def phase10_regional_heterogeneity(df: pd.DataFrame) -> list[dict]:
     print("PHASE 10 -- REGIONAL HETEROGENEITY (MENA vs non-MENA)")
     print(f"{'='*60}")
 
-    COURTS = FOCAL_PRED
+    COURTS = FOCAL_PRED_LEGACY
     mena_iso3 = {iso for iso, region in REGION_MAP.items() if region == "MENA"}
 
     work = df[["iso3", "year"] + GRI_PANEL_COLS + CONTROLS_GDP + [OUTCOME]].dropna().copy()
@@ -2464,7 +3136,7 @@ def phase10_gender_gap_outcomes(df: pd.DataFrame) -> list[dict]:
         return results
 
     gap = pd.read_csv(GENDER_GAP_PATH)
-    COURTS = FOCAL_PRED
+    COURTS = FOCAL_PRED_LEGACY
 
     # Normalise GDI and WEF GGG with robust_minmax
     for col in ["gdi", "gggi_ggi"]:
@@ -2528,16 +3200,110 @@ def phase10_gender_gap_outcomes(df: pd.DataFrame) -> list[dict]:
 # ═══════════════════════════════════════════════════════════════════════════════
 # SAVE RESULTS
 # ═══════════════════════════════════════════════════════════════════════════════
+def _apply_mt_corrections(out: pd.DataFrame) -> pd.DataFrame:
+    """Apply Bonferroni + Benjamini-Hochberg corrections to the focal family.
+
+    Item 2 (2026-04-15): focal family redefined post-composite.
+    Primary headline family = { composite_secularism_norm,
+                                composite_secularism_pca_norm,
+                                gri_apostasy_norm,
+                                gri_religious_courts_norm }  ×
+                              { T2_no_gdp, T2_with_gdp }.
+    = 8 tests in the Bonferroni denominator. GRI sub-items other than
+    apostasy + legacy courts are NOT counted in the headline denominator
+    (their coefficients still appear in results.csv; they're just not
+    part of the headline-family correction).
+    Corrections applied *within* family. Non-family rows get NaN.
+    """
+    out["pval_bonf"] = np.nan
+    out["pval_bh"] = np.nan
+    focal_preds = {
+        "composite_secularism_norm",
+        "composite_secularism_pca_norm",
+        "gri_apostasy_norm",
+        "gri_religious_courts_norm",
+    }
+    focal_tiers = {"T2_no_gdp", "T2_with_gdp"}
+    mask = out["tier"].isin(focal_tiers) & out["predictor"].isin(focal_preds)
+    if mask.sum() == 0:
+        return out
+    pvals = out.loc[mask, "pval"].astype(float).values
+    m_tests = len(pvals)
+    # Bonferroni
+    out.loc[mask, "pval_bonf"] = np.minimum(pvals * m_tests, 1.0)
+    # Benjamini-Hochberg FDR
+    order = np.argsort(pvals)
+    ranked = np.empty_like(pvals)
+    ranked[order] = np.arange(1, m_tests + 1)
+    bh = pvals * m_tests / ranked
+    # Enforce monotonicity
+    bh_sorted = bh[order]
+    for i in range(len(bh_sorted) - 2, -1, -1):
+        bh_sorted[i] = min(bh_sorted[i], bh_sorted[i + 1])
+    bh_monotone = np.empty_like(bh)
+    bh_monotone[order] = np.minimum(bh_sorted, 1.0)
+    out.loc[mask, "pval_bh"] = bh_monotone
+    return out
+
+
+def _attach_interpretation(out: pd.DataFrame) -> pd.DataFrame:
+    """Short plain-English interpretation per row (best-effort, focal rows)."""
+    def _fmt(row):
+        try:
+            if pd.isna(row.get("coef")):
+                return ""
+            pred = str(row.get("predictor", ""))
+            coef = float(row["coef"])
+            if pred in GRI_PANEL_COLS:
+                direction = "decreases" if coef < 0 else "increases"
+                return (f"moving {pred} from 0 to 1 {direction} the outcome "
+                        f"by {abs(coef):.4f} (index units)")
+            if pred == "log_gdppc_norm":
+                return (f"1-unit change in normalised log-GDP associates with "
+                        f"{coef:+.4f} in the outcome (normalised scale)")
+            return ""
+        except Exception:
+            return ""
+    out["interpretation"] = out.apply(_fmt, axis=1)
+    return out
+
+
 def save_results(all_results: list[dict]):
     out = pd.DataFrame(all_results)
+
+    # ── Schema normalisation: every row gets the enhanced columns ──────────
+    for col, default in [
+        ("n_clusters", np.nan), ("n_changers", np.nan), ("within_sd", np.nan),
+        ("std_coef", np.nan), ("se_type", ""), ("valid", True),
+        ("invalid_reason", ""),
+    ]:
+        if col not in out.columns:
+            out[col] = default
+        else:
+            out[col] = out[col].fillna(default) if col in ("se_type", "invalid_reason") else out[col]
+    out["valid"] = out["valid"].fillna(True)
+
     out["sig"] = out["pval"].apply(_sig)
+    out = _apply_mt_corrections(out)
+    out = _attach_interpretation(out)
+
+    # Order columns sensibly
+    lead = ["tier", "year", "predictor", "coef", "se", "pval", "sig",
+            "pval_bonf", "pval_bh", "std_coef", "n", "r2",
+            "n_clusters", "n_changers", "within_sd", "se_type",
+            "valid", "invalid_reason", "interpretation"]
+    rest = [c for c in out.columns if c not in lead]
+    out = out[[c for c in lead if c in out.columns] + rest]
+
     out.to_csv(OUT_PATH, index=False, float_format="%.6f")
     print(f"\n  Results saved -> {OUT_PATH}")
-    print(f"  Rows: {len(out)}")
-    # Summary: significant findings only
-    sig_rows = out[out["sig"] != ""].copy()
-    print(f"\n  Significant results ({len(sig_rows)} predictors with p<0.10):")
-    print(sig_rows[["tier", "year", "predictor", "coef", "pval", "sig", "n"]]
+    print(f"  Rows: {len(out)}  |  Invalid (e.g. T3 Roodman fail): "
+          f"{(~out['valid'].astype(bool)).sum()}")
+    # Summary: significant findings only (valid rows only)
+    sig_rows = out[(out["sig"] != "") & (out["valid"].astype(bool))].copy()
+    print(f"\n  Significant VALID results ({len(sig_rows)} predictors with p<0.10):")
+    print(sig_rows[["tier", "year", "predictor", "coef", "pval", "pval_bh",
+                    "sig", "n", "n_changers"]]
           .sort_values("pval")
           .to_string(index=False, float_format="{:.4f}".format))
 
@@ -2635,11 +3401,11 @@ def phase_wbl_groups() -> pd.DataFrame:
             res = PanelOLS(y, X, entity_effects=True, time_effects=True
                            ).fit(cov_type="clustered", cluster_entity=True)
 
-            if FOCAL_PRED in res.params:
-                c, se, p = (res.params[FOCAL_PRED],
-                            res.std_errors[FOCAL_PRED],
-                            res.pvalues[FOCAL_PRED])
-                print(f"    {FOCAL_PRED}: coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
+            if FOCAL_PRED_LEGACY in res.params:
+                c, se, p = (res.params[FOCAL_PRED_LEGACY],
+                            res.std_errors[FOCAL_PRED_LEGACY],
+                            res.pvalues[FOCAL_PRED_LEGACY])
+                print(f"    {FOCAL_PRED_LEGACY}: coef={c:.5f}  se={se:.5f}  p={p:.4f}  {_sig(p)}")
 
             for var in res.params.index:
                 rows.append({
@@ -2661,6 +3427,230 @@ def phase_wbl_groups() -> pd.DataFrame:
         df_out.to_csv(WBL_GROUPS_RESULTS_PATH, index=False, float_format="%.6f")
         print(f"\n  Saved -> {WBL_GROUPS_RESULTS_PATH}")
     return df_out
+
+
+def composite_tier_specs(df: pd.DataFrame, focal_col: str) -> list[dict]:
+    """Item 2 (2026-04-15): standalone composite regressions under canonical tier tags.
+
+    tier2_panel_fe and tier4_mundlak_re are hardcoded to GRI_PANEL_COLS as the
+    multi-predictor decomposition spec — that is by design (they report
+    coefficients for every GRI sub-item). The composite is NOT in GRI_PANEL_COLS
+    and would not appear in those regressions, so without this function the
+    headline table for composite would be all "missing".
+
+    This function fits PanelOLS with `[focal_col] + CONTROLS_GDP` (or _no_gdp
+    variant) as a STANDALONE focal regression, and emits rows with the same
+    tier tags that tier2_panel_fe / tier4_mundlak_re use. The composite
+    coefficient then lives under T2_no_gdp / T2_with_gdp / T4_mundlak_re /
+    etc. alongside the GRI rows, with `predictor = focal_col`.
+
+    Methodologically: these are the composite-as-headline estimates that the
+    paper should quote. The GRI-panel versions in tier2_panel_fe remain as
+    the decomposition reference.
+    """
+    print(f"\n{'='*60}")
+    print(f"COMPOSITE TIER SPECS -- standalone regressions for {focal_col}")
+    print(f"{'='*60}")
+
+    if focal_col not in df.columns:
+        print(f"  {focal_col} not in df; skipping.")
+        return []
+
+    results = []
+
+    # ── T1: cross-sectional OLS with HC3 SEs on composite (2014, 2020) ────
+    for year in [2014, 2020]:
+        sub = df[df["year"] == year].copy()
+        for label, controls in [("no_gdp", CONTROLS), ("with_gdp", CONTROLS_GDP)]:
+            pred_cols = [focal_col] + controls
+            s = sub.dropna(subset=[OUTCOME] + pred_cols).copy()
+            if len(s) < 30:
+                continue
+            try:
+                X = sm.add_constant(s[pred_cols])
+                y = s[OUTCOME]
+                model = sm.OLS(y, X).fit(cov_type="HC3")
+                results.append({
+                    "tier": f"T1_{label}",
+                    "year": year,
+                    "predictor": focal_col,
+                    "coef": float(model.params[focal_col]),
+                    "se":   float(model.bse[focal_col]),
+                    "pval": float(model.pvalues[focal_col]),
+                    "n":    int(model.nobs),
+                    "r2":   float(model.rsquared),
+                    "se_type": "HC3",
+                })
+            except Exception as e:
+                print(f"  [T1_{label} {year}] failed: {e}")
+
+    # ── T2: panel FE with clustered SEs + DK variant + samesample ─────────
+    # Replicate the with_gdp_index logic for samesample variants.
+    with_gdp_required = [OUTCOME, "iso3", "year", focal_col] + CONTROLS_GDP
+    with_gdp_sub = df[with_gdp_required].dropna(
+        subset=[OUTCOME, focal_col] + CONTROLS_GDP).copy()
+
+    specs = [
+        ("gri_only",  []),
+        ("gri_gdp",   ["log_gdppc_norm"]),
+        ("no_gdp",    CONTROLS),
+        ("with_gdp",  CONTROLS_GDP),
+    ]
+    for label, controls in specs:
+        pred_cols = [focal_col] + controls
+        sub = df[[OUTCOME, "iso3", "year"] + pred_cols].dropna(
+            subset=[OUTCOME] + pred_cols).copy()
+        if len(sub) < 50:
+            continue
+        try:
+            pan = sub.set_index(["iso3", "year"])
+            y = pan[OUTCOME]
+            X = sm.add_constant(pan[pred_cols])
+            model = PanelOLS(y, X, entity_effects=True, time_effects=True)
+            res = model.fit(cov_type="clustered", cluster_entity=True)
+            diag = _panel_diagnostics(sub, focal_col)
+            std_c = _std_coef(float(res.params[focal_col]), sub[focal_col], sub[OUTCOME])
+            results.append({
+                "tier": f"T2_{label}",
+                "year": "all",
+                "predictor": focal_col,
+                "coef": float(res.params[focal_col]),
+                "se":   float(res.std_errors[focal_col]),
+                "pval": float(res.pvalues[focal_col]),
+                "n":    int(res.nobs),
+                "r2":   float(res.rsquared),
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd":  diag["within_sd"],
+                "std_coef":   std_c,
+                "se_type":    "cluster_entity",
+                "valid":      True,
+                "invalid_reason": "",
+            })
+            # DK variant
+            try:
+                res_dk = model.fit(cov_type="kernel", kernel="bartlett", bandwidth=2)
+                results.append({
+                    "tier": f"T2_{label}_dk",
+                    "year": "all",
+                    "predictor": focal_col,
+                    "coef": float(res_dk.params[focal_col]),
+                    "se":   float(res_dk.std_errors[focal_col]),
+                    "pval": float(res_dk.pvalues[focal_col]),
+                    "n":    int(res_dk.nobs),
+                    "r2":   float(res_dk.rsquared),
+                    "n_clusters": diag["n_clusters"],
+                    "n_changers": diag["n_changers"],
+                    "within_sd":  diag["within_sd"],
+                    "std_coef":   std_c,
+                    "se_type":    "driscoll_kraay_bw2",
+                    "valid":      True,
+                    "invalid_reason": "",
+                })
+            except Exception:
+                pass
+            # Samesample (intersect with with_gdp_sub sample)
+            try:
+                sub_ss = sub.merge(
+                    with_gdp_sub[["iso3", "year"]], on=["iso3", "year"], how="inner")
+                if len(sub_ss) > 0 and len(sub_ss) != len(sub):
+                    pan_ss = sub_ss.set_index(["iso3", "year"])
+                    y_ss = pan_ss[OUTCOME]
+                    X_ss = sm.add_constant(pan_ss[pred_cols])
+                    res_ss = PanelOLS(
+                        y_ss, X_ss, entity_effects=True, time_effects=True
+                    ).fit(cov_type="clustered", cluster_entity=True)
+                    diag_ss = _panel_diagnostics(sub_ss, focal_col)
+                    std_c_ss = _std_coef(float(res_ss.params[focal_col]),
+                                          sub_ss[focal_col], sub_ss[OUTCOME])
+                    results.append({
+                        "tier": f"T2_{label}_samesample",
+                        "year": "all",
+                        "predictor": focal_col,
+                        "coef": float(res_ss.params[focal_col]),
+                        "se":   float(res_ss.std_errors[focal_col]),
+                        "pval": float(res_ss.pvalues[focal_col]),
+                        "n":    int(res_ss.nobs),
+                        "r2":   float(res_ss.rsquared),
+                        "n_clusters": diag_ss["n_clusters"],
+                        "n_changers": diag_ss["n_changers"],
+                        "within_sd":  diag_ss["within_sd"],
+                        "std_coef":   std_c_ss,
+                        "se_type":    "cluster_entity",
+                        "valid":      True,
+                        "invalid_reason": "",
+                    })
+            except Exception as e:
+                print(f"  [T2_{label}_samesample] failed: {e}")
+        except Exception as e:
+            print(f"  [T2_{label}] failed: {e}")
+
+    # ── T4: Mundlak RE with composite standalone + _mean ──────────────────
+    pred_cols = [focal_col] + CONTROLS_GDP
+    sub = df[[OUTCOME, "iso3", "year"] + pred_cols].dropna(
+        subset=[OUTCOME] + pred_cols).copy()
+    if len(sub) >= 50:
+        try:
+            mean_cols = []
+            for c in pred_cols:
+                mc = c + "_mean"
+                sub[mc] = sub.groupby("iso3")[c].transform("mean")
+                mean_cols.append(mc)
+            mean_cols = [c for c in mean_cols if sub[c].std() > 1e-8]
+            yr = pd.get_dummies(sub["year"], prefix="yr", drop_first=True).astype(float)
+            sub_f = pd.concat([sub.reset_index(drop=True),
+                               yr.reset_index(drop=True)], axis=1)
+            yr_cols = list(yr.columns)
+            pan = sub_f.set_index(["iso3", "year"])
+            y = pan[OUTCOME]
+            X = sm.add_constant(pan[pred_cols + mean_cols + yr_cols])
+            res = RandomEffects(y, X).fit(cov_type="clustered", cluster_entity=True)
+            diag = _panel_diagnostics(sub_f, focal_col)
+            std_c = _std_coef(float(res.params[focal_col]),
+                              sub_f[focal_col], sub_f[OUTCOME])
+            # Within (focal) row
+            results.append({
+                "tier": "T4_mundlak_re",
+                "year": "all",
+                "predictor": focal_col,
+                "coef": float(res.params[focal_col]),
+                "se":   float(res.std_errors[focal_col]),
+                "pval": float(res.pvalues[focal_col]),
+                "n":    int(res.nobs),
+                "r2":   float(res.rsquared),
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd":  diag["within_sd"],
+                "std_coef":   std_c,
+                "se_type":    "cluster_entity",
+                "valid":      True,
+                "invalid_reason": "",
+            })
+            # Between (mean) row
+            mean_col = focal_col + "_mean"
+            if mean_col in res.params.index:
+                results.append({
+                    "tier": "T4_mundlak_re",
+                    "year": "all",
+                    "predictor": mean_col,
+                    "coef": float(res.params[mean_col]),
+                    "se":   float(res.std_errors[mean_col]),
+                    "pval": float(res.pvalues[mean_col]),
+                    "n":    int(res.nobs),
+                    "r2":   float(res.rsquared),
+                    "n_clusters": diag["n_clusters"],
+                    "n_changers": diag["n_changers"],
+                    "within_sd":  diag["within_sd"],
+                    "std_coef":   np.nan,
+                    "se_type":    "cluster_entity",
+                    "valid":      True,
+                    "invalid_reason": "",
+                })
+        except Exception as e:
+            print(f"  [T4_mundlak_re composite] failed: {e}")
+
+    print(f"  Emitted {len(results)} composite rows for {focal_col}")
+    return results
 
 
 def phase_power_analysis(df: pd.DataFrame) -> None:
@@ -2685,8 +3675,8 @@ def phase_power_analysis(df: pd.DataFrame) -> None:
         cov_type="clustered", cluster_entity=True
     )
 
-    coef = res.params[FOCAL_PRED]
-    se   = res.std_errors[FOCAL_PRED]
+    coef = res.params[FOCAL_PRED_LEGACY]
+    se   = res.std_errors[FOCAL_PRED_LEGACY]
     ci_lo = coef - 1.96 * se
     ci_hi = coef + 1.96 * se
 
@@ -2694,15 +3684,15 @@ def phase_power_analysis(df: pd.DataFrame) -> None:
     mde = 2.8 * se
 
     # Within-country variance share of FOCAL_PRED
-    courts = base.groupby("iso3")[FOCAL_PRED]
-    overall_var = base[FOCAL_PRED].var()
+    courts = base.groupby("iso3")[FOCAL_PRED_LEGACY]
+    overall_var = base[FOCAL_PRED_LEGACY].var()
     within_var  = courts.transform(lambda x: x - x.mean()).var()
     within_pct  = (within_var / overall_var * 100) if overall_var > 0 else 0
 
     n_countries = base["iso3"].nunique()
     n_changers  = (courts.std().fillna(0) > 0.02).sum()
 
-    print(f"\n  T2_with_gdp results for {FOCAL_PRED}:")
+    print(f"\n  T2_with_gdp results for {FOCAL_PRED_LEGACY}:")
     print(f"    Coefficient:  {coef:.5f}")
     print(f"    SE (clustered): {se:.5f}")
     print(f"    95% CI:       [{ci_lo:.4f}, {ci_hi:.4f}]")
@@ -2737,8 +3727,19 @@ def main():
             all_results.extend(tier4_mundlak_re(df))
             all_results.extend(tier3_system_gmm(df))
 
+            # Item 2 (2026-04-15): composite tier specs — standalone PanelOLS
+            # with composite as focal. Emits rows under the same tier tags as
+            # tier2_panel_fe / tier4_mundlak_re so the headline table picks them
+            # up alongside the GRI decomposition rows. Both composite variants.
+            all_results.extend(composite_tier_specs(df, FOCAL_PRED))
+            all_results.extend(composite_tier_specs(df, FOCAL_PRED_PCA))
+
             vif_check(df)
+            vif_by_spec(df)
             phase_power_analysis(df)
+
+            # Robustness: exclude interpolated WVS rows
+            all_results.extend(robustness_no_wvs_interp(df))
 
             # Phase 3: Sub-outcome
             all_results.extend(phase3_sub_outcomes(df))
@@ -2763,11 +3764,32 @@ def main():
             all_results.extend(phase6_placebo_outcomes(df, focal_pred=FOCAL_PRED_2,
                                                        placebo_path=PLACEBO_PATH_APO))
 
+            # Phase 6 (Item 2 robustness): legacy courts + PCA composite
+            print(f"\n{'='*60}")
+            print("PHASE 6 (LEGACY COURTS) -- ROBUSTNESS FOR gri_religious_courts_norm")
+            print(f"{'='*60}")
+            phase6_loo_jackknife(df, focal_pred=FOCAL_PRED_LEGACY,
+                                 out_path=LOO_PATH_LEGACY)
+            all_results.extend(phase6_placebo_outcomes(df, focal_pred=FOCAL_PRED_LEGACY,
+                                                       placebo_path=PLACEBO_PATH_LEGACY))
+
+            print(f"\n{'='*60}")
+            print("PHASE 6 (PCA COMPOSITE) -- ROBUSTNESS FOR composite_secularism_pca_norm")
+            print(f"{'='*60}")
+            phase6_loo_jackknife(df, focal_pred=FOCAL_PRED_PCA,
+                                 out_path=LOO_PATH_PCA)
+            all_results.extend(phase6_placebo_outcomes(df, focal_pred=FOCAL_PRED_PCA,
+                                                       placebo_path=PLACEBO_PATH_PCA))
+
             # Phase 7: CEDAW, sub-period/changers, Oster delta
             all_results.extend(phase7_cedaw_and_subsamples(df))
             oster_df = phase7_oster_delta(df)
             oster_df_apo = phase7_oster_delta(df, focal_pred=FOCAL_PRED_2,
                                               out_path=SPEC_PATH_APO)
+            oster_df_legacy = phase7_oster_delta(df, focal_pred=FOCAL_PRED_LEGACY,
+                                                 out_path=SPEC_PATH_LEGACY)
+            oster_df_pca = phase7_oster_delta(df, focal_pred=FOCAL_PRED_PCA,
+                                              out_path=SPEC_PATH_PCA)
 
             # Phase 8: Country-specific linear time trends + LO interaction
             all_results.extend(phase8_country_trends(df))
@@ -2780,6 +3802,10 @@ def main():
             all_results.extend(phase9_event_study(df))
             all_results.extend(phase9_event_study(df, focal_pred=FOCAL_PRED_2,
                                                    out_path=EVENTSTUDY_PATH_APO))
+            all_results.extend(phase9_event_study(df, focal_pred=FOCAL_PRED_LEGACY,
+                                                   out_path=EVENTSTUDY_PATH_LEGACY))
+            all_results.extend(phase9_event_study(df, focal_pred=FOCAL_PRED_PCA,
+                                                   out_path=EVENTSTUDY_PATH_PCA))
             all_results.extend(phase9_wild_bootstrap(df))
             all_results.extend(phase9_wild_bootstrap(df, focal_pred=FOCAL_PRED_2))
             all_results.extend(phase9_driscoll_kraay(df))
@@ -2796,12 +3822,30 @@ def main():
                 oster_sens_df_apo.to_csv(OSTER_SENS_PATH_APO, index=False, float_format="%.6f")
                 print(f"  Oster sensitivity (apostasy) saved -> {OSTER_SENS_PATH_APO}")
 
+            oster_sens_df_legacy = phase9_oster_sensitivity(df, focal_pred=FOCAL_PRED_LEGACY,
+                                                             out_path=OSTER_SENS_PATH_LEGACY)
+            if not oster_sens_df_legacy.empty:
+                oster_sens_df_legacy.to_csv(OSTER_SENS_PATH_LEGACY, index=False, float_format="%.6f")
+                print(f"  Oster sensitivity (legacy courts) saved -> {OSTER_SENS_PATH_LEGACY}")
+
+            oster_sens_df_pca = phase9_oster_sensitivity(df, focal_pred=FOCAL_PRED_PCA,
+                                                          out_path=OSTER_SENS_PATH_PCA)
+            if not oster_sens_df_pca.empty:
+                oster_sens_df_pca.to_csv(OSTER_SENS_PATH_PCA, index=False, float_format="%.6f")
+                print(f"  Oster sensitivity (PCA) saved -> {OSTER_SENS_PATH_PCA}")
+
             if not oster_df.empty:
                 oster_df.to_csv(SPEC_PATH, index=False, float_format="%.6f")
                 print(f"\n  Oster spec table saved -> {SPEC_PATH}")
             if not oster_df_apo.empty:
                 oster_df_apo.to_csv(SPEC_PATH_APO, index=False, float_format="%.6f")
                 print(f"  Oster spec table (apostasy) saved -> {SPEC_PATH_APO}")
+            if oster_df_legacy is not None and not oster_df_legacy.empty:
+                oster_df_legacy.to_csv(SPEC_PATH_LEGACY, index=False, float_format="%.6f")
+                print(f"  Oster spec table (legacy courts) saved -> {SPEC_PATH_LEGACY}")
+            if oster_df_pca is not None and not oster_df_pca.empty:
+                oster_df_pca.to_csv(SPEC_PATH_PCA, index=False, float_format="%.6f")
+                print(f"  Oster spec table (PCA) saved -> {SPEC_PATH_PCA}")
 
             # Phase 10: Regional heterogeneity + alternative external outcomes
             print(f"\n{'='*60}")
@@ -2817,6 +3861,15 @@ def main():
             print("RESULTS SUMMARY")
             print(f"{'='*60}")
             save_results(all_results)
+
+            # Build headline table (post-processing on results.csv)
+            try:
+                import subprocess
+                subprocess.run([sys.executable,
+                                os.path.join(ROOT, "tools/build_headline_table.py")],
+                               check=False)
+            except Exception as e:
+                print(f"  [headline table build failed: {e}]")
 
         finally:
             sys.stdout = old_stdout

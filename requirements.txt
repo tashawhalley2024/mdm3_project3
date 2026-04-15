@@ -1,3 +1,10 @@
+# --------------------------------------------------------------------------
+# Pinned dependencies for exact reproducibility of run_analysis.py output.
+# Do NOT relax these pins without re-running the full pipeline and confirming
+# results/results.csv is unchanged (see CLAUDE.md: "Code is the source of
+# truth"). Sub-dependencies float on purpose; pin only the top-level libraries
+# whose behaviour the analysis depends on.
+# --------------------------------------------------------------------------
 pandas==2.2.3
 numpy==2.1.2
 matplotlib==3.9.2
@@ -12,3 +19,4 @@ pyproj==3.7.2
 shapely==2.1.2
 geodatasets==2026.1.0
 pydynpd==0.2.2
+scikit-learn==1.5.2

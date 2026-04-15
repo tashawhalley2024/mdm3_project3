@@ -34,6 +34,7 @@ REQUIRED_FILES = [
     "data/outcome_composite.csv",
     "data/predictors.csv",
     "data/robustness_outcomes.csv",
+    "data/wbl_group_scores.csv",
     "data/README.md",
     # analysis/
     "analysis/run_analysis.py",
@@ -54,18 +55,23 @@ REQUIRED_FILES = [
     "results/oster_sensitivity.csv",
     "results/placebo.csv",
     "results/spec_ladder.csv",
+    "results/headline_table.csv",
+    "results/headline_table.md",
+    "results/vif_by_spec.csv",
+    "results/results_wbl_groups.csv",
     "results/README.md",
-    # figures/
+    # figures/  (03_coefplot_suboutcomes, 04_trend, 08_event_study deliberately
+    # dropped from the presentation set — see figures/README.md)
+    "figures/00_map.png",
     "figures/01_scatter.png",
     "figures/02_coefplot.png",
-    "figures/03_coefplot_suboutcomes.png",
-    "figures/04_trend.png",
     "figures/05_loo_jackknife.png",
     "figures/06_placebo.png",
     "figures/07_spec_ladder.png",
-    "figures/08_event_study.png",
     "figures/09_oster_sensitivity.png",
     "figures/10_alt_outcomes.png",
+    "figures/11_wbl_groups.png",
+    "figures/12_mundlak_decomposition.png",
     "figures/README.md",
     # sanity_check/
     "sanity_check/sanity_check_report.md",
@@ -76,6 +82,8 @@ REQUIRED_FILES = [
     # docs/
     "docs/methods_log.md",
     "docs/sources.md",
+    "docs/mundlak_explanation.md",
+    "docs/robustness_storyline.md",
 ]
 
 print("\n=== 1. Required files ===")
@@ -91,13 +99,23 @@ try:
 
     CSV_CHECKS = {
         "data/outcome_wbl.csv": {
-            "min_rows": 2200,
+            # WBL panel currently covers 2007-2022 for the subset of economies
+            # with at least one non-null legal-rights score (observed 2,057
+            # rows as of 2026-04-15); threshold chosen below that so a minor
+            # coverage drop doesn't silently flip this check to a pass.
+            "min_rows": 2000,
             "required_cols": ["iso3", "country", "year", "wbl_treatment_index"],
         },
         "data/predictors.csv": {
             "min_rows": 3100,
+            # Item 2 (2026-04-15): added gri_gov_favour_norm to enforce its
+            # presence (it was in the file but silently unused by run_analysis).
+            # Composite and composition columns are intentionally NOT checked
+            # here — composite is in-memory only, composition is sparse and
+            # lives in religion_composition_normalised.csv.
             "required_cols": ["iso3", "country", "year",
                               "gri_religious_courts_norm", "gri_state_religion_norm",
+                              "gri_gov_favour_norm",
                               "log_gdppc_norm", "wvs_imprel_norm"],
         },
         "data/outcome_composite.csv": {
@@ -107,6 +125,13 @@ try:
         "data/robustness_outcomes.csv": {
             "min_rows": 3100,
             "required_cols": ["iso3", "country", "year", "gii", "gdi"],
+        },
+        "data/wbl_group_scores.csv": {
+            # Written by scoring.py: one row per (iso3, year), with per-group
+            # scores + overall_score used by Tier-2 WBL group-wise analyses.
+            "min_rows": 2000,
+            "required_cols": ["iso3", "year", "assets", "health",
+                              "political_rep", "overall_score"],
         },
         "results/results.csv": {
             "min_rows": 320,
@@ -171,16 +196,16 @@ except ImportError:
 # ── 4. Figure file sizes ───────────────────────────────────────────────────────
 print("\n=== 4. Figure file sizes ===")
 FIGURES = [
+    "figures/00_map.png",
     "figures/01_scatter.png",
     "figures/02_coefplot.png",
-    "figures/03_coefplot_suboutcomes.png",
-    "figures/04_trend.png",
     "figures/05_loo_jackknife.png",
     "figures/06_placebo.png",
     "figures/07_spec_ladder.png",
-    "figures/08_event_study.png",
     "figures/09_oster_sensitivity.png",
     "figures/10_alt_outcomes.png",
+    "figures/11_wbl_groups.png",
+    "figures/12_mundlak_decomposition.png",
 ]
 MIN_PNG_BYTES = 50_000
 for fig in FIGURES:

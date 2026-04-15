@@ -30,6 +30,7 @@ warnings.filterwarnings("ignore")
 # ── Import shared config ────────────────────────────────────────────────────────
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import REGION_MAP, FOCAL_PRED, FOCAL_PRED_2, PALETTE
+from utils import build_secularism_composite
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -138,7 +139,12 @@ def get_region(iso3: str) -> str:
 # ── Pretty labels for predictors ───────────────────────────────────────────────
 LABELS = {
     "pct_unaffiliated_norm":   "% Unaffiliated",
+    "pct_other_norm":          "% Other religion",
+    # Item 2: composite secularism index
+    "composite_secularism_norm":     "Composite secularism",
+    "composite_secularism_pca_norm": "Composite (PCA)",
     "gri_state_religion_norm": "State religion",
+    "gri_gov_favour_norm":     "Gov favouritism",
     "gri_religious_law_norm":  "Religious law",
     "gri_blasphemy_norm":      "Blasphemy law",
     "gri_apostasy_norm":       "Apostasy law",
@@ -179,7 +185,7 @@ def plot_scatter(df: pd.DataFrame):
     fig, axes = plt.subplots(1, 2, figsize=(13, 6), sharey=True)
 
     for ax, pred, panel_title in [
-        (axes[0], FOCAL_PRED,   "Religious courts"),
+        (axes[0], FOCAL_PRED,   "Composite secularism"),
         (axes[1], FOCAL_PRED_2, "Apostasy laws"),
     ]:
         for region, color in REGION_COLORS.items():
@@ -196,7 +202,7 @@ def plot_scatter(df: pd.DataFrame):
         y_hat  = ols.predict(X_grid)
         ci     = ols.get_prediction(X_grid).conf_int(alpha=0.05)
 
-        line_color = PALETTE["apostasy"] if pred == FOCAL_PRED_2 else PALETTE["courts"]
+        line_color = PALETTE["apostasy"] if pred == FOCAL_PRED_2 else PALETTE.get("composite", PALETTE["courts"])
         ax.plot(x_grid, y_hat, color=line_color, linewidth=2.4, zorder=5)
         ax.fill_between(x_grid, ci[:, 0], ci[:, 1], color=line_color, alpha=0.12)
 
@@ -286,12 +292,12 @@ def plot_coefplot():
 
     fig, axes = plt.subplots(1, 2, figsize=(13, 7.5), sharex=False)
     fig.suptitle(
-        "Apostasy matters. Religious courts don't.",
+        "Composite secularism strong cross-country; apostasy survives within-country",
         fontsize=17, fontweight="bold", y=1.04,
     )
     fig.text(
         0.5, 0.99,
-        "Coefficient estimates with 95% CIs; GDP-controlled; apostasy and courts highlighted.",
+        "Coefficient estimates with 95% CIs; GDP-controlled; composite and apostasy highlighted; courts retained as legacy null.",
         ha="center", fontsize=10.5, color="#555",
     )
 
@@ -767,7 +773,7 @@ def plot_spec_stability():
     )
     fig.text(
         0.5, 0.95,
-        "Courts stays null; apostasy stays significant — across bivariate baseline and every sensitivity / subsample check.",
+        "Composite within-null and apostasy signal stable across nine specification variants.",
         ha="center", fontsize=10.5, color="#555",
     )
 
@@ -995,7 +1001,7 @@ def plot_alternative_outcomes():
         fontsize=10
     )
     fig.suptitle(
-        "The courts effect is null on the primary composite and most alternatives",
+        "Focal within-country coefficient is null on pre-specified outcomes; WEF GGG is a disclosed caveat",
         fontsize=15, fontweight="bold", y=1.00,
     )
     ax.set_title(
@@ -1085,7 +1091,7 @@ def plot_wbl_groups():
     )
 
     fig.suptitle(
-        "Courts are null across every one of the 10 legal domains",
+        "Within-country null holds across every one of the 10 WBL legal-rights domains",
         fontsize=15, fontweight="bold", y=1.00,
     )
     ax.set_title(
@@ -1119,7 +1125,7 @@ def plot_wbl_groups():
 # ═══════════════════════════════════════════════════════════════════════════════
 def plot_world_map():
     """
-    World choropleth: religious courts institutionalisation, 2020.
+    World choropleth of FOCAL_PRED (composite secularism by default), 2020.
     Annotates a handful of anchor countries so the colour scale is concrete.
     """
     import geopandas as gpd
@@ -1128,8 +1134,10 @@ def plot_world_map():
     OUT_MAP  = os.path.join(ROOT, "figures/00_map.png")
     SHP_PATH = os.path.join(ROOT, "data/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
 
+    # Item 2 (2026-04-15): build composite in-memory so FOCAL_PRED is available
     pred = pd.read_csv(COMP_PATH)
-    data2020 = pred[pred["year"] == 2020][["iso3", "gri_religious_courts_norm"]].copy()
+    pred = build_secularism_composite(pred)
+    data2020 = pred[pred["year"] == 2020][["iso3", FOCAL_PRED]].copy()
 
     world = gpd.read_file(SHP_PATH)
     world = world.rename(columns={"ISO_A3": "iso3"})
@@ -1140,21 +1148,21 @@ def plot_world_map():
 
     # Custom two-stop colormap matching the palette
     cmap = LinearSegmentedColormap.from_list(
-        "courts_scale", [PALETTE["map_lo"], PALETTE["map_hi"]]
+        "secularism_scale", [PALETTE["map_lo"], PALETTE["map_hi"]]
     )
 
-    world[world["gri_religious_courts_norm"].isna()].plot(
+    world[world[FOCAL_PRED].isna()].plot(
         ax=ax, color="#EDEDED", edgecolor="white", linewidth=0.3,
     )
-    world[world["gri_religious_courts_norm"].notna()].plot(
+    world[world[FOCAL_PRED].notna()].plot(
         ax=ax,
-        column="gri_religious_courts_norm",
+        column=FOCAL_PRED,
         cmap=cmap,
         vmin=0, vmax=1,
         edgecolor="white", linewidth=0.3,
         legend=True,
         legend_kwds={
-            "label": "Religious courts score (0 = none, 1 = fully institutionalised)",
+            "label": "Composite secularism (0 = most secular, 1 = most religious)",
             "orientation": "horizontal",
             "shrink": 0.45,
             "pad": 0.02,
@@ -1163,17 +1171,14 @@ def plot_world_map():
     )
 
     # Annotate a few anchor countries so the colour scale feels concrete.
-    # Variable is binary 0/1 in GRI, so just label recognisable countries
-    # spread out geographically — colour does the numeric work. Avoid
-    # crowded clusters (e.g. drop IDN which collides with KOR/JPN).
     anchors = ["IRN", "CHN", "RUS", "USA", "BRA", "ZAF", "AUS"]
     world["centroid"] = world.geometry.representative_point()
     for iso in anchors:
         row = world[world["iso3"] == iso]
-        if row.empty or pd.isna(row["gri_religious_courts_norm"].iloc[0]):
+        if row.empty or pd.isna(row[FOCAL_PRED].iloc[0]):
             continue
         pt = row["centroid"].iloc[0]
-        score = row["gri_religious_courts_norm"].iloc[0]
+        score = row[FOCAL_PRED].iloc[0]
         ax.annotate(
             iso,
             xy=(pt.x, pt.y),
@@ -1184,11 +1189,11 @@ def plot_world_map():
 
     ax.set_axis_off()
     fig.suptitle(
-        "Where religious courts hold jurisdiction (2020)",
+        "The composite secularism index across countries (2020)",
         fontsize=16, fontweight="bold", y=0.97,
     )
     ax.set_title(
-        "Pew Global Restrictions on Religion index, normalised 0–1. Grey = no data.",
+        "Equal-weight z-score across institutional, attitudinal, behavioural dimensions. Grey = no data.",
         fontsize=10, fontweight="normal", color="#555",
     )
 
@@ -1221,9 +1226,13 @@ def plot_mundlak_decomposition():
         print("  T4_mundlak_re not found in results.csv — skipping.")
         return
 
-    # Separate within (base predictors) and between (_mean suffix)
-    gri_vars = ["gri_state_religion_norm", "gri_religious_law_norm",
-                "gri_blasphemy_norm", "gri_apostasy_norm", "gri_religious_courts_norm"]
+    # Separate within (base predictors) and between (_mean suffix).
+    # Item 2 (2026-04-15): composite added as hero row; gri_gov_favour_norm
+    # newly activated in GRI_PANEL_COLS; all six GRI sub-items present.
+    gri_vars = [FOCAL_PRED,
+                "gri_state_religion_norm", "gri_gov_favour_norm",
+                "gri_religious_law_norm", "gri_blasphemy_norm",
+                "gri_apostasy_norm", "gri_religious_courts_norm"]
 
     rows = []
     for var in gri_vars:
@@ -1251,8 +1260,10 @@ def plot_mundlak_decomposition():
     fig, axes = plt.subplots(1, 2, figsize=(13, 0.9 * n_vars + 2.5), sharey=True)
     y_pos = np.arange(n_vars)
 
-    apostasy_row = df_plot.index[df_plot["var"].str.contains("Apostasy", case=False)].tolist()
-    apostasy_y   = apostasy_row[0] if apostasy_row else None
+    # Highlight the current FOCAL_PRED row (formerly apostasy-keyed)
+    focal_label = LABELS_SHORT.get(FOCAL_PRED, FOCAL_PRED)
+    focal_row = df_plot.index[df_plot["var"] == focal_label].tolist()
+    apostasy_y   = focal_row[0] if focal_row else None
 
     for ax, prefix, title in [
         (axes[0], "within",  "Within-country effect\n(change over time)"),
@@ -1289,7 +1300,7 @@ def plot_mundlak_decomposition():
                         fontsize=11, fontweight="bold")
 
     fig.suptitle(
-        "Apostasy's effect is structural — not temporal",
+        "Secularism's effect is structural: between-country gap dwarfs within-country change",
         fontsize=18, fontweight="bold", y=1.04,
     )
     fig.text(
@@ -1298,7 +1309,8 @@ def plot_mundlak_decomposition():
         ha="center", fontsize=11, color="#555",
     )
 
-    # Annotate the between/within ratio for apostasy — visually dominant
+    # Annotate the between/within ratio for FOCAL_PRED (was apostasy-keyed).
+    ratio_color = PALETTE.get("composite", PALETTE["apostasy"])
     if apostasy_y is not None:
         apo = df_plot.iloc[apostasy_y]
         if apo["within_coef"] != 0:
@@ -1308,13 +1320,13 @@ def plot_mundlak_decomposition():
                 f"{abs(ratio):.1f}×",
                 ha="center", va="center",
                 fontsize=44, fontweight="bold",
-                color=PALETTE["apostasy"],
+                color=ratio_color,
             )
             fig.text(
                 0.5, 0.40,
                 "between-effect\nvs within-effect",
                 ha="center", va="center",
-                fontsize=11, color=PALETTE["apostasy"], fontweight="bold",
+                fontsize=11, color=ratio_color, fontweight="bold",
             )
 
     from matplotlib.patches import Patch
@@ -1364,6 +1376,10 @@ def main():
         comp.drop(columns=["country"], errors="ignore"),
         on=["iso3", "year"], how="left", suffixes=("", "_comp"),
     )
+    # Item 2 (2026-04-15): build composite in-memory so FOCAL_PRED
+    # (composite_secularism_norm) is available to plot_scatter and
+    # other plots that reference FOCAL_PRED as a column in df.
+    df = build_secularism_composite(df)
 
     print("\n[1/10] World choropleth map...")
     plot_world_map()

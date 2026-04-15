@@ -1,442 +1,696 @@
-tier,year,predictor,coef,se,pval,n,r2,dv_label,sig
-T1_no_gdp,2014,const,0.440932,0.029491,0.000000,170,0.585085,,***
-T1_no_gdp,2014,gri_state_religion_norm,-0.003684,0.029430,0.900373,170,0.585085,,
-T1_no_gdp,2014,gri_religious_law_norm,0.084978,0.031643,0.007242,170,0.585085,,***
-T1_no_gdp,2014,gri_blasphemy_norm,-0.043382,0.017839,0.015021,170,0.585085,,**
-T1_no_gdp,2014,gri_apostasy_norm,-0.125110,0.026428,0.000002,170,0.585085,,***
-T1_no_gdp,2014,gri_religious_courts_norm,0.021154,0.018678,0.257404,170,0.585085,,
-T1_no_gdp,2014,v2x_rule_norm,0.109540,0.050519,0.030138,170,0.585085,,**
-T1_no_gdp,2014,v2x_civlib_norm,0.051954,0.050788,0.306326,170,0.585085,,
-T1_no_gdp,2014,v2x_egal_norm,0.168684,0.057913,0.003583,170,0.585085,,***
-T1_with_gdp,2014,const,0.415782,0.034597,0.000000,166,0.637941,,***
-T1_with_gdp,2014,gri_state_religion_norm,-0.016245,0.029721,0.584677,166,0.637941,,
-T1_with_gdp,2014,gri_religious_law_norm,0.087265,0.030838,0.004658,166,0.637941,,***
-T1_with_gdp,2014,gri_blasphemy_norm,-0.050900,0.016972,0.002708,166,0.637941,,***
-T1_with_gdp,2014,gri_apostasy_norm,-0.138663,0.027667,0.000001,166,0.637941,,***
-T1_with_gdp,2014,gri_religious_courts_norm,0.009860,0.016748,0.556024,166,0.637941,,
-T1_with_gdp,2014,v2x_rule_norm,0.031882,0.055115,0.562951,166,0.637941,,
-T1_with_gdp,2014,v2x_civlib_norm,0.085234,0.058474,0.144937,166,0.637941,,
-T1_with_gdp,2014,v2x_egal_norm,0.108688,0.057591,0.059127,166,0.637941,,*
-T1_with_gdp,2014,log_gdppc_norm,0.183378,0.044873,0.000044,166,0.637941,,***
-T1_no_gdp,2020,const,0.554346,0.036067,0.000000,170,0.532641,,***
-T1_no_gdp,2020,gri_state_religion_norm,-0.046129,0.036260,0.203317,170,0.532641,,
-T1_no_gdp,2020,gri_religious_law_norm,0.066771,0.047421,0.159119,170,0.532641,,
-T1_no_gdp,2020,gri_blasphemy_norm,-0.042800,0.015562,0.005956,170,0.532641,,***
-T1_no_gdp,2020,gri_apostasy_norm,-0.120608,0.034524,0.000477,170,0.532641,,***
-T1_no_gdp,2020,gri_religious_courts_norm,0.022774,0.018650,0.222043,170,0.532641,,
-T1_no_gdp,2020,v2x_rule_norm,0.181307,0.058053,0.001789,170,0.532641,,***
-T1_no_gdp,2020,v2x_civlib_norm,-0.072650,0.057766,0.208516,170,0.532641,,
-T1_no_gdp,2020,v2x_egal_norm,0.155010,0.055441,0.005175,170,0.532641,,***
-T1_with_gdp,2020,const,0.513631,0.041171,0.000000,164,0.573276,,***
-T1_with_gdp,2020,gri_state_religion_norm,-0.048533,0.037450,0.194996,164,0.573276,,
-T1_with_gdp,2020,gri_religious_law_norm,0.062052,0.045820,0.175656,164,0.573276,,
-T1_with_gdp,2020,gri_blasphemy_norm,-0.040464,0.015174,0.007661,164,0.573276,,***
-T1_with_gdp,2020,gri_apostasy_norm,-0.119756,0.039597,0.002491,164,0.573276,,***
-T1_with_gdp,2020,gri_religious_courts_norm,0.015191,0.019722,0.441162,164,0.573276,,
-T1_with_gdp,2020,v2x_rule_norm,0.083664,0.065942,0.204530,164,0.573276,,
-T1_with_gdp,2020,v2x_civlib_norm,-0.008455,0.068427,0.901663,164,0.573276,,
-T1_with_gdp,2020,v2x_egal_norm,0.104907,0.055725,0.059756,164,0.573276,,*
-T1_with_gdp,2020,log_gdppc_norm,0.172832,0.049033,0.000424,164,0.573276,,***
-T2_gri_only,all,const,0.654579,0.003795,0.000000,1860,0.011156,,***
-T2_gri_only,all,gri_state_religion_norm,0.015990,0.018395,0.384847,1860,0.011156,,
-T2_gri_only,all,gri_religious_law_norm,0.004480,0.006864,0.514072,1860,0.011156,,
-T2_gri_only,all,gri_blasphemy_norm,-0.000810,0.003423,0.812996,1860,0.011156,,
-T2_gri_only,all,gri_apostasy_norm,-0.015811,0.007260,0.029547,1860,0.011156,,**
-T2_gri_only,all,gri_religious_courts_norm,-0.009603,0.007161,0.180097,1860,0.011156,,
-T2_gri_gdp,all,const,0.633301,0.036137,0.000000,1807,0.011698,,***
-T2_gri_gdp,all,gri_state_religion_norm,0.012401,0.015334,0.418813,1807,0.011698,,
-T2_gri_gdp,all,gri_religious_law_norm,0.008452,0.006870,0.218763,1807,0.011698,,
-T2_gri_gdp,all,gri_blasphemy_norm,-0.001100,0.003512,0.754119,1807,0.011698,,
-T2_gri_gdp,all,gri_apostasy_norm,-0.017026,0.007880,0.030860,1807,0.011698,,**
-T2_gri_gdp,all,gri_religious_courts_norm,-0.009228,0.007317,0.207440,1807,0.011698,,
-T2_gri_gdp,all,log_gdppc_norm,0.049255,0.074914,0.510959,1807,0.011698,,
-T2_no_gdp,all,const,0.671694,0.017114,0.000000,1700,0.012090,,***
-T2_no_gdp,all,gri_state_religion_norm,0.015740,0.017953,0.380772,1700,0.012090,,
-T2_no_gdp,all,gri_religious_law_norm,0.004076,0.006957,0.558097,1700,0.012090,,
-T2_no_gdp,all,gri_blasphemy_norm,-0.000427,0.003440,0.901290,1700,0.012090,,
-T2_no_gdp,all,gri_apostasy_norm,-0.018270,0.008572,0.033227,1700,0.012090,,**
-T2_no_gdp,all,gri_religious_courts_norm,-0.007059,0.006653,0.288841,1700,0.012090,,
-T2_no_gdp,all,v2x_rule_norm,0.014948,0.025743,0.561563,1700,0.012090,,
-T2_no_gdp,all,v2x_civlib_norm,-0.012567,0.028430,0.658521,1700,0.012090,,
-T2_no_gdp,all,v2x_egal_norm,-0.020992,0.037001,0.570573,1700,0.012090,,
-T2_with_gdp,all,const,0.674234,0.039120,0.000000,1648,0.012839,,***
-T2_with_gdp,all,gri_state_religion_norm,0.011054,0.014882,0.457735,1648,0.012839,,
-T2_with_gdp,all,gri_religious_law_norm,0.007364,0.007106,0.300242,1648,0.012839,,
-T2_with_gdp,all,gri_blasphemy_norm,-0.000659,0.003499,0.850683,1648,0.012839,,
-T2_with_gdp,all,gri_apostasy_norm,-0.019684,0.009336,0.035160,1648,0.012839,,**
-T2_with_gdp,all,gri_religious_courts_norm,-0.006949,0.006877,0.312389,1648,0.012839,,
-T2_with_gdp,all,v2x_rule_norm,0.009067,0.027471,0.741401,1648,0.012839,,
-T2_with_gdp,all,v2x_civlib_norm,-0.022333,0.028951,0.440583,1648,0.012839,,
-T2_with_gdp,all,v2x_egal_norm,-0.009736,0.038664,0.801228,1648,0.012839,,
-T2_with_gdp,all,log_gdppc_norm,0.009121,0.073359,0.901072,1648,0.012839,,
-T4_mundlak_re,all,const,0.430798,0.037047,0.000000,1648,0.394769,,***
-T4_mundlak_re,all,gri_state_religion_norm,0.011056,0.014147,0.434619,1648,0.394769,,
-T4_mundlak_re,all,gri_religious_law_norm,0.007366,0.006756,0.275716,1648,0.394769,,
-T4_mundlak_re,all,gri_blasphemy_norm,-0.000665,0.003326,0.841559,1648,0.394769,,
-T4_mundlak_re,all,gri_apostasy_norm,-0.019677,0.008877,0.026785,1648,0.394769,,**
-T4_mundlak_re,all,gri_religious_courts_norm,-0.006951,0.006537,0.287794,1648,0.394769,,
-T4_mundlak_re,all,v2x_rule_norm,0.009027,0.026113,0.729610,1648,0.394769,,
-T4_mundlak_re,all,v2x_civlib_norm,-0.022298,0.027523,0.417978,1648,0.394769,,
-T4_mundlak_re,all,v2x_egal_norm,-0.009708,0.036757,0.791730,1648,0.394769,,
-T4_mundlak_re,all,log_gdppc_norm,0.008942,0.069730,0.897973,1648,0.394769,,
-T4_mundlak_re,all,gri_state_religion_norm_mean,-0.033970,0.037629,0.366780,1648,0.394769,,
-T4_mundlak_re,all,gri_religious_law_norm_mean,0.073581,0.045004,0.102247,1648,0.394769,,
-T4_mundlak_re,all,gri_blasphemy_norm_mean,-0.048781,0.019064,0.010593,1648,0.394769,,**
-T4_mundlak_re,all,gri_apostasy_norm_mean,-0.122393,0.037879,0.001258,1648,0.394769,,***
-T4_mundlak_re,all,gri_religious_courts_norm_mean,0.042278,0.022810,0.063995,1648,0.394769,,*
-T4_mundlak_re,all,v2x_rule_norm_mean,0.054235,0.060944,0.373647,1648,0.394769,,
-T4_mundlak_re,all,v2x_civlib_norm_mean,0.077834,0.069092,0.260114,1648,0.394769,,
-T4_mundlak_re,all,v2x_egal_norm_mean,0.108312,0.064471,0.093146,1648,0.394769,,*
-T4_mundlak_re,all,log_gdppc_norm_mean,0.166590,0.083792,0.046963,1648,0.394769,,**
-T4_mundlak_re,all,yr_2014,0.003451,0.002019,0.087567,1648,0.394769,,*
-T4_mundlak_re,all,yr_2015,0.008963,0.002229,0.000061,1648,0.394769,,***
-T4_mundlak_re,all,yr_2016,0.013521,0.002727,0.000001,1648,0.394769,,***
-T4_mundlak_re,all,yr_2017,0.020888,0.003247,0.000000,1648,0.394769,,***
-T4_mundlak_re,all,yr_2018,0.026318,0.003542,0.000000,1648,0.394769,,***
-T4_mundlak_re,all,yr_2019,0.033111,0.003553,0.000000,1648,0.394769,,***
-T4_mundlak_re,all,yr_2020,0.042650,0.004115,0.000000,1648,0.394769,,***
-T4_mundlak_re,all,yr_2021,0.048022,0.004900,0.000000,1648,0.394769,,***
-T4_mundlak_re,all,yr_2022,0.057855,0.005331,0.000000,1648,0.394769,,***
-T3_system_gmm,all,L1.wbl_treatment_index,0.997349,0.139574,0.000000,1316,,,***
-T3_system_gmm,all,gri_state_religion_norm,-0.026028,0.021513,0.226329,1316,,,
-T3_system_gmm,all,gri_religious_law_norm,0.018860,0.026767,0.481056,1316,,,
-T3_system_gmm,all,gri_blasphemy_norm,-0.000936,0.006097,0.877975,1316,,,
-T3_system_gmm,all,gri_apostasy_norm,-0.024825,0.014503,0.086943,1316,,,*
-T3_system_gmm,all,gri_religious_courts_norm,-0.022046,0.023843,0.355164,1316,,,
-T3_system_gmm,all,v2x_rule_norm,0.007417,0.015676,0.636115,1316,,,
-T3_system_gmm,all,v2x_civlib_norm,-0.029937,0.048664,0.538439,1316,,,
-T3_system_gmm,all,v2x_egal_norm,-0.002807,0.021134,0.894330,1316,,,
-T3_system_gmm,all,log_gdppc_norm,0.015400,0.014699,0.294765,1316,,,
-T3_system_gmm,all,year_2015,0.004036,0.002652,0.128055,1316,,,
-T3_system_gmm,all,year_2016,0.003056,0.002707,0.258867,1316,,,
-T3_system_gmm,all,year_2017,0.005704,0.002894,0.048686,1316,,,**
-T3_system_gmm,all,year_2018,0.004135,0.003144,0.188441,1316,,,
-T3_system_gmm,all,year_2019,0.005235,0.003736,0.161195,1316,,,
-T3_system_gmm,all,year_2020,0.008042,0.005152,0.118541,1316,,,
-T3_system_gmm,all,year_2021,0.003190,0.007291,0.661717,1316,,,
-T3_system_gmm,all,year_2022,0.006316,0.007921,0.425270,1316,,,
-T3_system_gmm,all,_con,0.019161,0.042117,0.649140,1316,,,
-T3_system_gmm,all,_hansen_p,0.491013,,,1316,,,
-T3_system_gmm,all,_ar1_p,0.000001,,,1316,,,
-T3_system_gmm,all,_ar2_p,0.135753,,,1316,,,
-T3_system_gmm,all,_rho_gmm,0.997349,,,1316,,,
-T3_system_gmm,all,_rho_ols_upper,0.983499,,,1316,,,
-T3_system_gmm,all,_rho_fe_lower,0.808272,,,1316,,,
-P4_panel_fe_L1,all,const,0.671771,0.041714,0.000000,1482,0.016071,,***
-P4_panel_fe_L1,all,gri_state_religion_norm_L1,-0.008219,0.016822,0.625211,1482,0.016071,,
-P4_panel_fe_L1,all,gri_religious_law_norm_L1,0.008783,0.010040,0.381826,1482,0.016071,,
-P4_panel_fe_L1,all,gri_blasphemy_norm_L1,-0.002968,0.003461,0.391181,1482,0.016071,,
-P4_panel_fe_L1,all,gri_apostasy_norm_L1,-0.026651,0.012773,0.037130,1482,0.016071,,**
-P4_panel_fe_L1,all,gri_religious_courts_norm_L1,-0.009758,0.005336,0.067659,1482,0.016071,,*
-P4_panel_fe_L1,all,v2x_rule_norm,0.006144,0.026763,0.818471,1482,0.016071,,
-P4_panel_fe_L1,all,v2x_civlib_norm,-0.022436,0.028997,0.439224,1482,0.016071,,
-P4_panel_fe_L1,all,v2x_egal_norm,0.001490,0.036298,0.967267,1482,0.016071,,
-P4_panel_fe_L1,all,log_gdppc_norm,0.019958,0.080243,0.803615,1482,0.016071,,
-P4_panel_fe_L2,all,const,0.670064,0.044713,0.000000,1316,0.020287,,***
-P4_panel_fe_L2,all,gri_state_religion_norm_L2,-0.028083,0.016021,0.079884,1316,0.020287,,*
-P4_panel_fe_L2,all,gri_religious_law_norm_L2,0.011963,0.012823,0.351054,1316,0.020287,,
-P4_panel_fe_L2,all,gri_blasphemy_norm_L2,-0.003808,0.003477,0.273653,1316,0.020287,,
-P4_panel_fe_L2,all,gri_apostasy_norm_L2,-0.029648,0.016448,0.071724,1316,0.020287,,*
-P4_panel_fe_L2,all,gri_religious_courts_norm_L2,-0.007717,0.004160,0.063827,1316,0.020287,,*
-P4_panel_fe_L2,all,v2x_rule_norm,0.003549,0.028019,0.899221,1316,0.020287,,
-P4_panel_fe_L2,all,v2x_civlib_norm,-0.015924,0.028104,0.571095,1316,0.020287,,
-P4_panel_fe_L2,all,v2x_egal_norm,0.005938,0.036883,0.872123,1316,0.020287,,
-P4_panel_fe_L2,all,log_gdppc_norm,0.023323,0.083686,0.780525,1316,0.020287,,
-P4_reverse_causality,all,const,0.420539,0.340013,0.216371,1485,0.002288,,
-P4_reverse_causality,all,wbl_treatment_index,-0.251282,0.320573,0.433269,1485,0.002288,,
-P4_reverse_causality,all,v2x_rule_norm,0.016731,0.212950,0.937388,1485,0.002288,,
-P4_reverse_causality,all,v2x_civlib_norm,-0.114141,0.137324,0.406025,1485,0.002288,,
-P4_reverse_causality,all,v2x_egal_norm,0.080729,0.246725,0.743566,1485,0.002288,,
-P4_reverse_causality,all,log_gdppc_norm,-0.199377,0.444629,0.653930,1485,0.002288,,
-P5_A4_Europe,2013,const,0.263595,0.160688,0.100918,41,0.678595,,
-P5_A4_Europe,2013,gri_state_religion_norm,0.018503,0.038423,0.630125,41,0.678595,,
-P5_A4_Europe,2013,gri_religious_law_norm,0.007098,0.046000,0.877363,41,0.678595,,
-P5_A4_Europe,2013,gri_blasphemy_norm,-0.021692,0.022421,0.333312,41,0.678595,,
-P5_A4_Europe,2013,gri_religious_courts_norm,-0.000162,0.019324,0.993304,41,0.678595,,
-P5_A4_Europe,2013,v2x_rule_norm,-0.143104,0.129532,0.269254,41,0.678595,,
-P5_A4_Europe,2013,v2x_civlib_norm,0.348711,0.193603,0.071677,41,0.678595,,*
-P5_A4_Europe,2013,v2x_egal_norm,0.186416,0.158655,0.240005,41,0.678595,,
-P5_A4_Europe,2013,log_gdppc_norm,0.231248,0.085502,0.006839,41,0.678595,,***
-P5_A4_Sub_Saharan_Africa,2013,const,0.411115,0.045424,0.000000,47,0.516393,,***
-P5_A4_Sub_Saharan_Africa,2013,gri_state_religion_norm,0.127034,0.155223,0.413130,47,0.516393,,
-P5_A4_Sub_Saharan_Africa,2013,gri_religious_law_norm,0.099397,0.075016,0.185170,47,0.516393,,
-P5_A4_Sub_Saharan_Africa,2013,gri_blasphemy_norm,0.067364,0.053108,0.204641,47,0.516393,,
-P5_A4_Sub_Saharan_Africa,2013,gri_apostasy_norm,-0.186676,0.090482,0.039101,47,0.516393,,**
-P5_A4_Sub_Saharan_Africa,2013,gri_religious_courts_norm,0.070801,0.074247,0.340293,47,0.516393,,
-P5_A4_Sub_Saharan_Africa,2013,v2x_rule_norm,0.165172,0.094659,0.080998,47,0.516393,,*
-P5_A4_Sub_Saharan_Africa,2013,v2x_civlib_norm,-0.149884,0.102801,0.144840,47,0.516393,,
-P5_A4_Sub_Saharan_Africa,2013,v2x_egal_norm,0.295726,0.126491,0.019391,47,0.516393,,**
-P5_A4_Sub_Saharan_Africa,2013,log_gdppc_norm,0.012764,0.110159,0.907755,47,0.516393,,
-P5_B4_clrelig_extended,all,const,0.690948,0.039476,0.000000,1648,0.016536,,***
-P5_B4_clrelig_extended,all,gri_state_religion_norm,0.011392,0.014534,0.433254,1648,0.016536,,
-P5_B4_clrelig_extended,all,gri_religious_law_norm,0.006663,0.007135,0.350513,1648,0.016536,,
-P5_B4_clrelig_extended,all,gri_blasphemy_norm,-0.000746,0.003535,0.832962,1648,0.016536,,
-P5_B4_clrelig_extended,all,gri_apostasy_norm,-0.019872,0.009793,0.042620,1648,0.016536,,**
-P5_B4_clrelig_extended,all,gri_religious_courts_norm,-0.006666,0.006955,0.338001,1648,0.016536,,
-P5_B4_clrelig_extended,all,v2clrelig_norm,-0.035984,0.028665,0.209547,1648,0.016536,,
-P5_B4_clrelig_extended,all,v2x_rule_norm,0.004629,0.028211,0.869688,1648,0.016536,,
-P5_B4_clrelig_extended,all,v2x_civlib_norm,-0.006005,0.032327,0.852656,1648,0.016536,,
-P5_B4_clrelig_extended,all,v2x_egal_norm,-0.004815,0.038512,0.900512,1648,0.016536,,
-P5_B4_clrelig_extended,all,log_gdppc_norm,0.001512,0.072572,0.983377,1648,0.016536,,
-P5_B4_clrelig_sole,all,const,0.695144,0.038791,0.000000,1648,0.005856,,***
-P5_B4_clrelig_sole,all,v2clrelig_norm,-0.036621,0.028502,0.199038,1648,0.005856,,
-P5_B4_clrelig_sole,all,v2x_rule_norm,0.000990,0.028623,0.972407,1648,0.005856,,
-P5_B4_clrelig_sole,all,v2x_civlib_norm,-0.005896,0.032971,0.858099,1648,0.005856,,
-P5_B4_clrelig_sole,all,v2x_egal_norm,0.001685,0.040068,0.966463,1648,0.005856,,
-P5_B4_clrelig_sole,all,log_gdppc_norm,-0.009837,0.071924,0.891231,1648,0.005856,,
-P6_placebo_wdi_lifexpf_norm,all,const,0.682806,0.046726,0.000000,1648,0.012660,Female life expectancy (female DV),***
-P6_placebo_wdi_lifexpf_norm,all,gri_state_religion_norm,-0.009841,0.006670,0.140288,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,gri_religious_law_norm,0.012077,0.007929,0.127916,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,gri_blasphemy_norm,0.006480,0.003584,0.070849,1648,0.012660,Female life expectancy (female DV),*
-P6_placebo_wdi_lifexpf_norm,all,gri_apostasy_norm,0.000056,0.008496,0.994747,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,gri_religious_courts_norm,0.001569,0.005771,0.785687,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.020414,0.025990,0.432314,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,0.005137,0.025303,0.839137,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,-0.028341,0.040896,0.488422,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,-0.058484,0.095239,0.539258,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lfpf_norm,all,const,0.644491,0.044295,0.000000,1637,0.052067,Female LFP rate (female DV),***
-P6_placebo_wdi_lfpf_norm,all,gri_state_religion_norm,-0.018100,0.012581,0.150474,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,gri_religious_law_norm,-0.004166,0.007833,0.594888,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,gri_blasphemy_norm,-0.001655,0.002356,0.482486,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,gri_apostasy_norm,0.024808,0.010925,0.023301,1637,0.052067,Female LFP rate (female DV),**
-P6_placebo_wdi_lfpf_norm,all,gri_religious_courts_norm,-0.007765,0.005280,0.141585,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.023133,0.031356,0.460779,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.039547,0.025902,0.127030,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,0.023406,0.041474,0.572612,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.094866,0.072060,0.188216,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wbl_treatment_index,all,const,0.674234,0.039120,0.000000,1648,0.012839,Women's treatment index (female DV),***
-P6_placebo_wbl_treatment_index,all,gri_state_religion_norm,0.011054,0.014882,0.457735,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,gri_religious_law_norm,0.007364,0.007106,0.300242,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,gri_blasphemy_norm,-0.000659,0.003499,0.850683,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,gri_apostasy_norm,-0.019684,0.009336,0.035160,1648,0.012839,Women's treatment index (female DV),**
-P6_placebo_wbl_treatment_index,all,gri_religious_courts_norm,-0.006949,0.006877,0.312389,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,v2x_rule_norm,0.009067,0.027471,0.741401,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,v2x_civlib_norm,-0.022333,0.028951,0.440583,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,v2x_egal_norm,-0.009736,0.038664,0.801228,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,log_gdppc_norm,0.009121,0.073359,0.901072,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_lifexpm_norm,all,const,0.721875,0.044194,0.000000,1648,0.013282,Male life expectancy (placebo DV),***
-P6_placebo_lifexpm_norm,all,gri_state_religion_norm,-0.006932,0.006170,0.261417,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,gri_religious_law_norm,0.009001,0.006415,0.160783,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,gri_blasphemy_norm,0.006370,0.003200,0.046695,1648,0.013282,Male life expectancy (placebo DV),**
-P6_placebo_lifexpm_norm,all,gri_apostasy_norm,-0.000066,0.006953,0.992416,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,gri_religious_courts_norm,0.002700,0.005386,0.616275,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,v2x_rule_norm,0.001346,0.021194,0.949380,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,v2x_civlib_norm,0.016297,0.021643,0.451580,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,v2x_egal_norm,-0.010702,0.033867,0.752051,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.021220,0.089282,0.812164,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lfpm_norm,all,const,0.308813,0.110323,0.005191,1637,0.035089,Male LFP rate (placebo DV),***
-P6_placebo_lfpm_norm,all,gri_state_religion_norm,0.010196,0.009119,0.263727,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,gri_religious_law_norm,0.005425,0.011528,0.637994,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,gri_blasphemy_norm,-0.001636,0.005463,0.764622,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,gri_apostasy_norm,-0.011863,0.009862,0.229209,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,gri_religious_courts_norm,0.005646,0.005013,0.260200,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,v2x_rule_norm,0.002383,0.050108,0.962077,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.023509,0.037591,0.531807,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,v2x_egal_norm,0.070057,0.052070,0.178696,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,log_gdppc_norm,0.335576,0.210982,0.111930,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_wdi_lifexpf_norm,all,const,0.682806,0.046726,0.000000,1648,0.012660,Female life expectancy (female DV),***
-P6_placebo_wdi_lifexpf_norm,all,gri_state_religion_norm,-0.009841,0.006670,0.140288,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,gri_religious_law_norm,0.012077,0.007929,0.127916,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,gri_blasphemy_norm,0.006480,0.003584,0.070849,1648,0.012660,Female life expectancy (female DV),*
-P6_placebo_wdi_lifexpf_norm,all,gri_apostasy_norm,0.000056,0.008496,0.994747,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,gri_religious_courts_norm,0.001569,0.005771,0.785687,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.020414,0.025990,0.432314,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,0.005137,0.025303,0.839137,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,-0.028341,0.040896,0.488422,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,-0.058484,0.095239,0.539258,1648,0.012660,Female life expectancy (female DV),
-P6_placebo_wdi_lfpf_norm,all,const,0.644491,0.044295,0.000000,1637,0.052067,Female LFP rate (female DV),***
-P6_placebo_wdi_lfpf_norm,all,gri_state_religion_norm,-0.018100,0.012581,0.150474,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,gri_religious_law_norm,-0.004166,0.007833,0.594888,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,gri_blasphemy_norm,-0.001655,0.002356,0.482486,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,gri_apostasy_norm,0.024808,0.010925,0.023301,1637,0.052067,Female LFP rate (female DV),**
-P6_placebo_wdi_lfpf_norm,all,gri_religious_courts_norm,-0.007765,0.005280,0.141585,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.023133,0.031356,0.460779,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.039547,0.025902,0.127030,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,0.023406,0.041474,0.572612,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.094866,0.072060,0.188216,1637,0.052067,Female LFP rate (female DV),
-P6_placebo_wbl_treatment_index,all,const,0.674234,0.039120,0.000000,1648,0.012839,Women's treatment index (female DV),***
-P6_placebo_wbl_treatment_index,all,gri_state_religion_norm,0.011054,0.014882,0.457735,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,gri_religious_law_norm,0.007364,0.007106,0.300242,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,gri_blasphemy_norm,-0.000659,0.003499,0.850683,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,gri_apostasy_norm,-0.019684,0.009336,0.035160,1648,0.012839,Women's treatment index (female DV),**
-P6_placebo_wbl_treatment_index,all,gri_religious_courts_norm,-0.006949,0.006877,0.312389,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,v2x_rule_norm,0.009067,0.027471,0.741401,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,v2x_civlib_norm,-0.022333,0.028951,0.440583,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,v2x_egal_norm,-0.009736,0.038664,0.801228,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_wbl_treatment_index,all,log_gdppc_norm,0.009121,0.073359,0.901072,1648,0.012839,Women's treatment index (female DV),
-P6_placebo_lifexpm_norm,all,const,0.721875,0.044194,0.000000,1648,0.013282,Male life expectancy (placebo DV),***
-P6_placebo_lifexpm_norm,all,gri_state_religion_norm,-0.006932,0.006170,0.261417,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,gri_religious_law_norm,0.009001,0.006415,0.160783,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,gri_blasphemy_norm,0.006370,0.003200,0.046695,1648,0.013282,Male life expectancy (placebo DV),**
-P6_placebo_lifexpm_norm,all,gri_apostasy_norm,-0.000066,0.006953,0.992416,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,gri_religious_courts_norm,0.002700,0.005386,0.616275,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,v2x_rule_norm,0.001346,0.021194,0.949380,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,v2x_civlib_norm,0.016297,0.021643,0.451580,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,v2x_egal_norm,-0.010702,0.033867,0.752051,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.021220,0.089282,0.812164,1648,0.013282,Male life expectancy (placebo DV),
-P6_placebo_lfpm_norm,all,const,0.308813,0.110323,0.005191,1637,0.035089,Male LFP rate (placebo DV),***
-P6_placebo_lfpm_norm,all,gri_state_religion_norm,0.010196,0.009119,0.263727,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,gri_religious_law_norm,0.005425,0.011528,0.637994,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,gri_blasphemy_norm,-0.001636,0.005463,0.764622,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,gri_apostasy_norm,-0.011863,0.009862,0.229209,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,gri_religious_courts_norm,0.005646,0.005013,0.260200,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,v2x_rule_norm,0.002383,0.050108,0.962077,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.023509,0.037591,0.531807,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,v2x_egal_norm,0.070057,0.052070,0.178696,1637,0.035089,Male LFP rate (placebo DV),
-P6_placebo_lfpm_norm,all,log_gdppc_norm,0.335576,0.210982,0.111930,1637,0.035089,Male LFP rate (placebo DV),
-T2_with_cedaw,all,const,0.658851,0.070846,0.000000,1628,0.013014,,***
-T2_with_cedaw,all,gri_state_religion_norm,0.011066,0.014886,0.457369,1628,0.013014,,
-T2_with_cedaw,all,gri_religious_law_norm,0.007210,0.007194,0.316386,1628,0.013014,,
-T2_with_cedaw,all,gri_blasphemy_norm,-0.000663,0.003511,0.850156,1628,0.013014,,
-T2_with_cedaw,all,gri_apostasy_norm,-0.019614,0.009369,0.036479,1628,0.013014,,**
-T2_with_cedaw,all,gri_religious_courts_norm,-0.007000,0.006883,0.309289,1628,0.013014,,
-T2_with_cedaw,all,v2x_rule_norm,0.008415,0.027749,0.761745,1628,0.013014,,
-T2_with_cedaw,all,v2x_civlib_norm,-0.021755,0.029773,0.465069,1628,0.013014,,
-T2_with_cedaw,all,v2x_egal_norm,-0.010151,0.040845,0.803763,1628,0.013014,,
-T2_with_cedaw,all,log_gdppc_norm,0.002790,0.075936,0.970699,1628,0.013014,,
-T2_with_cedaw,all,cedaw_years_since_norm,0.025724,0.085296,0.763013,1628,0.013014,,
-T1_with_cedaw,2013,const,0.365536,0.041109,0.000000,164,0.642761,,***
-T1_with_cedaw,2013,gri_state_religion_norm,0.006776,0.032001,0.832302,164,0.642761,,
-T1_with_cedaw,2013,gri_religious_law_norm,0.060688,0.032666,0.063193,164,0.642761,,*
-T1_with_cedaw,2013,gri_blasphemy_norm,-0.042880,0.018256,0.018833,164,0.642761,,**
-T1_with_cedaw,2013,gri_apostasy_norm,-0.123429,0.030942,0.000066,164,0.642761,,***
-T1_with_cedaw,2013,gri_religious_courts_norm,0.015286,0.015395,0.320725,164,0.642761,,
-T1_with_cedaw,2013,v2x_rule_norm,0.042241,0.055379,0.445608,164,0.642761,,
-T1_with_cedaw,2013,v2x_civlib_norm,0.060864,0.060770,0.316559,164,0.642761,,
-T1_with_cedaw,2013,v2x_egal_norm,0.111138,0.060217,0.064950,164,0.642761,,*
-T1_with_cedaw,2013,log_gdppc_norm,0.173734,0.046802,0.000206,164,0.642761,,***
-T1_with_cedaw,2013,cedaw_years_since_norm,0.105700,0.044452,0.017413,164,0.642761,,**
-T2_subperiod_2008_2019,2008-2019,const,0.676429,0.055095,0.000000,1157,0.010288,,***
-T2_subperiod_2008_2019,2008-2019,gri_state_religion_norm,-0.006794,0.011880,0.567521,1157,0.010288,,
-T2_subperiod_2008_2019,2008-2019,gri_religious_law_norm,0.006545,0.008249,0.427726,1157,0.010288,,
-T2_subperiod_2008_2019,2008-2019,gri_blasphemy_norm,-0.000836,0.003382,0.804854,1157,0.010288,,
-T2_subperiod_2008_2019,2008-2019,gri_apostasy_norm,-0.010365,0.009016,0.250603,1157,0.010288,,
-T2_subperiod_2008_2019,2008-2019,gri_religious_courts_norm,-0.002753,0.004372,0.529070,1157,0.010288,,
-T2_subperiod_2008_2019,2008-2019,v2x_rule_norm,-0.039834,0.039069,0.308187,1157,0.010288,,
-T2_subperiod_2008_2019,2008-2019,v2x_civlib_norm,0.009071,0.033685,0.787757,1157,0.010288,,
-T2_subperiod_2008_2019,2008-2019,v2x_egal_norm,0.010769,0.055275,0.845568,1157,0.010288,,
-T2_subperiod_2008_2019,2008-2019,log_gdppc_norm,-0.031940,0.095333,0.737674,1157,0.010288,,
-T2_changers_only,all,const,0.590600,0.050617,0.000000,355,0.114542,,***
-T2_changers_only,all,gri_state_religion_norm,0.033364,0.040450,0.410124,355,0.114542,,
-T2_changers_only,all,gri_religious_law_norm,0.002861,0.019368,0.882670,355,0.114542,,
-T2_changers_only,all,gri_blasphemy_norm,0.002292,0.007628,0.764024,355,0.114542,,
-T2_changers_only,all,gri_apostasy_norm,-0.036365,0.009574,0.000176,355,0.114542,,***
-T2_changers_only,all,gri_religious_courts_norm,-0.004088,0.007020,0.560752,355,0.114542,,
-T2_changers_only,all,v2x_rule_norm,0.111881,0.045259,0.013989,355,0.114542,,**
-T2_changers_only,all,v2x_civlib_norm,-0.058901,0.033201,0.077065,355,0.114542,,*
-T2_changers_only,all,v2x_egal_norm,-0.042215,0.098289,0.667871,355,0.114542,,
-T2_changers_only,all,log_gdppc_norm,0.210872,0.109194,0.054402,355,0.114542,,*
-P8a_country_linear_trends,all,const,-0.000000,0.000000,0.000000,1648,0.009421,,***
-P8a_country_linear_trends,all,gri_state_religion_norm,0.003501,0.011337,0.757468,1648,0.009421,,
-P8a_country_linear_trends,all,gri_religious_law_norm,0.008241,0.007688,0.283892,1648,0.009421,,
-P8a_country_linear_trends,all,gri_blasphemy_norm,0.003442,0.002851,0.227523,1648,0.009421,,
-P8a_country_linear_trends,all,gri_apostasy_norm,0.006666,0.012644,0.598147,1648,0.009421,,
-P8a_country_linear_trends,all,gri_religious_courts_norm,-0.001217,0.007310,0.867788,1648,0.009421,,
-P8a_country_linear_trends,all,v2x_rule_norm,-0.036592,0.023310,0.116677,1648,0.009421,,
-P8a_country_linear_trends,all,v2x_civlib_norm,0.042111,0.021923,0.054941,1648,0.009421,,*
-P8a_country_linear_trends,all,v2x_egal_norm,-0.012226,0.032638,0.708013,1648,0.009421,,
-P8a_country_linear_trends,all,log_gdppc_norm,0.008623,0.075284,0.908823,1648,0.009421,,
-P9_event_study,all,et_-3,0.007482,0.005054,0.139002,1648,0.003668,,
-P9_event_study,all,et_-2,0.000489,0.006958,0.943996,1648,0.003668,,
-P9_event_study,all,et_0,0.003939,0.006299,0.531876,1648,0.003668,,
-P9_event_study,all,et_1,-0.001380,0.006306,0.826757,1648,0.003668,,
-P9_event_study,all,et_2,-0.002103,0.006343,0.740285,1648,0.003668,,
-P9_event_study,all,et_3,-0.001604,0.007243,0.824826,1648,0.003668,,
-P9_event_study,all,et_-3,0.000265,0.014953,0.985856,1648,0.002239,,
-P9_event_study,all,et_-2,0.002408,0.014661,0.869563,1648,0.002239,,
-P9_event_study,all,et_0,-0.001942,0.013599,0.886477,1648,0.002239,,
-P9_event_study,all,et_1,0.000286,0.019151,0.988070,1648,0.002239,,
-P9_event_study,all,et_2,0.005335,0.018356,0.771363,1648,0.002239,,
-P9_event_study,all,et_3,0.003788,0.013929,0.785730,1648,0.002239,,
-T2_changers_wild_bootstrap,all,gri_religious_courts_norm,-0.003577,0.006691,0.743487,355,,,
-T2_changers_wild_bootstrap_apostasy,all,gri_apostasy_norm,-0.025453,0.012722,0.184369,90,,,
-T2_driscoll_kraay,all,const,0.674234,0.021204,0.000000,1648,0.012839,,***
-T2_driscoll_kraay,all,gri_state_religion_norm,0.011054,0.009253,0.232422,1648,0.012839,,
-T2_driscoll_kraay,all,gri_religious_law_norm,0.007364,0.003096,0.017522,1648,0.012839,,**
-T2_driscoll_kraay,all,gri_blasphemy_norm,-0.000659,0.001726,0.702740,1648,0.012839,,
-T2_driscoll_kraay,all,gri_apostasy_norm,-0.019684,0.005907,0.000883,1648,0.012839,,***
-T2_driscoll_kraay,all,gri_religious_courts_norm,-0.006949,0.003121,0.026102,1648,0.012839,,**
-T2_driscoll_kraay,all,v2x_rule_norm,0.009067,0.017094,0.595898,1648,0.012839,,
-T2_driscoll_kraay,all,v2x_civlib_norm,-0.022333,0.015048,0.137994,1648,0.012839,,
-T2_driscoll_kraay,all,v2x_egal_norm,-0.009736,0.014587,0.504608,1648,0.012839,,
-T2_driscoll_kraay,all,log_gdppc_norm,0.009121,0.026888,0.734504,1648,0.012839,,
-T2_mundlak_cre,all,const,0.433581,0.038593,0.000000,1648,0.615770,,***
-T2_mundlak_cre,all,gri_state_religion_norm,0.011162,0.014187,0.431439,1648,0.615770,,
-T2_mundlak_cre,all,gri_religious_law_norm,0.007461,0.006792,0.271995,1648,0.615770,,
-T2_mundlak_cre,all,gri_blasphemy_norm,-0.000913,0.003345,0.784955,1648,0.615770,,
-T2_mundlak_cre,all,gri_apostasy_norm,-0.019396,0.008984,0.030854,1648,0.615770,,**
-T2_mundlak_cre,all,gri_religious_courts_norm,-0.007009,0.006561,0.285386,1648,0.615770,,
-T2_mundlak_cre,all,v2x_rule_norm,0.007413,0.026184,0.777107,1648,0.615770,,
-T2_mundlak_cre,all,v2x_civlib_norm,-0.020831,0.027727,0.452470,1648,0.615770,,
-T2_mundlak_cre,all,v2x_egal_norm,-0.008583,0.036945,0.816296,1648,0.615770,,
-T2_mundlak_cre,all,log_gdppc_norm,0.001998,0.069852,0.977181,1648,0.615770,,
-T2_mundlak_cre,all,yr_2014,0.003479,0.002020,0.085103,1648,0.615770,,*
-T2_mundlak_cre,all,yr_2015,0.009028,0.002226,0.000050,1648,0.615770,,***
-T2_mundlak_cre,all,yr_2016,0.013933,0.002732,0.000000,1648,0.615770,,***
-T2_mundlak_cre,all,yr_2017,0.021337,0.003231,0.000000,1648,0.615770,,***
-T2_mundlak_cre,all,yr_2018,0.026793,0.003526,0.000000,1648,0.615770,,***
-T2_mundlak_cre,all,yr_2019,0.033953,0.003537,0.000000,1648,0.615770,,***
-T2_mundlak_cre,all,yr_2020,0.043445,0.004109,0.000000,1648,0.615770,,***
-T2_mundlak_cre,all,yr_2021,0.048896,0.004894,0.000000,1648,0.615770,,***
-T2_mundlak_cre,all,yr_2022,0.058550,0.005333,0.000000,1648,0.615770,,***
-T2_mundlak_cre,all,gri_state_religion_norm_cmean,-0.032663,0.037729,0.386639,1648,0.615770,,
-T2_mundlak_cre,all,gri_religious_law_norm_cmean,0.072628,0.045455,0.110089,1648,0.615770,,
-T2_mundlak_cre,all,gri_blasphemy_norm_cmean,-0.048821,0.019137,0.010738,1648,0.615770,,**
-T2_mundlak_cre,all,gri_apostasy_norm_cmean,-0.123318,0.038095,0.001207,1648,0.615770,,***
-T2_mundlak_cre,all,gri_religious_courts_norm_cmean,0.041758,0.022911,0.068365,1648,0.615770,,*
-T2_mundlak_cre,all,v2x_rule_norm_cmean,0.057906,0.061361,0.345323,1648,0.615770,,
-T2_mundlak_cre,all,v2x_civlib_norm_cmean,0.073564,0.070653,0.297779,1648,0.615770,,
-T2_mundlak_cre,all,v2x_egal_norm_cmean,0.103821,0.064646,0.108275,1648,0.615770,,
-T2_mundlak_cre,all,log_gdppc_norm_cmean,0.173877,0.084310,0.039174,1648,0.615770,,**
-P9_male_composite_placebo,all,const,0.577247,0.073485,0.000000,1639,0.020340,Male welfare index (placebo DV),***
-P9_male_composite_placebo,all,gri_state_religion_norm,-0.019043,0.013261,0.151228,1639,0.020340,Male welfare index (placebo DV),
-P9_male_composite_placebo,all,gri_religious_law_norm,0.016375,0.010249,0.110304,1639,0.020340,Male welfare index (placebo DV),
-P9_male_composite_placebo,all,gri_blasphemy_norm,0.004242,0.003844,0.269943,1639,0.020340,Male welfare index (placebo DV),
-P9_male_composite_placebo,all,gri_apostasy_norm,-0.005135,0.010880,0.637039,1639,0.020340,Male welfare index (placebo DV),
-P9_male_composite_placebo,all,gri_religious_courts_norm,0.007122,0.006584,0.279519,1639,0.020340,Male welfare index (placebo DV),
-P9_male_composite_placebo,all,v2x_rule_norm,-0.039975,0.043293,0.355965,1639,0.020340,Male welfare index (placebo DV),
-P9_male_composite_placebo,all,v2x_civlib_norm,0.031086,0.040811,0.446358,1639,0.020340,Male welfare index (placebo DV),
-P9_male_composite_placebo,all,v2x_egal_norm,0.095932,0.062183,0.123109,1639,0.020340,Male welfare index (placebo DV),
-P9_male_composite_placebo,all,log_gdppc_norm,0.076019,0.138099,0.582083,1639,0.020340,Male welfare index (placebo DV),
-P10_courts_x_mena,all,gri_state_religion_norm,0.008395,0.014488,0.562396,1648,0.023590,,
-P10_courts_x_mena,all,gri_religious_law_norm,0.006984,0.007053,0.322242,1648,0.023590,,
-P10_courts_x_mena,all,gri_blasphemy_norm,-0.000530,0.003496,0.879446,1648,0.023590,,
-P10_courts_x_mena,all,gri_apostasy_norm,-0.017617,0.009009,0.050730,1648,0.023590,,*
-P10_courts_x_mena,all,gri_religious_courts_norm,0.000827,0.004360,0.849602,1648,0.023590,,
-P10_courts_x_mena,all,v2x_rule_norm,0.007676,0.027420,0.779556,1648,0.023590,,
-P10_courts_x_mena,all,v2x_civlib_norm,-0.023746,0.028454,0.404100,1648,0.023590,,
-P10_courts_x_mena,all,v2x_egal_norm,-0.003105,0.038287,0.935383,1648,0.023590,,
-P10_courts_x_mena,all,log_gdppc_norm,-0.001025,0.074083,0.988962,1648,0.023590,,
-P10_courts_x_mena,all,courts_x_mena,-0.038084,0.023317,0.102626,1648,0.023590,,
-P10_mena_only,all,const,0.228956,0.237955,0.337528,185,0.139360,,
-P10_mena_only,all,gri_state_religion_norm,0.063262,0.050550,0.212740,185,0.139360,,
-P10_mena_only,all,gri_religious_law_norm,0.059572,0.037188,0.111304,185,0.139360,,
-P10_mena_only,all,gri_blasphemy_norm,-0.003841,0.009998,0.701371,185,0.139360,,
-P10_mena_only,all,gri_apostasy_norm,-0.009957,0.015244,0.514660,185,0.139360,,
-P10_mena_only,all,gri_religious_courts_norm,-0.029209,0.024124,0.227921,185,0.139360,,
-P10_mena_only,all,v2x_rule_norm,0.372548,0.202996,0.068476,185,0.139360,,*
-P10_mena_only,all,v2x_civlib_norm,-0.127226,0.231869,0.584041,185,0.139360,,
-P10_mena_only,all,v2x_egal_norm,-0.185066,0.211909,0.383900,185,0.139360,,
-P10_mena_only,all,log_gdppc_norm,0.396633,0.371942,0.287987,185,0.139360,,
-P10_non_mena_only,all,const,0.705288,0.044238,0.000000,1463,0.009215,,***
-P10_non_mena_only,all,gri_state_religion_norm,0.006732,0.016659,0.686189,1463,0.009215,,
-P10_non_mena_only,all,gri_religious_law_norm,0.001931,0.006942,0.780913,1463,0.009215,,
-P10_non_mena_only,all,gri_blasphemy_norm,-0.000379,0.003550,0.914936,1463,0.009215,,
-P10_non_mena_only,all,gri_apostasy_norm,-0.010248,0.021542,0.634359,1463,0.009215,,
-P10_non_mena_only,all,gri_religious_courts_norm,0.000673,0.004482,0.880686,1463,0.009215,,
-P10_non_mena_only,all,v2x_rule_norm,-0.014663,0.028012,0.600759,1463,0.009215,,
-P10_non_mena_only,all,v2x_civlib_norm,-0.026008,0.028458,0.360944,1463,0.009215,,
-P10_non_mena_only,all,v2x_egal_norm,0.025637,0.036970,0.488161,1463,0.009215,,
-P10_non_mena_only,all,log_gdppc_norm,-0.028307,0.086415,0.743293,1463,0.009215,,
-P10_gdi_panel,all,const,0.687913,0.047088,0.000000,1710,0.003210,,***
-P10_gdi_panel,all,gri_religious_courts_norm,-0.001135,0.009343,0.903367,1710,0.003210,,
-P10_gdi_panel,all,log_gdppc_norm,0.125978,0.097001,0.194231,1710,0.003210,,
-P10_wef_panel,all,const,0.459343,0.126163,0.000284,1307,0.007285,,***
-P10_wef_panel,all,gri_religious_courts_norm,-0.020379,0.009757,0.036965,1307,0.007285,,**
-P10_wef_panel,all,log_gdppc_norm,0.128881,0.252698,0.610136,1307,0.007285,,
-P10_gap_lifeexp,all,const,6.845099,0.764158,0.000000,1788,0.013449,,***
-P10_gap_lifeexp,all,gri_religious_courts_norm,-0.074441,0.078623,0.343881,1788,0.013449,,
-P10_gap_lifeexp,all,log_gdppc_norm,-3.432052,1.616968,0.033947,1788,0.013449,,**
-P10_gap_lfp,all,const,-20.675697,2.912430,0.000000,1707,0.005001,,***
-P10_gap_lfp,all,gri_religious_courts_norm,-0.559935,0.351808,0.111684,1707,0.005001,,
-P10_gap_lfp,all,log_gdppc_norm,1.557437,6.143607,0.799912,1707,0.005001,,
+tier,year,predictor,coef,se,pval,sig,pval_bonf,pval_bh,std_coef,n,r2,n_clusters,n_changers,within_sd,se_type,valid,invalid_reason,interpretation,dv_label
+T1_no_gdp,2014,const,0.448050,0.031071,0.000000,***,,,,170,0.585913,,,,,True,,,
+T1_no_gdp,2014,gri_state_religion_norm,0.004551,0.032486,0.888584,,,,,170,0.585913,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0046 (index units),
+T1_no_gdp,2014,gri_gov_favour_norm,-0.017153,0.030154,0.569460,,,,,170,0.585913,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0172 (index units),
+T1_no_gdp,2014,gri_religious_law_norm,0.086786,0.032136,0.006921,***,,,,170,0.585913,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0868 (index units),
+T1_no_gdp,2014,gri_religious_courts_norm,0.022352,0.018959,0.238403,,,,,170,0.585913,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0224 (index units),
+T1_no_gdp,2014,gri_blasphemy_norm,-0.041654,0.018326,0.023033,**,,,,170,0.585913,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0417 (index units),
+T1_no_gdp,2014,gri_apostasy_norm,-0.126566,0.026526,0.000002,***,,,,170,0.585913,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.1266 (index units),
+T1_no_gdp,2014,v2x_rule_norm,0.110159,0.050568,0.029375,**,,,,170,0.585913,,,,,True,,,
+T1_no_gdp,2014,v2x_civlib_norm,0.049967,0.051074,0.327905,,,,,170,0.585913,,,,,True,,,
+T1_no_gdp,2014,v2x_egal_norm,0.168209,0.058018,0.003741,***,,,,170,0.585913,,,,,True,,,
+T1_with_gdp,2014,const,0.428397,0.036512,0.000000,***,,,,166,0.640867,,,,,True,,,
+T1_with_gdp,2014,gri_state_religion_norm,-0.000671,0.032824,0.983680,,,,,166,0.640867,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0007 (index units),
+T1_with_gdp,2014,gri_gov_favour_norm,-0.032257,0.029340,0.271577,,,,,166,0.640867,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0323 (index units),
+T1_with_gdp,2014,gri_religious_law_norm,0.090899,0.031338,0.003724,***,,,,166,0.640867,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0909 (index units),
+T1_with_gdp,2014,gri_religious_courts_norm,0.012124,0.016704,0.467947,,,,,166,0.640867,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0121 (index units),
+T1_with_gdp,2014,gri_blasphemy_norm,-0.047736,0.017569,0.006586,***,,,,166,0.640867,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0477 (index units),
+T1_with_gdp,2014,gri_apostasy_norm,-0.141878,0.028184,0.000000,***,,,,166,0.640867,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.1419 (index units),
+T1_with_gdp,2014,v2x_rule_norm,0.032770,0.054450,0.547278,,,,,166,0.640867,,,,,True,,,
+T1_with_gdp,2014,v2x_civlib_norm,0.082409,0.058869,0.161549,,,,,166,0.640867,,,,,True,,,
+T1_with_gdp,2014,v2x_egal_norm,0.105892,0.057198,0.064121,*,,,,166,0.640867,,,,,True,,,
+T1_with_gdp,2014,log_gdppc_norm,0.186189,0.045289,0.000039,***,,,,166,0.640867,,,,,True,,1-unit change in normalised log-GDP associates with +0.1862 in the outcome (normalised scale),
+T1_no_gdp,2020,const,0.572968,0.037939,0.000000,***,,,,170,0.539302,,,,,True,,,
+T1_no_gdp,2020,gri_state_religion_norm,-0.030441,0.038935,0.434307,,,,,170,0.539302,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0304 (index units),
+T1_no_gdp,2020,gri_gov_favour_norm,-0.049387,0.032211,0.125224,,,,,170,0.539302,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0494 (index units),
+T1_no_gdp,2020,gri_religious_law_norm,0.072651,0.047096,0.122924,,,,,170,0.539302,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0727 (index units),
+T1_no_gdp,2020,gri_religious_courts_norm,0.024240,0.018678,0.194345,,,,,170,0.539302,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0242 (index units),
+T1_no_gdp,2020,gri_blasphemy_norm,-0.038322,0.015659,0.014391,**,,,,170,0.539302,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0383 (index units),
+T1_no_gdp,2020,gri_apostasy_norm,-0.120398,0.034398,0.000465,***,,,,170,0.539302,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.1204 (index units),
+T1_no_gdp,2020,v2x_rule_norm,0.179906,0.056913,0.001572,***,,,,170,0.539302,,,,,True,,,
+T1_no_gdp,2020,v2x_civlib_norm,-0.074693,0.058081,0.198439,,,,,170,0.539302,,,,,True,,,
+T1_no_gdp,2020,v2x_egal_norm,0.159809,0.055455,0.003954,***,,,,170,0.539302,,,,,True,,,
+T1_with_gdp,2020,const,0.529293,0.042950,0.000000,***,,,,164,0.578078,,,,,True,,,
+T1_with_gdp,2020,gri_state_religion_norm,-0.035768,0.039686,0.367453,,,,,164,0.578078,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0358 (index units),
+T1_with_gdp,2020,gri_gov_favour_norm,-0.041005,0.029776,0.168468,,,,,164,0.578078,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0410 (index units),
+T1_with_gdp,2020,gri_religious_law_norm,0.067476,0.045556,0.138559,,,,,164,0.578078,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0675 (index units),
+T1_with_gdp,2020,gri_religious_courts_norm,0.016868,0.019819,0.394731,,,,,164,0.578078,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0169 (index units),
+T1_with_gdp,2020,gri_blasphemy_norm,-0.036623,0.014928,0.014155,**,,,,164,0.578078,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0366 (index units),
+T1_with_gdp,2020,gri_apostasy_norm,-0.119279,0.039511,0.002537,***,,,,164,0.578078,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.1193 (index units),
+T1_with_gdp,2020,v2x_rule_norm,0.085287,0.064668,0.187219,,,,,164,0.578078,,,,,True,,,
+T1_with_gdp,2020,v2x_civlib_norm,-0.011048,0.068592,0.872037,,,,,164,0.578078,,,,,True,,,
+T1_with_gdp,2020,v2x_egal_norm,0.109677,0.056032,0.050302,*,,,,164,0.578078,,,,,True,,,
+T1_with_gdp,2020,log_gdppc_norm,0.168811,0.049004,0.000571,***,,,,164,0.578078,,,,,True,,1-unit change in normalised log-GDP associates with +0.1688 in the outcome (normalised scale),
+T2_gri_only,all,const,0.648410,0.005772,0.000000,***,,,,1860,0.013791,186.000000,,,cluster_entity,True,,,
+T2_gri_only,all,gri_state_religion_norm,0.011013,0.017878,0.537987,,,,0.021457,1860,0.013791,186.000000,26.000000,0.082816,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0110 (index units),
+T2_gri_only,all,gri_gov_favour_norm,0.014156,0.008887,0.111361,,,,0.027789,1860,0.013791,186.000000,63.000000,0.104521,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0142 (index units),
+T2_gri_only,all,gri_religious_law_norm,0.003445,0.006915,0.618391,,,,0.007189,1860,0.013791,186.000000,100.000000,0.103530,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0034 (index units),
+T2_gri_only,all,gri_religious_courts_norm,-0.009879,0.007119,0.165409,,,,-0.024401,1860,0.013791,186.000000,38.000000,0.168530,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0099 (index units),
+T2_gri_only,all,gri_blasphemy_norm,-0.000906,0.003421,0.791231,,,,-0.003263,1860,0.013791,186.000000,69.000000,0.257329,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0009 (index units),
+T2_gri_only,all,gri_apostasy_norm,-0.014905,0.007643,0.051338,*,,,-0.035579,1860,0.013791,186.000000,12.000000,0.100563,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0149 (index units),
+T2_gri_only_dk,all,const,0.648410,0.002358,0.000000,***,,,,1860,0.013791,186.000000,,,driscoll_kraay_bw2,True,,,
+T2_gri_only_dk,all,gri_state_religion_norm,0.011013,0.004131,0.007755,***,,,0.021457,1860,0.013791,186.000000,26.000000,0.082816,driscoll_kraay_bw2,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0110 (index units),
+T2_gri_only_dk,all,gri_gov_favour_norm,0.014156,0.003155,0.000008,***,,,0.027789,1860,0.013791,186.000000,63.000000,0.104521,driscoll_kraay_bw2,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0142 (index units),
+T2_gri_only_dk,all,gri_religious_law_norm,0.003445,0.003726,0.355255,,,,0.007189,1860,0.013791,186.000000,100.000000,0.103530,driscoll_kraay_bw2,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0034 (index units),
+T2_gri_only_dk,all,gri_religious_courts_norm,-0.009879,0.003647,0.006815,***,,,-0.024401,1860,0.013791,186.000000,38.000000,0.168530,driscoll_kraay_bw2,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0099 (index units),
+T2_gri_only_dk,all,gri_blasphemy_norm,-0.000906,0.001674,0.588620,,,,-0.003263,1860,0.013791,186.000000,69.000000,0.257329,driscoll_kraay_bw2,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0009 (index units),
+T2_gri_only_dk,all,gri_apostasy_norm,-0.014905,0.013762,0.278936,,,,-0.035579,1860,0.013791,186.000000,12.000000,0.100563,driscoll_kraay_bw2,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0149 (index units),
+T2_gri_only_samesample,all,const,0.655762,0.005566,0.000000,***,,,,1648,0.013569,166.000000,,,cluster_entity,True,,,
+T2_gri_only_samesample,all,gri_state_religion_norm,0.007287,0.015004,0.627269,,,,0.013919,1648,0.013569,166.000000,24.000000,0.083923,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0073 (index units),
+T2_gri_only_samesample,all,gri_gov_favour_norm,0.013928,0.009509,0.143217,,,,0.027268,1648,0.013569,166.000000,58.000000,0.106143,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),
+T2_gri_only_samesample,all,gri_religious_law_norm,0.007199,0.007247,0.320704,,,,0.014539,1648,0.013569,166.000000,91.000000,0.104105,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0072 (index units),
+T2_gri_only_samesample,all,gri_religious_courts_norm,-0.006778,0.006866,0.323737,,,,-0.016984,1648,0.013569,166.000000,36.000000,0.175375,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0068 (index units),
+T2_gri_only_samesample,all,gri_blasphemy_norm,-0.000864,0.003525,0.806394,,,,-0.003026,1648,0.013569,166.000000,64.000000,0.263782,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0009 (index units),
+T2_gri_only_samesample,all,gri_apostasy_norm,-0.017617,0.009822,0.073074,*,,,-0.041894,1648,0.013569,166.000000,9.000000,0.094152,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0176 (index units),
+T2_gri_gdp,all,const,0.629560,0.035971,0.000000,***,,,,1807,0.013987,182.000000,,,cluster_entity,True,,,
+T2_gri_gdp,all,gri_state_religion_norm,0.007932,0.015136,0.600309,,,,0.015054,1807,0.013987,182.000000,24.000000,0.080144,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0079 (index units),
+T2_gri_gdp,all,gri_gov_favour_norm,0.013346,0.009144,0.144631,,,,0.026284,1807,0.013987,182.000000,60.000000,0.102298,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0133 (index units),
+T2_gri_gdp,all,gri_religious_law_norm,0.007451,0.006918,0.281630,,,,0.015410,1807,0.013987,182.000000,96.000000,0.102552,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0075 (index units),
+T2_gri_gdp,all,gri_religious_courts_norm,-0.009513,0.007275,0.191212,,,,-0.023795,1807,0.013987,182.000000,37.000000,0.168958,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0095 (index units),
+T2_gri_gdp,all,gri_blasphemy_norm,-0.001219,0.003510,0.728483,,,,-0.004383,1807,0.013987,182.000000,67.000000,0.256045,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0012 (index units),
+T2_gri_gdp,all,gri_apostasy_norm,-0.015963,0.008219,0.052288,*,,,-0.037718,1807,0.013987,182.000000,10.000000,0.097021,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0160 (index units),
+T2_gri_gdp,all,log_gdppc_norm,0.044888,0.073942,0.543891,,,,0.082730,1807,0.013987,182.000000,180.000000,0.015257,cluster_entity,True,,1-unit change in normalised log-GDP associates with +0.0449 in the outcome (normalised scale),
+T2_gri_gdp_dk,all,const,0.629560,0.011932,0.000000,***,,,,1807,0.013987,182.000000,,,driscoll_kraay_bw2,True,,,
+T2_gri_gdp_dk,all,gri_state_religion_norm,0.007932,0.006675,0.234831,,,,0.015054,1807,0.013987,182.000000,24.000000,0.080144,driscoll_kraay_bw2,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0079 (index units),
+T2_gri_gdp_dk,all,gri_gov_favour_norm,0.013346,0.003760,0.000398,***,,,0.026284,1807,0.013987,182.000000,60.000000,0.102298,driscoll_kraay_bw2,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0133 (index units),
+T2_gri_gdp_dk,all,gri_religious_law_norm,0.007451,0.003127,0.017309,**,,,0.015410,1807,0.013987,182.000000,96.000000,0.102552,driscoll_kraay_bw2,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0075 (index units),
+T2_gri_gdp_dk,all,gri_religious_courts_norm,-0.009513,0.003406,0.005282,***,,,-0.023795,1807,0.013987,182.000000,37.000000,0.168958,driscoll_kraay_bw2,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0095 (index units),
+T2_gri_gdp_dk,all,gri_blasphemy_norm,-0.001219,0.002106,0.562788,,,,-0.004383,1807,0.013987,182.000000,67.000000,0.256045,driscoll_kraay_bw2,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0012 (index units),
+T2_gri_gdp_dk,all,gri_apostasy_norm,-0.015963,0.014998,0.287312,,,,-0.037718,1807,0.013987,182.000000,10.000000,0.097021,driscoll_kraay_bw2,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0160 (index units),
+T2_gri_gdp_dk,all,log_gdppc_norm,0.044888,0.027731,0.105712,,,,0.082730,1807,0.013987,182.000000,180.000000,0.015257,driscoll_kraay_bw2,True,,1-unit change in normalised log-GDP associates with +0.0449 in the outcome (normalised scale),
+T2_gri_gdp_samesample,all,const,0.657219,0.034563,0.000000,***,,,,1648,0.013572,166.000000,,,cluster_entity,True,,,
+T2_gri_gdp_samesample,all,gri_state_religion_norm,0.007258,0.015039,0.629427,,,,0.013864,1648,0.013572,166.000000,24.000000,0.083923,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0073 (index units),
+T2_gri_gdp_samesample,all,gri_gov_favour_norm,0.013950,0.009471,0.140984,,,,0.027310,1648,0.013572,166.000000,58.000000,0.106143,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),
+T2_gri_gdp_samesample,all,gri_religious_law_norm,0.007180,0.007235,0.321179,,,,0.014502,1648,0.013572,166.000000,91.000000,0.104105,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0072 (index units),
+T2_gri_gdp_samesample,all,gri_religious_courts_norm,-0.006788,0.006884,0.324277,,,,-0.017010,1648,0.013572,166.000000,36.000000,0.175375,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0068 (index units),
+T2_gri_gdp_samesample,all,gri_blasphemy_norm,-0.000865,0.003528,0.806436,,,,-0.003027,1648,0.013572,166.000000,64.000000,0.263782,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0009 (index units),
+T2_gri_gdp_samesample,all,gri_apostasy_norm,-0.017589,0.009851,0.074384,*,,,-0.041828,1648,0.013572,166.000000,9.000000,0.094152,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0176 (index units),
+T2_gri_gdp_samesample,all,log_gdppc_norm,-0.003103,0.071140,0.965214,,,,-0.005729,1648,0.013572,166.000000,164.000000,0.015446,cluster_entity,True,,1-unit change in normalised log-GDP associates with -0.0031 in the outcome (normalised scale),
+T2_no_gdp,all,const,0.665212,0.017581,0.000000,***,,,,1700,0.015030,170.000000,,,cluster_entity,True,,,
+T2_no_gdp,all,gri_state_religion_norm,0.010750,0.017460,0.538199,,,,0.021059,1700,0.015030,170.000000,26.000000,0.086628,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0107 (index units),
+T2_no_gdp,all,gri_gov_favour_norm,0.014248,0.009202,0.121746,,,,0.027795,1700,0.015030,170.000000,61.000000,0.108390,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0142 (index units),
+T2_no_gdp,all,gri_religious_law_norm,0.002951,0.007051,0.675619,,,,0.006010,1700,0.015030,170.000000,95.000000,0.105142,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0030 (index units),
+T2_no_gdp,all,gri_religious_courts_norm,-0.007351,0.006628,0.267573,,1.000000,0.385208,-0.018169,1700,0.015030,170.000000,37.000000,0.174778,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0074 (index units),
+T2_no_gdp,all,gri_blasphemy_norm,-0.000472,0.003445,0.890936,,,,-0.001658,1700,0.015030,170.000000,66.000000,0.264875,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0005 (index units),
+T2_no_gdp,all,gri_apostasy_norm,-0.016927,0.009080,0.062495,*,0.499957,0.142640,-0.040636,1700,0.015030,170.000000,11.000000,0.098248,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0169 (index units),
+T2_no_gdp,all,v2x_rule_norm,0.013186,0.025535,0.605659,,,,0.030660,1700,0.015030,170.000000,168.000000,0.056629,cluster_entity,True,,,
+T2_no_gdp,all,v2x_civlib_norm,-0.012448,0.028391,0.661107,,,,-0.025543,1700,0.015030,170.000000,168.000000,0.058501,cluster_entity,True,,,
+T2_no_gdp,all,v2x_egal_norm,-0.018830,0.037248,0.613256,,,,-0.035496,1700,0.015030,170.000000,168.000000,0.037698,cluster_entity,True,,,
+T2_no_gdp_dk,all,const,0.665212,0.010733,0.000000,***,,,,1700,0.015030,170.000000,,,driscoll_kraay_bw2,True,,,
+T2_no_gdp_dk,all,gri_state_religion_norm,0.010750,0.004983,0.031146,**,,,0.021059,1700,0.015030,170.000000,26.000000,0.086628,driscoll_kraay_bw2,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0107 (index units),
+T2_no_gdp_dk,all,gri_gov_favour_norm,0.014248,0.002739,0.000000,***,,,0.027795,1700,0.015030,170.000000,61.000000,0.108390,driscoll_kraay_bw2,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0142 (index units),
+T2_no_gdp_dk,all,gri_religious_law_norm,0.002951,0.004199,0.482306,,,,0.006010,1700,0.015030,170.000000,95.000000,0.105142,driscoll_kraay_bw2,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0030 (index units),
+T2_no_gdp_dk,all,gri_religious_courts_norm,-0.007351,0.003669,0.045281,**,,,-0.018169,1700,0.015030,170.000000,37.000000,0.174778,driscoll_kraay_bw2,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0074 (index units),
+T2_no_gdp_dk,all,gri_blasphemy_norm,-0.000472,0.001611,0.769289,,,,-0.001658,1700,0.015030,170.000000,66.000000,0.264875,driscoll_kraay_bw2,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0005 (index units),
+T2_no_gdp_dk,all,gri_apostasy_norm,-0.016927,0.006395,0.008204,***,,,-0.040636,1700,0.015030,170.000000,11.000000,0.098248,driscoll_kraay_bw2,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0169 (index units),
+T2_no_gdp_dk,all,v2x_rule_norm,0.013186,0.024275,0.587089,,,,0.030660,1700,0.015030,170.000000,168.000000,0.056629,driscoll_kraay_bw2,True,,,
+T2_no_gdp_dk,all,v2x_civlib_norm,-0.012448,0.018666,0.504923,,,,-0.025543,1700,0.015030,170.000000,168.000000,0.058501,driscoll_kraay_bw2,True,,,
+T2_no_gdp_dk,all,v2x_egal_norm,-0.018830,0.017360,0.278240,,,,-0.035496,1700,0.015030,170.000000,168.000000,0.037698,driscoll_kraay_bw2,True,,,
+T2_no_gdp_samesample,all,const,0.671600,0.017523,0.000000,***,,,,1648,0.015546,166.000000,,,cluster_entity,True,,,
+T2_no_gdp_samesample,all,gri_state_religion_norm,0.006456,0.014703,0.660657,,,,0.012332,1648,0.015546,166.000000,24.000000,0.083923,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0065 (index units),
+T2_no_gdp_samesample,all,gri_gov_favour_norm,0.013884,0.009537,0.145641,,,,0.027182,1648,0.015546,166.000000,58.000000,0.106143,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),
+T2_no_gdp_samesample,all,gri_religious_law_norm,0.006185,0.007216,0.391471,,,,0.012493,1648,0.015546,166.000000,91.000000,0.104105,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0062 (index units),
+T2_no_gdp_samesample,all,gri_religious_courts_norm,-0.007281,0.006842,0.287416,,,,-0.018246,1648,0.015546,166.000000,36.000000,0.175375,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),
+T2_no_gdp_samesample,all,gri_blasphemy_norm,-0.000743,0.003495,0.831757,,,,-0.002600,1648,0.015546,166.000000,64.000000,0.263782,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),
+T2_no_gdp_samesample,all,gri_apostasy_norm,-0.017982,0.009825,0.067409,*,,,-0.042763,1648,0.015546,166.000000,9.000000,0.094152,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),
+T2_no_gdp_samesample,all,v2x_rule_norm,0.006460,0.026723,0.809020,,,,0.014840,1648,0.015546,166.000000,165.000000,0.056354,cluster_entity,True,,,
+T2_no_gdp_samesample,all,v2x_civlib_norm,-0.022228,0.028577,0.436789,,,,-0.044112,1648,0.015546,166.000000,165.000000,0.057854,cluster_entity,True,,,
+T2_no_gdp_samesample,all,v2x_egal_norm,-0.005746,0.038579,0.881610,,,,-0.010667,1648,0.015546,166.000000,164.000000,0.035720,cluster_entity,True,,,
+T2_with_gdp,all,const,0.669886,0.039090,0.000000,***,,,,1648,0.015550,166.000000,,,cluster_entity,True,,,
+T2_with_gdp,all,gri_state_religion_norm,0.006487,0.014727,0.659647,,,,0.012391,1648,0.015550,166.000000,24.000000,0.083923,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0065 (index units),
+T2_with_gdp,all,gri_gov_favour_norm,0.013855,0.009505,0.145144,,,,0.027126,1648,0.015550,166.000000,58.000000,0.106143,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),
+T2_with_gdp,all,gri_religious_law_norm,0.006207,0.007219,0.389995,,,,0.012537,1648,0.015550,166.000000,91.000000,0.104105,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0062 (index units),
+T2_with_gdp,all,gri_religious_courts_norm,-0.007270,0.006853,0.288906,,1.000000,0.385208,-0.018218,1648,0.015550,166.000000,36.000000,0.175375,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),
+T2_with_gdp,all,gri_blasphemy_norm,-0.000741,0.003501,0.832331,,,,-0.002596,1648,0.015550,166.000000,64.000000,0.263782,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),
+T2_with_gdp,all,gri_apostasy_norm,-0.018020,0.009838,0.067203,*,0.537624,0.142640,-0.042853,1648,0.015550,166.000000,9.000000,0.094152,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),
+T2_with_gdp,all,v2x_rule_norm,0.006568,0.027201,0.809246,,,,0.015087,1648,0.015550,166.000000,165.000000,0.056354,cluster_entity,True,,,
+T2_with_gdp,all,v2x_civlib_norm,-0.022337,0.028845,0.438822,,,,-0.044328,1648,0.015550,166.000000,165.000000,0.057854,cluster_entity,True,,,
+T2_with_gdp,all,v2x_egal_norm,-0.005808,0.038573,0.880344,,,,-0.010780,1648,0.015550,166.000000,164.000000,0.035720,cluster_entity,True,,,
+T2_with_gdp,all,log_gdppc_norm,0.003766,0.072039,0.958315,,,,0.006952,1648,0.015550,166.000000,164.000000,0.015446,cluster_entity,True,,1-unit change in normalised log-GDP associates with +0.0038 in the outcome (normalised scale),
+T2_with_gdp_dk,all,const,0.669886,0.022674,0.000000,***,,,,1648,0.015550,166.000000,,,driscoll_kraay_bw2,True,,,
+T2_with_gdp_dk,all,gri_state_religion_norm,0.006487,0.007460,0.384663,,,,0.012391,1648,0.015550,166.000000,24.000000,0.083923,driscoll_kraay_bw2,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0065 (index units),
+T2_with_gdp_dk,all,gri_gov_favour_norm,0.013855,0.002924,0.000002,***,,,0.027126,1648,0.015550,166.000000,58.000000,0.106143,driscoll_kraay_bw2,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),
+T2_with_gdp_dk,all,gri_religious_law_norm,0.006207,0.003366,0.065349,*,,,0.012537,1648,0.015550,166.000000,91.000000,0.104105,driscoll_kraay_bw2,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0062 (index units),
+T2_with_gdp_dk,all,gri_religious_courts_norm,-0.007270,0.003488,0.037283,**,,,-0.018218,1648,0.015550,166.000000,36.000000,0.175375,driscoll_kraay_bw2,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),
+T2_with_gdp_dk,all,gri_blasphemy_norm,-0.000741,0.002078,0.721337,,,,-0.002596,1648,0.015550,166.000000,64.000000,0.263782,driscoll_kraay_bw2,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),
+T2_with_gdp_dk,all,gri_apostasy_norm,-0.018020,0.006537,0.005914,***,,,-0.042853,1648,0.015550,166.000000,9.000000,0.094152,driscoll_kraay_bw2,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),
+T2_with_gdp_dk,all,v2x_rule_norm,0.006568,0.019661,0.738403,,,,0.015087,1648,0.015550,166.000000,165.000000,0.056354,driscoll_kraay_bw2,True,,,
+T2_with_gdp_dk,all,v2x_civlib_norm,-0.022337,0.017355,0.198270,,,,-0.044328,1648,0.015550,166.000000,165.000000,0.057854,driscoll_kraay_bw2,True,,,
+T2_with_gdp_dk,all,v2x_egal_norm,-0.005808,0.015080,0.700202,,,,-0.010780,1648,0.015550,166.000000,164.000000,0.035720,driscoll_kraay_bw2,True,,,
+T2_with_gdp_dk,all,log_gdppc_norm,0.003766,0.031664,0.905343,,,,0.006952,1648,0.015550,166.000000,164.000000,0.015446,driscoll_kraay_bw2,True,,1-unit change in normalised log-GDP associates with +0.0038 in the outcome (normalised scale),
+T4_mundlak_re,all,const,0.446607,0.038248,0.000000,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,gri_state_religion_norm,0.006494,0.014004,0.642938,,,,0.012403,1648,0.396649,166.000000,24.000000,0.083923,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0065 (index units),
+T4_mundlak_re,all,gri_gov_favour_norm,0.013843,0.009038,0.125801,,,,0.027102,1648,0.396649,166.000000,58.000000,0.106143,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0138 (index units),
+T4_mundlak_re,all,gri_religious_law_norm,0.006211,0.006865,0.365758,,,,0.012544,1648,0.396649,166.000000,91.000000,0.104105,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0062 (index units),
+T4_mundlak_re,all,gri_religious_courts_norm,-0.007272,0.006516,0.264613,,,,-0.018222,1648,0.396649,166.000000,36.000000,0.175375,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),
+T4_mundlak_re,all,gri_blasphemy_norm,-0.000748,0.003329,0.822312,,,,-0.002618,1648,0.396649,166.000000,64.000000,0.263782,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),
+T4_mundlak_re,all,gri_apostasy_norm,-0.018014,0.009356,0.054362,*,,,-0.042838,1648,0.396649,166.000000,9.000000,0.094152,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),
+T4_mundlak_re,all,v2x_rule_norm,0.006529,0.025865,0.800756,,,,0.014998,1648,0.396649,166.000000,165.000000,0.056354,cluster_entity,True,,,
+T4_mundlak_re,all,v2x_civlib_norm,-0.022300,0.027430,0.416345,,,,-0.044255,1648,0.396649,166.000000,165.000000,0.057854,cluster_entity,True,,,
+T4_mundlak_re,all,v2x_egal_norm,-0.005782,0.036682,0.874769,,,,-0.010733,1648,0.396649,166.000000,164.000000,0.035720,cluster_entity,True,,,
+T4_mundlak_re,all,log_gdppc_norm,0.003585,0.068494,0.958268,,,,0.006618,1648,0.396649,166.000000,164.000000,0.015446,cluster_entity,True,,1-unit change in normalised log-GDP associates with +0.0036 in the outcome (normalised scale),
+T4_mundlak_re,all,gri_state_religion_norm_mean,-0.012211,0.040863,0.765114,,,,-0.023324,1648,0.396649,166.000000,24.000000,0.083923,cluster_entity,True,,,
+T4_mundlak_re,all,gri_gov_favour_norm_mean,-0.055351,0.032499,0.088729,*,,,-0.108365,1648,0.396649,166.000000,58.000000,0.106143,cluster_entity,True,,,
+T4_mundlak_re,all,gri_religious_law_norm_mean,0.081789,0.044611,0.066927,*,,,0.165192,1648,0.396649,166.000000,91.000000,0.104105,cluster_entity,True,,,
+T4_mundlak_re,all,gri_religious_courts_norm_mean,0.042349,0.022605,0.061186,*,,,0.106122,1648,0.396649,166.000000,36.000000,0.175375,cluster_entity,True,,,
+T4_mundlak_re,all,gri_blasphemy_norm_mean,-0.043966,0.018963,0.020545,**,,,-0.153949,1648,0.396649,166.000000,64.000000,0.263782,cluster_entity,True,,,
+T4_mundlak_re,all,gri_apostasy_norm_mean,-0.126217,0.038451,0.001051,***,,,-0.300154,1648,0.396649,166.000000,9.000000,0.094152,cluster_entity,True,,,
+T4_mundlak_re,all,v2x_rule_norm_mean,0.058490,0.060215,0.331516,,,,0.134367,1648,0.396649,166.000000,165.000000,0.056354,cluster_entity,True,,,
+T4_mundlak_re,all,v2x_civlib_norm_mean,0.074856,0.069146,0.279155,,,,0.148553,1648,0.396649,166.000000,165.000000,0.057854,cluster_entity,True,,,
+T4_mundlak_re,all,v2x_egal_norm_mean,0.107266,0.064941,0.098780,*,,,0.199108,1648,0.396649,166.000000,164.000000,0.035720,cluster_entity,True,,,
+T4_mundlak_re,all,log_gdppc_norm_mean,0.168483,0.082713,0.041817,**,,,0.311043,1648,0.396649,166.000000,164.000000,0.015446,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2014,0.003457,0.002018,0.086958,*,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2015,0.009050,0.002225,0.000050,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2016,0.013029,0.002754,0.000002,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2017,0.020493,0.003267,0.000000,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2018,0.025799,0.003591,0.000000,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2019,0.032597,0.003601,0.000000,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2020,0.042035,0.004159,0.000000,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2021,0.047353,0.004954,0.000000,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re,all,yr_2022,0.057190,0.005406,0.000000,***,,,,1648,0.396649,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,const,0.470844,0.034056,0.000000,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,gri_state_religion_norm,0.006462,0.013977,0.643879,,,,0.012344,1648,0.386986,166.000000,24.000000,0.083923,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0065 (index units),
+T4_mundlak_re_samesample,all,gri_gov_favour_norm,0.013873,0.009066,0.126144,,,,0.027160,1648,0.386986,166.000000,58.000000,0.106143,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),
+T4_mundlak_re_samesample,all,gri_religious_law_norm,0.006189,0.006860,0.367106,,,,0.012500,1648,0.386986,166.000000,91.000000,0.104105,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0062 (index units),
+T4_mundlak_re_samesample,all,gri_religious_courts_norm,-0.007282,0.006504,0.263065,,,,-0.018248,1648,0.386986,166.000000,36.000000,0.175375,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),
+T4_mundlak_re_samesample,all,gri_blasphemy_norm,-0.000748,0.003322,0.821918,,,,-0.002619,1648,0.386986,166.000000,64.000000,0.263782,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),
+T4_mundlak_re_samesample,all,gri_apostasy_norm,-0.017978,0.009340,0.054431,*,,,-0.042754,1648,0.386986,166.000000,9.000000,0.094152,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),
+T4_mundlak_re_samesample,all,v2x_rule_norm,0.006430,0.025403,0.800203,,,,0.014772,1648,0.386986,166.000000,165.000000,0.056354,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,v2x_civlib_norm,-0.022200,0.027167,0.413950,,,,-0.044057,1648,0.386986,166.000000,165.000000,0.057854,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,v2x_egal_norm,-0.005726,0.036676,0.875960,,,,-0.010628,1648,0.386986,166.000000,164.000000,0.035720,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,gri_state_religion_norm_mean,0.018981,0.043442,0.662214,,,,0.036256,1648,0.386986,166.000000,24.000000,0.083923,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,gri_gov_favour_norm_mean,-0.065916,0.034399,0.055516,*,,,-0.129049,1648,0.386986,166.000000,58.000000,0.106143,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,gri_religious_law_norm_mean,0.083728,0.051686,0.105444,,,,0.169107,1648,0.386986,166.000000,91.000000,0.104105,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,gri_religious_courts_norm_mean,0.059567,0.022465,0.008090,***,,,0.149268,1648,0.386986,166.000000,36.000000,0.175375,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,gri_blasphemy_norm_mean,-0.037055,0.019873,0.062415,*,,,-0.129751,1648,0.386986,166.000000,64.000000,0.263782,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,gri_apostasy_norm_mean,-0.129452,0.035993,0.000332,***,,,-0.307848,1648,0.386986,166.000000,9.000000,0.094152,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,v2x_rule_norm_mean,0.155770,0.055065,0.004729,***,,,0.357843,1648,0.386986,166.000000,165.000000,0.056354,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,v2x_civlib_norm_mean,0.041609,0.061231,0.496895,,,,0.082573,1648,0.386986,166.000000,165.000000,0.057854,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,v2x_egal_norm_mean,0.144428,0.064292,0.024811,**,,,0.268087,1648,0.386986,166.000000,164.000000,0.035720,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2014,0.003468,0.002008,0.084357,*,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2015,0.009069,0.002210,0.000043,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2016,0.013055,0.002746,0.000002,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2017,0.020533,0.003146,0.000000,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2018,0.025853,0.003363,0.000000,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2019,0.032663,0.003335,0.000000,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2020,0.042065,0.004029,0.000000,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2021,0.047413,0.004687,0.000000,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T4_mundlak_re_samesample,all,yr_2022,0.057274,0.004953,0.000000,***,,,,1648,0.386986,166.000000,,,cluster_entity,True,,,
+T3_system_gmm,all,L1.wbl_treatment_index,0.993848,0.097025,0.000000,***,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,gri_state_religion_norm,-0.022186,0.019606,0.257818,,,,-0.042377,1316,,166.000000,24.000000,0.083923,gmm_windmeijer,False,roodman_bounds_fail,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0222 (index units),
+T3_system_gmm,all,gri_gov_favour_norm,-0.030754,0.019350,0.111982,,,,-0.060209,1316,,166.000000,58.000000,0.106143,gmm_windmeijer,False,roodman_bounds_fail,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0308 (index units),
+T3_system_gmm,all,gri_religious_law_norm,0.026868,0.026205,0.305208,,,,0.054267,1316,,166.000000,91.000000,0.104105,gmm_windmeijer,False,roodman_bounds_fail,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0269 (index units),
+T3_system_gmm,all,gri_religious_courts_norm,-0.018933,0.024936,0.447677,,,,-0.047445,1316,,166.000000,36.000000,0.175375,gmm_windmeijer,False,roodman_bounds_fail,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0189 (index units),
+T3_system_gmm,all,gri_blasphemy_norm,-0.000224,0.006972,0.974364,,,,-0.000785,1316,,166.000000,64.000000,0.263782,gmm_windmeijer,False,roodman_bounds_fail,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0002 (index units),
+T3_system_gmm,all,gri_apostasy_norm,-0.026092,0.013756,0.057866,*,,,-0.062049,1316,,166.000000,9.000000,0.094152,gmm_windmeijer,False,roodman_bounds_fail,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0261 (index units),
+T3_system_gmm,all,v2x_rule_norm,0.012140,0.017155,0.479170,,,,0.027888,1316,,166.000000,165.000000,0.056354,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,v2x_civlib_norm,-0.034298,0.040239,0.394017,,,,-0.068065,1316,,166.000000,165.000000,0.057854,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,v2x_egal_norm,-0.001655,0.019136,0.931088,,,,-0.003072,1316,,166.000000,164.000000,0.035720,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,log_gdppc_norm,0.014401,0.011640,0.216005,,,,0.026587,1316,,166.000000,164.000000,0.015446,gmm_windmeijer,False,roodman_bounds_fail,1-unit change in normalised log-GDP associates with +0.0144 in the outcome (normalised scale),
+T3_system_gmm,all,year_2015,0.004030,0.002676,0.132094,,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,year_2016,0.004149,0.002696,0.123886,,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,year_2017,0.006825,0.002875,0.017589,**,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,year_2018,0.005715,0.003019,0.058308,*,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,year_2019,0.006317,0.003408,0.063754,*,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,year_2020,0.009048,0.004295,0.035132,**,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,year_2021,0.004902,0.005900,0.406063,,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,year_2022,0.008619,0.006135,0.160038,,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,_con,0.032482,0.032636,0.319594,,,,,1316,,166.000000,,,gmm_windmeijer,False,roodman_bounds_fail,,
+T3_system_gmm,all,_hansen_p,0.722107,,,,,,,1316,,,,,,False,roodman_bounds_fail,,
+T3_system_gmm,all,_ar1_p,0.000000,,,,,,,1316,,,,,,False,roodman_bounds_fail,,
+T3_system_gmm,all,_ar2_p,0.131860,,,,,,,1316,,,,,,False,roodman_bounds_fail,,
+T3_system_gmm,all,_rho_gmm,0.993848,,,,,,,1316,,,,,,False,roodman_bounds_fail,,
+T3_system_gmm,all,_rho_ols_upper,0.983499,,,,,,,1316,,,,,,False,roodman_bounds_fail,,
+T3_system_gmm,all,_rho_fe_lower,0.808272,,,,,,,1316,,,,,,False,roodman_bounds_fail,,
+T1_no_gdp,2014,composite_secularism_norm,-0.162421,0.045184,0.000325,***,,,,170,0.511350,,,,HC3,True,,,
+T1_with_gdp,2014,composite_secularism_norm,-0.193882,0.046013,0.000025,***,,,,166,0.550026,,,,HC3,True,,,
+T1_no_gdp,2020,composite_secularism_norm,-0.234224,0.052539,0.000008,***,,,,170,0.470053,,,,HC3,True,,,
+T1_with_gdp,2020,composite_secularism_norm,-0.226217,0.055242,0.000042,***,,,,164,0.509143,,,,HC3,True,,,
+T2_gri_only,all,composite_secularism_norm,0.045955,0.034489,0.182892,,,,0.072443,1860,0.004121,186.000000,177.000000,0.038173,cluster_entity,True,,,
+T2_gri_only_dk,all,composite_secularism_norm,0.045955,0.014081,0.001123,***,,,0.072443,1860,0.004121,186.000000,177.000000,0.038173,driscoll_kraay_bw2,True,,,
+T2_gri_only_samesample,all,composite_secularism_norm,0.063922,0.030895,0.038719,**,,,0.099407,1648,0.008624,166.000000,165.000000,0.038552,cluster_entity,True,,,
+T2_gri_gdp,all,composite_secularism_norm,0.048031,0.034378,0.162556,,,,0.074648,1807,0.005042,182.000000,173.000000,0.038007,cluster_entity,True,,,
+T2_gri_gdp_dk,all,composite_secularism_norm,0.048031,0.013588,0.000420,***,,,0.074648,1807,0.005042,182.000000,173.000000,0.038007,driscoll_kraay_bw2,True,,,
+T2_gri_gdp_samesample,all,composite_secularism_norm,0.063977,0.030884,0.038481,**,,,0.099492,1648,0.008662,166.000000,165.000000,0.038552,cluster_entity,True,,,
+T2_no_gdp,all,composite_secularism_norm,0.064252,0.035323,0.069108,*,0.552867,0.142640,0.101280,1700,0.008173,170.000000,169.000000,0.038710,cluster_entity,True,,,
+T2_no_gdp_dk,all,composite_secularism_norm,0.064252,0.010128,0.000000,***,,,0.101280,1700,0.008173,170.000000,169.000000,0.038710,driscoll_kraay_bw2,True,,,
+T2_no_gdp_samesample,all,composite_secularism_norm,0.061277,0.034232,0.073655,*,,,0.095292,1648,0.008712,166.000000,165.000000,0.038552,cluster_entity,True,,,
+T2_with_gdp,all,composite_secularism_norm,0.061471,0.034061,0.071320,*,0.570558,0.142640,0.095595,1648,0.008739,166.000000,165.000000,0.038552,cluster_entity,True,,,
+T2_with_gdp_dk,all,composite_secularism_norm,0.061471,0.011216,0.000000,***,,,0.095595,1648,0.008739,166.000000,165.000000,0.038552,driscoll_kraay_bw2,True,,,
+T4_mundlak_re,all,composite_secularism_norm,0.061450,0.032344,0.057623,*,,,0.095562,1648,0.377901,166.000000,165.000000,0.038552,cluster_entity,True,,,
+T4_mundlak_re,all,composite_secularism_norm_mean,-0.277680,0.058948,0.000003,***,,,,1648,0.377901,166.000000,165.000000,0.038552,cluster_entity,True,,,
+T1_no_gdp,2014,composite_secularism_pca_norm,-0.198194,0.042441,0.000003,***,,,,170,0.538086,,,,HC3,True,,,
+T1_with_gdp,2014,composite_secularism_pca_norm,-0.198075,0.044012,0.000007,***,,,,166,0.563807,,,,HC3,True,,,
+T1_no_gdp,2020,composite_secularism_pca_norm,-0.226088,0.039191,0.000000,***,,,,170,0.494350,,,,HC3,True,,,
+T1_with_gdp,2020,composite_secularism_pca_norm,-0.197945,0.043707,0.000006,***,,,,164,0.517764,,,,HC3,True,,,
+T2_gri_only,all,composite_secularism_pca_norm,0.013256,0.024279,0.585141,,,,0.020500,1860,0.000354,186.000000,176.000000,0.038471,cluster_entity,True,,,
+T2_gri_only_dk,all,composite_secularism_pca_norm,0.013256,0.012534,0.290398,,,,0.020500,1860,0.000354,186.000000,176.000000,0.038471,driscoll_kraay_bw2,True,,,
+T2_gri_only_samesample,all,composite_secularism_pca_norm,0.014433,0.023558,0.540183,,,,0.022875,1648,0.000474,166.000000,164.000000,0.039690,cluster_entity,True,,,
+T2_gri_gdp,all,composite_secularism_pca_norm,0.012040,0.023482,0.608225,,,,0.018715,1807,0.000772,182.000000,172.000000,0.038282,cluster_entity,True,,,
+T2_gri_gdp_dk,all,composite_secularism_pca_norm,0.012040,0.012813,0.347545,,,,0.018715,1807,0.000772,182.000000,172.000000,0.038282,driscoll_kraay_bw2,True,,,
+T2_gri_gdp_samesample,all,composite_secularism_pca_norm,0.014594,0.023456,0.533928,,,,0.023129,1648,0.000508,166.000000,164.000000,0.039690,cluster_entity,True,,,
+T2_no_gdp,all,composite_secularism_pca_norm,0.011488,0.024560,0.640014,,1.000000,0.685584,0.018085,1700,0.001231,170.000000,168.000000,0.039855,cluster_entity,True,,,
+T2_no_gdp_dk,all,composite_secularism_pca_norm,0.011488,0.009356,0.219660,,,,0.018085,1700,0.001231,170.000000,168.000000,0.039855,driscoll_kraay_bw2,True,,,
+T2_no_gdp_samesample,all,composite_secularism_pca_norm,0.009121,0.022868,0.690059,,,,0.014456,1648,0.002195,166.000000,164.000000,0.039690,cluster_entity,True,,,
+T2_with_gdp,all,composite_secularism_pca_norm,0.009203,0.022728,0.685584,,1.000000,0.685584,0.014586,1648,0.002199,166.000000,164.000000,0.039690,cluster_entity,True,,,
+T2_with_gdp_dk,all,composite_secularism_pca_norm,0.009203,0.010997,0.402797,,,,0.014586,1648,0.002199,166.000000,164.000000,0.039690,driscoll_kraay_bw2,True,,,
+T4_mundlak_re,all,composite_secularism_pca_norm,0.009186,0.021582,0.670427,,,,0.014559,1648,0.376314,166.000000,164.000000,0.039690,cluster_entity,True,,,
+T4_mundlak_re,all,composite_secularism_pca_norm_mean,-0.213047,0.047380,0.000007,***,,,,1648,0.376314,166.000000,164.000000,0.039690,cluster_entity,True,,,
+ROB_no_wvs_interp_no_gdp,all,const,0.620621,0.026093,0.000000,***,,,,850,0.041587,157.000000,,,cluster_entity,True,,,
+ROB_no_wvs_interp_no_gdp,all,gri_state_religion_norm,0.037068,0.042727,0.385944,,,,0.086351,850,0.041587,157.000000,11.000000,0.070125,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0371 (index units),
+ROB_no_wvs_interp_no_gdp,all,gri_gov_favour_norm,0.027086,0.013118,0.039321,**,,,0.057560,850,0.041587,157.000000,30.000000,0.101921,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0271 (index units),
+ROB_no_wvs_interp_no_gdp,all,gri_religious_law_norm,0.010996,0.009482,0.246602,,,,0.026321,850,0.041587,157.000000,50.000000,0.099581,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0110 (index units),
+ROB_no_wvs_interp_no_gdp,all,gri_religious_courts_norm,-0.015974,0.015889,0.315086,,,,-0.036300,850,0.041587,157.000000,13.000000,0.150121,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0160 (index units),
+ROB_no_wvs_interp_no_gdp,all,gri_blasphemy_norm,-0.012806,0.005803,0.027679,**,,,-0.050028,850,0.041587,157.000000,35.000000,0.252065,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0128 (index units),
+ROB_no_wvs_interp_no_gdp,all,gri_apostasy_norm,-0.021471,0.009913,0.030668,**,,,-0.058027,850,0.041587,157.000000,6.000000,0.092090,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0215 (index units),
+ROB_no_wvs_interp_no_gdp,all,v2x_rule_norm,0.005428,0.038846,0.888912,,,,0.013567,850,0.041587,157.000000,99.000000,0.056377,cluster_entity,True,,,
+ROB_no_wvs_interp_no_gdp,all,v2x_civlib_norm,-0.007839,0.046385,0.865839,,,,-0.018516,850,0.041587,157.000000,98.000000,0.058904,cluster_entity,True,,,
+ROB_no_wvs_interp_no_gdp,all,v2x_egal_norm,-0.046905,0.057730,0.416802,,,,-0.093433,850,0.041587,157.000000,98.000000,0.038161,cluster_entity,True,,,
+ROB_no_wvs_interp_with_gdp,all,const,0.629331,0.048903,0.000000,***,,,,805,0.045505,153.000000,,,cluster_entity,True,,,
+ROB_no_wvs_interp_with_gdp,all,gri_state_religion_norm,0.032602,0.039678,0.411576,,,,0.072824,805,0.045505,153.000000,9.000000,0.061339,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0326 (index units),
+ROB_no_wvs_interp_with_gdp,all,gri_gov_favour_norm,0.027844,0.014697,0.058605,*,,,0.058804,805,0.045505,153.000000,27.000000,0.096032,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0278 (index units),
+ROB_no_wvs_interp_with_gdp,all,gri_religious_law_norm,0.014284,0.010402,0.170147,,,,0.033422,805,0.045505,153.000000,47.000000,0.097127,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0143 (index units),
+ROB_no_wvs_interp_with_gdp,all,gri_religious_courts_norm,-0.014705,0.017251,0.394311,,,,-0.033513,805,0.045505,153.000000,12.000000,0.149442,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0147 (index units),
+ROB_no_wvs_interp_with_gdp,all,gri_blasphemy_norm,-0.013284,0.006036,0.028103,**,,,-0.050573,805,0.045505,153.000000,33.000000,0.247733,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0133 (index units),
+ROB_no_wvs_interp_with_gdp,all,gri_apostasy_norm,-0.024269,0.011880,0.041485,**,,,-0.064032,805,0.045505,153.000000,4.000000,0.081954,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0243 (index units),
+ROB_no_wvs_interp_with_gdp,all,v2x_rule_norm,-0.007733,0.039777,0.845922,,,,-0.018864,805,0.045505,153.000000,96.000000,0.055561,cluster_entity,True,,,
+ROB_no_wvs_interp_with_gdp,all,v2x_civlib_norm,-0.018940,0.047859,0.692431,,,,-0.042320,805,0.045505,153.000000,95.000000,0.058139,cluster_entity,True,,,
+ROB_no_wvs_interp_with_gdp,all,v2x_egal_norm,-0.042537,0.063259,0.501553,,,,-0.082296,805,0.045505,153.000000,94.000000,0.034869,cluster_entity,True,,,
+ROB_no_wvs_interp_with_gdp,all,log_gdppc_norm,0.014856,0.108383,0.891021,,,,0.028498,805,0.045505,153.000000,94.000000,0.014796,cluster_entity,True,,1-unit change in normalised log-GDP associates with +0.0149 in the outcome (normalised scale),
+P4_panel_fe_L1,all,const,0.668322,0.041912,0.000000,***,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,gri_state_religion_norm_L1,-0.011340,0.016866,0.501482,,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,gri_gov_favour_norm_L1,0.011845,0.010234,0.247322,,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,gri_religious_law_norm_L1,0.007876,0.010080,0.434778,,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,gri_religious_courts_norm_L1,-0.010108,0.005273,0.055482,*,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,gri_blasphemy_norm_L1,-0.003127,0.003463,0.366661,,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,gri_apostasy_norm_L1,-0.024473,0.013298,0.065943,*,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,v2x_rule_norm,0.003347,0.026610,0.899914,,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,v2x_civlib_norm,-0.021602,0.028866,0.454391,,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,v2x_egal_norm,0.003810,0.036278,0.916370,,,,,1482,0.018054,,,,,True,,,
+P4_panel_fe_L1,all,log_gdppc_norm,0.015318,0.078647,0.845608,,,,,1482,0.018054,,,,,True,,1-unit change in normalised log-GDP associates with +0.0153 in the outcome (normalised scale),
+P4_panel_fe_L2,all,const,0.667060,0.045106,0.000000,***,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,gri_state_religion_norm_L2,-0.029443,0.016121,0.068061,*,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,gri_gov_favour_norm_L2,0.008463,0.009241,0.359950,,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,gri_religious_law_norm_L2,0.011339,0.012927,0.380589,,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,gri_religious_courts_norm_L2,-0.007969,0.004111,0.052786,*,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,gri_blasphemy_norm_L2,-0.003954,0.003466,0.254224,,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,gri_apostasy_norm_L2,-0.027811,0.016528,0.092707,*,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,v2x_rule_norm,0.001787,0.027895,0.948921,,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,v2x_civlib_norm,-0.014738,0.027893,0.597347,,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,v2x_egal_norm,0.006824,0.036754,0.852737,,,,,1316,0.021246,,,,,True,,,
+P4_panel_fe_L2,all,log_gdppc_norm,0.020697,0.082484,0.801917,,,,,1316,0.021246,,,,,True,,1-unit change in normalised log-GDP associates with +0.0207 in the outcome (normalised scale),
+P4_reverse_causality,all,const,0.420539,0.340013,0.216371,,,,,1485,0.002288,,,,,True,,,
+P4_reverse_causality,all,wbl_treatment_index,-0.251282,0.320573,0.433269,,,,,1485,0.002288,,,,,True,,,
+P4_reverse_causality,all,v2x_rule_norm,0.016731,0.212950,0.937388,,,,,1485,0.002288,,,,,True,,,
+P4_reverse_causality,all,v2x_civlib_norm,-0.114141,0.137324,0.406025,,,,,1485,0.002288,,,,,True,,,
+P4_reverse_causality,all,v2x_egal_norm,0.080729,0.246725,0.743566,,,,,1485,0.002288,,,,,True,,,
+P4_reverse_causality,all,log_gdppc_norm,-0.199377,0.444629,0.653930,,,,,1485,0.002288,,,,,True,,1-unit change in normalised log-GDP associates with -0.1994 in the outcome (normalised scale),
+P5_A4_Europe,2013,const,0.261822,0.173731,0.131797,,,,,41,0.691128,,,,,True,,,
+P5_A4_Europe,2013,gri_state_religion_norm,0.031950,0.040388,0.428905,,,,,41,0.691128,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0319 (index units),
+P5_A4_Europe,2013,gri_gov_favour_norm,-0.035848,0.037074,0.333568,,,,,41,0.691128,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0358 (index units),
+P5_A4_Europe,2013,gri_religious_law_norm,0.025835,0.045797,0.572680,,,,,41,0.691128,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0258 (index units),
+P5_A4_Europe,2013,gri_religious_courts_norm,-0.002903,0.019603,0.882281,,,,,41,0.691128,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0029 (index units),
+P5_A4_Europe,2013,gri_blasphemy_norm,-0.017935,0.021520,0.404611,,,,,41,0.691128,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0179 (index units),
+P5_A4_Europe,2013,v2x_rule_norm,-0.147371,0.142113,0.299738,,,,,41,0.691128,,,,,True,,,
+P5_A4_Europe,2013,v2x_civlib_norm,0.336438,0.223532,0.132299,,,,,41,0.691128,,,,,True,,,
+P5_A4_Europe,2013,v2x_egal_norm,0.201968,0.149838,0.177688,,,,,41,0.691128,,,,,True,,,
+P5_A4_Europe,2013,log_gdppc_norm,0.249912,0.088481,0.004736,***,,,,41,0.691128,,,,,True,,1-unit change in normalised log-GDP associates with +0.2499 in the outcome (normalised scale),
+P5_A4_Sub_Saharan_Africa,2013,const,0.436491,0.056169,0.000000,***,,,,47,0.532206,,,,,True,,,
+P5_A4_Sub_Saharan_Africa,2013,gri_state_religion_norm,0.179358,0.172013,0.297088,,,,,47,0.532206,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.1794 (index units),
+P5_A4_Sub_Saharan_Africa,2013,gri_gov_favour_norm,-0.058865,0.067246,0.381375,,,,,47,0.532206,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0589 (index units),
+P5_A4_Sub_Saharan_Africa,2013,gri_religious_law_norm,0.096856,0.073527,0.187740,,,,,47,0.532206,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0969 (index units),
+P5_A4_Sub_Saharan_Africa,2013,gri_religious_courts_norm,0.067332,0.078142,0.388873,,,,,47,0.532206,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0673 (index units),
+P5_A4_Sub_Saharan_Africa,2013,gri_blasphemy_norm,0.064250,0.051793,0.214786,,,,,47,0.532206,,,,,True,,moving gri_blasphemy_norm from 0 to 1 increases the outcome by 0.0643 (index units),
+P5_A4_Sub_Saharan_Africa,2013,gri_apostasy_norm,-0.194970,0.095554,0.041308,**,,,,47,0.532206,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.1950 (index units),
+P5_A4_Sub_Saharan_Africa,2013,v2x_rule_norm,0.181146,0.086610,0.036482,**,,,,47,0.532206,,,,,True,,,
+P5_A4_Sub_Saharan_Africa,2013,v2x_civlib_norm,-0.175030,0.115038,0.128137,,,,,47,0.532206,,,,,True,,,
+P5_A4_Sub_Saharan_Africa,2013,v2x_egal_norm,0.299116,0.124919,0.016644,**,,,,47,0.532206,,,,,True,,,
+P5_A4_Sub_Saharan_Africa,2013,log_gdppc_norm,0.031789,0.140902,0.821503,,,,,47,0.532206,,,,,True,,1-unit change in normalised log-GDP associates with +0.0318 in the outcome (normalised scale),
+P5_B4_clrelig_extended,all,const,0.685933,0.039438,0.000000,***,,,,1648,0.018777,,,,,True,,,
+P5_B4_clrelig_extended,all,gri_state_religion_norm,0.007206,0.014427,0.617525,,,,,1648,0.018777,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0072 (index units),
+P5_B4_clrelig_extended,all,gri_gov_favour_norm,0.012638,0.009426,0.180196,,,,,1648,0.018777,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0126 (index units),
+P5_B4_clrelig_extended,all,gri_religious_law_norm,0.005652,0.007235,0.434797,,,,,1648,0.018777,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0057 (index units),
+P5_B4_clrelig_extended,all,gri_religious_courts_norm,-0.006976,0.006926,0.313973,,,,,1648,0.018777,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0070 (index units),
+P5_B4_clrelig_extended,all,gri_blasphemy_norm,-0.000816,0.003535,0.817587,,,,,1648,0.018777,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0008 (index units),
+P5_B4_clrelig_extended,all,gri_apostasy_norm,-0.018342,0.010208,0.072555,*,,,,1648,0.018777,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0183 (index units),
+P5_B4_clrelig_extended,all,v2clrelig_norm,-0.033729,0.028748,0.240885,,,,,1648,0.018777,,,,,True,,,
+P5_B4_clrelig_extended,all,v2x_rule_norm,0.002627,0.027960,0.925149,,,,,1648,0.018777,,,,,True,,,
+P5_B4_clrelig_extended,all,v2x_civlib_norm,-0.007032,0.032336,0.827874,,,,,1648,0.018777,,,,,True,,,
+P5_B4_clrelig_extended,all,v2x_egal_norm,-0.001541,0.038505,0.968088,,,,,1648,0.018777,,,,,True,,,
+P5_B4_clrelig_extended,all,log_gdppc_norm,-0.002895,0.071488,0.967702,,,,,1648,0.018777,,,,,True,,1-unit change in normalised log-GDP associates with -0.0029 in the outcome (normalised scale),
+P5_B4_clrelig_sole,all,const,0.695144,0.038791,0.000000,***,,,,1648,0.005856,,,,,True,,,
+P5_B4_clrelig_sole,all,v2clrelig_norm,-0.036621,0.028502,0.199038,,,,,1648,0.005856,,,,,True,,,
+P5_B4_clrelig_sole,all,v2x_rule_norm,0.000990,0.028623,0.972407,,,,,1648,0.005856,,,,,True,,,
+P5_B4_clrelig_sole,all,v2x_civlib_norm,-0.005896,0.032971,0.858099,,,,,1648,0.005856,,,,,True,,,
+P5_B4_clrelig_sole,all,v2x_egal_norm,0.001685,0.040068,0.966463,,,,,1648,0.005856,,,,,True,,,
+P5_B4_clrelig_sole,all,log_gdppc_norm,-0.009837,0.071924,0.891231,,,,,1648,0.005856,,,,,True,,1-unit change in normalised log-GDP associates with -0.0098 in the outcome (normalised scale),
+P6_placebo_wdi_lifexpf_norm,all,const,0.665848,0.051553,0.000000,***,,,,1648,0.010076,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,composite_secularism_norm,0.052939,0.037656,0.159979,,,,,1648,0.010076,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.014181,0.025635,0.580215,,,,,1648,0.010076,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,0.020256,0.025303,0.423526,,,,,1648,0.010076,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,-0.024692,0.041675,0.553613,,,,,1648,0.010076,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,-0.067687,0.095366,0.477967,,,,,1648,0.010076,,,,,True,,1-unit change in normalised log-GDP associates with -0.0677 in the outcome (normalised scale),Female life expectancy (female DV)
+P6_placebo_wdi_lfpf_norm,all,const,0.636152,0.045615,0.000000,***,,,,1637,0.022878,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,composite_secularism_norm,-0.009457,0.028727,0.742059,,,,,1637,0.022878,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.018512,0.032037,0.563474,,,,,1637,0.022878,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.040275,0.025047,0.108062,,,,,1637,0.022878,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,0.015471,0.041840,0.711615,,,,,1637,0.022878,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.116654,0.074572,0.117961,,,,,1637,0.022878,,,,,True,,1-unit change in normalised log-GDP associates with +0.1167 in the outcome (normalised scale),Female LFP rate (female DV)
+P6_placebo_wbl_treatment_index,all,const,0.650935,0.043680,0.000000,***,,,,1648,0.008739,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,composite_secularism_norm,0.061471,0.034061,0.071320,*,,,,1648,0.008739,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_rule_norm,0.002079,0.027870,0.940553,,,,,1648,0.008739,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_civlib_norm,-0.004710,0.030391,0.876847,,,,,1648,0.008739,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_egal_norm,-0.002100,0.039692,0.957810,,,,,1648,0.008739,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,log_gdppc_norm,-0.009781,0.071639,0.891417,,,,,1648,0.008739,,,,,True,,1-unit change in normalised log-GDP associates with -0.0098 in the outcome (normalised scale),Women's treatment index (female DV)
+P6_placebo_lifexpm_norm,all,const,0.714167,0.046783,0.000000,***,,,,1648,0.005415,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,composite_secularism_norm,0.031477,0.025250,0.212736,,,,,1648,0.005415,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_rule_norm,-0.003137,0.021329,0.883092,,,,,1648,0.005415,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_civlib_norm,0.025040,0.021307,0.240101,,,,,1648,0.005415,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_egal_norm,-0.007798,0.034349,0.820446,,,,,1648,0.005415,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.014382,0.090366,0.873571,,,,,1648,0.005415,,,,,True,,1-unit change in normalised log-GDP associates with +0.0144 in the outcome (normalised scale),Male life expectancy (placebo DV)
+P6_placebo_lfpm_norm,all,const,0.322508,0.112806,0.004311,***,,,,1637,0.031956,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,composite_secularism_norm,-0.011395,0.044882,0.799620,,,,,1637,0.031956,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_rule_norm,0.001136,0.050621,0.982093,,,,,1637,0.031956,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.017048,0.041349,0.680179,,,,,1637,0.031956,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_egal_norm,0.073772,0.052009,0.156277,,,,,1637,0.031956,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,log_gdppc_norm,0.325018,0.206759,0.116176,,,,,1637,0.031956,,,,,True,,1-unit change in normalised log-GDP associates with +0.3250 in the outcome (normalised scale),Male LFP rate (placebo DV)
+P6_placebo_wdi_lifexpf_norm,all,const,0.675790,0.046961,0.000000,***,,,,1648,0.022168,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_state_religion_norm,-0.017209,0.007524,0.022322,**,,,,1648,0.022168,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0172 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_gov_favour_norm,0.022355,0.009781,0.022424,**,,,,1648,0.022168,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0224 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_religious_law_norm,0.010211,0.007458,0.171194,,,,,1648,0.022168,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0102 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_religious_courts_norm,0.001052,0.005882,0.858040,,,,,1648,0.022168,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0011 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_blasphemy_norm,0.006347,0.003524,0.071906,*,,,,1648,0.022168,,,,,True,,moving gri_blasphemy_norm from 0 to 1 increases the outcome by 0.0063 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_apostasy_norm,0.002741,0.008822,0.756105,,,,,1648,0.022168,,,,,True,,moving gri_apostasy_norm from 0 to 1 increases the outcome by 0.0027 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.016381,0.024903,0.510776,,,,,1648,0.022168,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,0.005132,0.024748,0.835762,,,,,1648,0.022168,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,-0.022003,0.040502,0.587034,,,,,1648,0.022168,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,-0.067124,0.094011,0.475340,,,,,1648,0.022168,,,,,True,,1-unit change in normalised log-GDP associates with -0.0671 in the outcome (normalised scale),Female life expectancy (female DV)
+P6_placebo_wdi_lfpf_norm,all,const,0.649884,0.044097,0.000000,***,,,,1637,0.060500,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_state_religion_norm,-0.012291,0.012559,0.327910,,,,,1637,0.060500,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0123 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_gov_favour_norm,-0.017627,0.008548,0.039381,**,,,,1637,0.060500,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0176 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_religious_law_norm,-0.002687,0.007631,0.724784,,,,,1637,0.060500,,,,,True,,moving gri_religious_law_norm from 0 to 1 decreases the outcome by 0.0027 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_religious_courts_norm,-0.007358,0.005272,0.163004,,,,,1637,0.060500,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0074 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_blasphemy_norm,-0.001534,0.002323,0.509231,,,,,1637,0.060500,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0015 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_apostasy_norm,0.022692,0.010427,0.029700,**,,,,1637,0.060500,,,,,True,,moving gri_apostasy_norm from 0 to 1 increases the outcome by 0.0227 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.019905,0.031387,0.526059,,,,,1637,0.060500,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.039575,0.025395,0.119364,,,,,1637,0.060500,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,0.018398,0.041152,0.654886,,,,,1637,0.060500,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.101834,0.071428,0.154176,,,,,1637,0.060500,,,,,True,,1-unit change in normalised log-GDP associates with +0.1018 in the outcome (normalised scale),Female LFP rate (female DV)
+P6_placebo_wbl_treatment_index,all,const,0.669886,0.039090,0.000000,***,,,,1648,0.015550,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_state_religion_norm,0.006487,0.014727,0.659647,,,,,1648,0.015550,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0065 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_gov_favour_norm,0.013855,0.009505,0.145144,,,,,1648,0.015550,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_religious_law_norm,0.006207,0.007219,0.389995,,,,,1648,0.015550,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0062 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_religious_courts_norm,-0.007270,0.006853,0.288906,,,,,1648,0.015550,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_blasphemy_norm,-0.000741,0.003501,0.832331,,,,,1648,0.015550,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_apostasy_norm,-0.018020,0.009838,0.067203,*,,,,1648,0.015550,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_rule_norm,0.006568,0.027201,0.809246,,,,,1648,0.015550,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_civlib_norm,-0.022337,0.028845,0.438822,,,,,1648,0.015550,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_egal_norm,-0.005808,0.038573,0.880344,,,,,1648,0.015550,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,log_gdppc_norm,0.003766,0.072039,0.958315,,,,,1648,0.015550,,,,,True,,1-unit change in normalised log-GDP associates with +0.0038 in the outcome (normalised scale),Women's treatment index (female DV)
+P6_placebo_lifexpm_norm,all,const,0.717978,0.044510,0.000000,***,,,,1648,0.017609,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_state_religion_norm,-0.011024,0.006844,0.107442,,,,,1648,0.017609,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0110 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_gov_favour_norm,0.012417,0.007247,0.086841,*,,,,1648,0.017609,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0124 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_religious_law_norm,0.007965,0.006197,0.198915,,,,,1648,0.017609,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0080 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_religious_courts_norm,0.002413,0.005473,0.659412,,,,,1648,0.017609,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0024 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_blasphemy_norm,0.006296,0.003182,0.048031,**,,,,1648,0.017609,,,,,True,,moving gri_blasphemy_norm from 0 to 1 increases the outcome by 0.0063 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_apostasy_norm,0.001425,0.007098,0.840892,,,,,1648,0.017609,,,,,True,,moving gri_apostasy_norm from 0 to 1 increases the outcome by 0.0014 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_rule_norm,-0.000894,0.020623,0.965421,,,,,1648,0.017609,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_civlib_norm,0.016294,0.021440,0.447388,,,,,1648,0.017609,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_egal_norm,-0.007181,0.033702,0.831290,,,,,1648,0.017609,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.016422,0.088199,0.852324,,,,,1648,0.017609,,,,,True,,1-unit change in normalised log-GDP associates with +0.0164 in the outcome (normalised scale),Male life expectancy (placebo DV)
+P6_placebo_lfpm_norm,all,const,0.313404,0.110166,0.004506,***,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_state_religion_norm,0.015140,0.010809,0.161497,,,,,1637,0.037146,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0151 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_gov_favour_norm,-0.015004,0.015760,0.341229,,,,,1637,0.037146,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0150 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_religious_law_norm,0.006684,0.011438,0.559082,,,,,1637,0.037146,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0067 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_religious_courts_norm,0.005993,0.004998,0.230753,,,,,1637,0.037146,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0060 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_blasphemy_norm,-0.001532,0.005470,0.779422,,,,,1637,0.037146,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0015 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_apostasy_norm,-0.013664,0.010991,0.214002,,,,,1637,0.037146,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0137 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_rule_norm,0.005131,0.050292,0.918755,,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.023533,0.037273,0.527890,,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_egal_norm,0.065794,0.052976,0.214448,,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,log_gdppc_norm,0.341507,0.212901,0.108918,,,,,1637,0.037146,,,,,True,,1-unit change in normalised log-GDP associates with +0.3415 in the outcome (normalised scale),Male LFP rate (placebo DV)
+P6_placebo_wdi_lifexpf_norm,all,const,0.675790,0.046961,0.000000,***,,,,1648,0.022168,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_state_religion_norm,-0.017209,0.007524,0.022322,**,,,,1648,0.022168,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0172 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_gov_favour_norm,0.022355,0.009781,0.022424,**,,,,1648,0.022168,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0224 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_religious_law_norm,0.010211,0.007458,0.171194,,,,,1648,0.022168,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0102 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_religious_courts_norm,0.001052,0.005882,0.858040,,,,,1648,0.022168,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0011 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_blasphemy_norm,0.006347,0.003524,0.071906,*,,,,1648,0.022168,,,,,True,,moving gri_blasphemy_norm from 0 to 1 increases the outcome by 0.0063 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,gri_apostasy_norm,0.002741,0.008822,0.756105,,,,,1648,0.022168,,,,,True,,moving gri_apostasy_norm from 0 to 1 increases the outcome by 0.0027 (index units),Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.016381,0.024903,0.510776,,,,,1648,0.022168,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,0.005132,0.024748,0.835762,,,,,1648,0.022168,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,-0.022003,0.040502,0.587034,,,,,1648,0.022168,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,-0.067124,0.094011,0.475340,,,,,1648,0.022168,,,,,True,,1-unit change in normalised log-GDP associates with -0.0671 in the outcome (normalised scale),Female life expectancy (female DV)
+P6_placebo_wdi_lfpf_norm,all,const,0.649884,0.044097,0.000000,***,,,,1637,0.060500,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_state_religion_norm,-0.012291,0.012559,0.327910,,,,,1637,0.060500,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0123 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_gov_favour_norm,-0.017627,0.008548,0.039381,**,,,,1637,0.060500,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0176 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_religious_law_norm,-0.002687,0.007631,0.724784,,,,,1637,0.060500,,,,,True,,moving gri_religious_law_norm from 0 to 1 decreases the outcome by 0.0027 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_religious_courts_norm,-0.007358,0.005272,0.163004,,,,,1637,0.060500,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0074 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_blasphemy_norm,-0.001534,0.002323,0.509231,,,,,1637,0.060500,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0015 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,gri_apostasy_norm,0.022692,0.010427,0.029700,**,,,,1637,0.060500,,,,,True,,moving gri_apostasy_norm from 0 to 1 increases the outcome by 0.0227 (index units),Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.019905,0.031387,0.526059,,,,,1637,0.060500,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.039575,0.025395,0.119364,,,,,1637,0.060500,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,0.018398,0.041152,0.654886,,,,,1637,0.060500,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.101834,0.071428,0.154176,,,,,1637,0.060500,,,,,True,,1-unit change in normalised log-GDP associates with +0.1018 in the outcome (normalised scale),Female LFP rate (female DV)
+P6_placebo_wbl_treatment_index,all,const,0.669886,0.039090,0.000000,***,,,,1648,0.015550,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_state_religion_norm,0.006487,0.014727,0.659647,,,,,1648,0.015550,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0065 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_gov_favour_norm,0.013855,0.009505,0.145144,,,,,1648,0.015550,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_religious_law_norm,0.006207,0.007219,0.389995,,,,,1648,0.015550,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0062 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_religious_courts_norm,-0.007270,0.006853,0.288906,,,,,1648,0.015550,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_blasphemy_norm,-0.000741,0.003501,0.832331,,,,,1648,0.015550,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,gri_apostasy_norm,-0.018020,0.009838,0.067203,*,,,,1648,0.015550,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_rule_norm,0.006568,0.027201,0.809246,,,,,1648,0.015550,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_civlib_norm,-0.022337,0.028845,0.438822,,,,,1648,0.015550,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_egal_norm,-0.005808,0.038573,0.880344,,,,,1648,0.015550,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,log_gdppc_norm,0.003766,0.072039,0.958315,,,,,1648,0.015550,,,,,True,,1-unit change in normalised log-GDP associates with +0.0038 in the outcome (normalised scale),Women's treatment index (female DV)
+P6_placebo_lifexpm_norm,all,const,0.717978,0.044510,0.000000,***,,,,1648,0.017609,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_state_religion_norm,-0.011024,0.006844,0.107442,,,,,1648,0.017609,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0110 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_gov_favour_norm,0.012417,0.007247,0.086841,*,,,,1648,0.017609,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0124 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_religious_law_norm,0.007965,0.006197,0.198915,,,,,1648,0.017609,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0080 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_religious_courts_norm,0.002413,0.005473,0.659412,,,,,1648,0.017609,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0024 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_blasphemy_norm,0.006296,0.003182,0.048031,**,,,,1648,0.017609,,,,,True,,moving gri_blasphemy_norm from 0 to 1 increases the outcome by 0.0063 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,gri_apostasy_norm,0.001425,0.007098,0.840892,,,,,1648,0.017609,,,,,True,,moving gri_apostasy_norm from 0 to 1 increases the outcome by 0.0014 (index units),Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_rule_norm,-0.000894,0.020623,0.965421,,,,,1648,0.017609,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_civlib_norm,0.016294,0.021440,0.447388,,,,,1648,0.017609,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_egal_norm,-0.007181,0.033702,0.831290,,,,,1648,0.017609,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.016422,0.088199,0.852324,,,,,1648,0.017609,,,,,True,,1-unit change in normalised log-GDP associates with +0.0164 in the outcome (normalised scale),Male life expectancy (placebo DV)
+P6_placebo_lfpm_norm,all,const,0.313404,0.110166,0.004506,***,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_state_religion_norm,0.015140,0.010809,0.161497,,,,,1637,0.037146,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0151 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_gov_favour_norm,-0.015004,0.015760,0.341229,,,,,1637,0.037146,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0150 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_religious_law_norm,0.006684,0.011438,0.559082,,,,,1637,0.037146,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0067 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_religious_courts_norm,0.005993,0.004998,0.230753,,,,,1637,0.037146,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0060 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_blasphemy_norm,-0.001532,0.005470,0.779422,,,,,1637,0.037146,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0015 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,gri_apostasy_norm,-0.013664,0.010991,0.214002,,,,,1637,0.037146,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0137 (index units),Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_rule_norm,0.005131,0.050292,0.918755,,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.023533,0.037273,0.527890,,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_egal_norm,0.065794,0.052976,0.214448,,,,,1637,0.037146,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,log_gdppc_norm,0.341507,0.212901,0.108918,,,,,1637,0.037146,,,,,True,,1-unit change in normalised log-GDP associates with +0.3415 in the outcome (normalised scale),Male LFP rate (placebo DV)
+P6_placebo_wdi_lifexpf_norm,all,const,0.673704,0.049935,0.000000,***,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,composite_secularism_pca_norm,0.032432,0.032538,0.319057,,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_rule_norm,0.013954,0.026589,0.599800,,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_civlib_norm,0.010624,0.026151,0.684621,,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,v2x_egal_norm,-0.024593,0.041716,0.555598,,,,,1648,0.006439,,,,,True,,,Female life expectancy (female DV)
+P6_placebo_wdi_lifexpf_norm,all,log_gdppc_norm,-0.066693,0.095554,0.485312,,,,,1648,0.006439,,,,,True,,1-unit change in normalised log-GDP associates with -0.0667 in the outcome (normalised scale),Female life expectancy (female DV)
+P6_placebo_wdi_lfpf_norm,all,const,0.628166,0.047296,0.000000,***,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,composite_secularism_pca_norm,0.007733,0.028803,0.788381,,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_rule_norm,-0.019735,0.031899,0.536234,,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_civlib_norm,0.044340,0.025880,0.086874,*,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,v2x_egal_norm,0.015934,0.041807,0.703166,,,,,1637,0.022823,,,,,True,,,Female LFP rate (female DV)
+P6_placebo_wdi_lfpf_norm,all,log_gdppc_norm,0.114133,0.074285,0.124649,,,,,1637,0.022823,,,,,True,,1-unit change in normalised log-GDP associates with +0.1141 in the outcome (normalised scale),Female LFP rate (female DV)
+P6_placebo_wbl_treatment_index,all,const,0.673856,0.040588,0.000000,***,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,composite_secularism_pca_norm,0.009203,0.022728,0.685584,,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_rule_norm,0.004525,0.028695,0.874720,,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_civlib_norm,-0.020898,0.029978,0.485852,,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,v2x_egal_norm,-0.002941,0.040350,0.941911,,,,,1648,0.002199,,,,,True,,,Women's treatment index (female DV)
+P6_placebo_wbl_treatment_index,all,log_gdppc_norm,-0.003648,0.072495,0.959873,,,,,1648,0.002199,,,,,True,,1-unit change in normalised log-GDP associates with -0.0036 in the outcome (normalised scale),Women's treatment index (female DV)
+P6_placebo_lifexpm_norm,all,const,0.711425,0.046150,0.000000,***,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,composite_secularism_pca_norm,0.034569,0.022502,0.124691,,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_rule_norm,-0.004727,0.021391,0.825119,,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_civlib_norm,0.021999,0.021897,0.315215,,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,v2x_egal_norm,-0.007225,0.034072,0.832098,,,,,1648,0.007078,,,,,True,,,Male life expectancy (placebo DV)
+P6_placebo_lifexpm_norm,all,log_gdppc_norm,0.012298,0.089611,0.890861,,,,,1648,0.007078,,,,,True,,1-unit change in normalised log-GDP associates with +0.0123 in the outcome (normalised scale),Male life expectancy (placebo DV)
+P6_placebo_lfpm_norm,all,const,0.328501,0.109716,0.002799,***,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,composite_secularism_pca_norm,-0.022793,0.045479,0.616323,,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_rule_norm,0.002675,0.050066,0.957403,,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_civlib_norm,0.016321,0.037561,0.663979,,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,v2x_egal_norm,0.073196,0.051776,0.157660,,,,,1637,0.032537,,,,,True,,,Male LFP rate (placebo DV)
+P6_placebo_lfpm_norm,all,log_gdppc_norm,0.327634,0.208525,0.116354,,,,,1637,0.032537,,,,,True,,1-unit change in normalised log-GDP associates with +0.3276 in the outcome (normalised scale),Male LFP rate (placebo DV)
+T2_with_cedaw,all,const,0.657795,0.070692,0.000000,***,,,,1628,0.015512,,,,,True,,,
+T2_with_cedaw,all,gri_state_religion_norm,0.006663,0.014748,0.651480,,,,,1628,0.015512,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0067 (index units),
+T2_with_cedaw,all,gri_gov_favour_norm,0.013347,0.009585,0.163989,,,,,1628,0.015512,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0133 (index units),
+T2_with_cedaw,all,gri_religious_law_norm,0.006133,0.007296,0.400711,,,,,1628,0.015512,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0061 (index units),
+T2_with_cedaw,all,gri_religious_courts_norm,-0.007314,0.006858,0.286373,,,,,1628,0.015512,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),
+T2_with_cedaw,all,gri_blasphemy_norm,-0.000745,0.003512,0.831981,,,,,1628,0.015512,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),
+T2_with_cedaw,all,gri_apostasy_norm,-0.018012,0.009842,0.067439,*,,,,1628,0.015512,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),
+T2_with_cedaw,all,v2x_rule_norm,0.005983,0.027508,0.827847,,,,,1628,0.015512,,,,,True,,,
+T2_with_cedaw,all,v2x_civlib_norm,-0.021545,0.029659,0.467686,,,,,1628,0.015512,,,,,True,,,
+T2_with_cedaw,all,v2x_egal_norm,-0.006855,0.040668,0.866169,,,,,1628,0.015512,,,,,True,,,
+T2_with_cedaw,all,log_gdppc_norm,-0.003192,0.074596,0.965870,,,,,1628,0.015512,,,,,True,,1-unit change in normalised log-GDP associates with -0.0032 in the outcome (normalised scale),
+T2_with_cedaw,all,cedaw_years_since_norm,0.021888,0.085556,0.798120,,,,,1628,0.015512,,,,,True,,,
+T1_with_cedaw,2013,const,0.373379,0.042202,0.000000,***,,,,164,0.644122,,,,,True,,,
+T1_with_cedaw,2013,gri_state_religion_norm,0.017686,0.035680,0.620111,,,,,164,0.644122,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0177 (index units),
+T1_with_cedaw,2013,gri_gov_favour_norm,-0.021870,0.031532,0.487947,,,,,164,0.644122,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0219 (index units),
+T1_with_cedaw,2013,gri_religious_law_norm,0.062961,0.032991,0.056338,*,,,,164,0.644122,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0630 (index units),
+T1_with_cedaw,2013,gri_religious_courts_norm,0.015612,0.015388,0.310325,,,,,164,0.644122,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0156 (index units),
+T1_with_cedaw,2013,gri_blasphemy_norm,-0.041353,0.018564,0.025903,**,,,,164,0.644122,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0414 (index units),
+T1_with_cedaw,2013,gri_apostasy_norm,-0.124615,0.031435,0.000074,***,,,,164,0.644122,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.1246 (index units),
+T1_with_cedaw,2013,v2x_rule_norm,0.043207,0.055156,0.433418,,,,,164,0.644122,,,,,True,,,
+T1_with_cedaw,2013,v2x_civlib_norm,0.058306,0.061826,0.345651,,,,,164,0.644122,,,,,True,,,
+T1_with_cedaw,2013,v2x_egal_norm,0.109129,0.059847,0.068234,*,,,,164,0.644122,,,,,True,,,
+T1_with_cedaw,2013,log_gdppc_norm,0.175450,0.047869,0.000247,***,,,,164,0.644122,,,,,True,,1-unit change in normalised log-GDP associates with +0.1754 in the outcome (normalised scale),
+T1_with_cedaw,2013,cedaw_years_since_norm,0.108048,0.045414,0.017352,**,,,,164,0.644122,,,,,True,,,
+T2_subperiod_2008_2019,2008-2019,const,0.672067,0.054731,0.000000,***,,,,1157,0.012304,,,,,True,,,
+T2_subperiod_2008_2019,2008-2019,gri_state_religion_norm,-0.008567,0.011969,0.474325,,,,,1157,0.012304,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0086 (index units),
+T2_subperiod_2008_2019,2008-2019,gri_gov_favour_norm,0.009567,0.007349,0.193303,,,,,1157,0.012304,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0096 (index units),
+T2_subperiod_2008_2019,2008-2019,gri_religious_law_norm,0.005670,0.008265,0.492908,,,,,1157,0.012304,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0057 (index units),
+T2_subperiod_2008_2019,2008-2019,gri_religious_courts_norm,-0.002952,0.004334,0.495943,,,,,1157,0.012304,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0030 (index units),
+T2_subperiod_2008_2019,2008-2019,gri_blasphemy_norm,-0.000922,0.003378,0.784959,,,,,1157,0.012304,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0009 (index units),
+T2_subperiod_2008_2019,2008-2019,gri_apostasy_norm,-0.008084,0.009646,0.402175,,,,,1157,0.012304,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0081 (index units),
+T2_subperiod_2008_2019,2008-2019,v2x_rule_norm,-0.042122,0.039010,0.280520,,,,,1157,0.012304,,,,,True,,,
+T2_subperiod_2008_2019,2008-2019,v2x_civlib_norm,0.009902,0.033817,0.769729,,,,,1157,0.012304,,,,,True,,,
+T2_subperiod_2008_2019,2008-2019,v2x_egal_norm,0.012708,0.055239,0.818093,,,,,1157,0.012304,,,,,True,,,
+T2_subperiod_2008_2019,2008-2019,log_gdppc_norm,-0.032878,0.094604,0.728271,,,,,1157,0.012304,,,,,True,,1-unit change in normalised log-GDP associates with -0.0329 in the outcome (normalised scale),
+T2_changers_only,all,const,0.590445,0.050417,0.000000,***,,,,355,0.114701,,,,,True,,,
+T2_changers_only,all,gri_state_religion_norm,0.032239,0.042217,0.445681,,,,,355,0.114701,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0322 (index units),
+T2_changers_only,all,gri_gov_favour_norm,0.003506,0.018481,0.849648,,,,,355,0.114701,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0035 (index units),
+T2_changers_only,all,gri_religious_law_norm,0.002605,0.019579,0.894235,,,,,355,0.114701,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0026 (index units),
+T2_changers_only,all,gri_religious_courts_norm,-0.004162,0.006920,0.547944,,,,,355,0.114701,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0042 (index units),
+T2_changers_only,all,gri_blasphemy_norm,0.002145,0.007523,0.775694,,,,,355,0.114701,,,,,True,,moving gri_blasphemy_norm from 0 to 1 increases the outcome by 0.0021 (index units),
+T2_changers_only,all,gri_apostasy_norm,-0.036023,0.009247,0.000121,***,,,,355,0.114701,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0360 (index units),
+T2_changers_only,all,v2x_rule_norm,0.111069,0.046562,0.017681,**,,,,355,0.114701,,,,,True,,,
+T2_changers_only,all,v2x_civlib_norm,-0.059104,0.033379,0.077624,*,,,,355,0.114701,,,,,True,,,
+T2_changers_only,all,v2x_egal_norm,-0.040902,0.098057,0.676886,,,,,355,0.114701,,,,,True,,,
+T2_changers_only,all,log_gdppc_norm,0.207379,0.109618,0.059475,*,,,,355,0.114701,,,,,True,,1-unit change in normalised log-GDP associates with +0.2074 in the outcome (normalised scale),
+P8a_country_linear_trends,all,const,-0.000000,0.000000,0.000000,***,,,,1648,0.009563,,,,,True,,,
+P8a_country_linear_trends,all,gri_state_religion_norm,0.002556,0.011108,0.818049,,,,,1648,0.009563,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0026 (index units),
+P8a_country_linear_trends,all,gri_gov_favour_norm,0.002959,0.006139,0.629894,,,,,1648,0.009563,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0030 (index units),
+P8a_country_linear_trends,all,gri_religious_law_norm,0.008077,0.007700,0.294360,,,,,1648,0.009563,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0081 (index units),
+P8a_country_linear_trends,all,gri_religious_courts_norm,-0.001189,0.007313,0.870824,,,,,1648,0.009563,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0012 (index units),
+P8a_country_linear_trends,all,gri_blasphemy_norm,0.003449,0.002848,0.226043,,,,,1648,0.009563,,,,,True,,moving gri_blasphemy_norm from 0 to 1 increases the outcome by 0.0034 (index units),
+P8a_country_linear_trends,all,gri_apostasy_norm,0.006904,0.012700,0.586779,,,,,1648,0.009563,,,,,True,,moving gri_apostasy_norm from 0 to 1 increases the outcome by 0.0069 (index units),
+P8a_country_linear_trends,all,v2x_rule_norm,-0.036721,0.023351,0.116040,,,,,1648,0.009563,,,,,True,,,
+P8a_country_linear_trends,all,v2x_civlib_norm,0.041899,0.021917,0.056114,*,,,,1648,0.009563,,,,,True,,,
+P8a_country_linear_trends,all,v2x_egal_norm,-0.011508,0.032863,0.726256,,,,,1648,0.009563,,,,,True,,,
+P8a_country_linear_trends,all,log_gdppc_norm,0.008102,0.075415,0.914465,,,,,1648,0.009563,,,,,True,,1-unit change in normalised log-GDP associates with +0.0081 in the outcome (normalised scale),
+P9_event_study,all,et_-3,0.002717,0.003248,0.403107,,,,,1648,0.006611,,,,,True,,,
+P9_event_study,all,et_-2,-0.000336,0.003657,0.926809,,,,,1648,0.006611,,,,,True,,,
+P9_event_study,all,et_0,0.004811,0.003754,0.200214,,,,,1648,0.006611,,,,,True,,,
+P9_event_study,all,et_1,0.005390,0.004007,0.178782,,,,,1648,0.006611,,,,,True,,,
+P9_event_study,all,et_2,0.001839,0.004364,0.673542,,,,,1648,0.006611,,,,,True,,,
+P9_event_study,all,et_3,-0.001426,0.004683,0.760791,,,,,1648,0.006611,,,,,True,,,
+P9_event_study,all,et_-3,0.000265,0.014953,0.985856,,,,,1648,0.002239,,,,,True,,,
+P9_event_study,all,et_-2,0.002408,0.014661,0.869563,,,,,1648,0.002239,,,,,True,,,
+P9_event_study,all,et_0,-0.001942,0.013599,0.886477,,,,,1648,0.002239,,,,,True,,,
+P9_event_study,all,et_1,0.000286,0.019151,0.988070,,,,,1648,0.002239,,,,,True,,,
+P9_event_study,all,et_2,0.005335,0.018356,0.771363,,,,,1648,0.002239,,,,,True,,,
+P9_event_study,all,et_3,0.003788,0.013929,0.785730,,,,,1648,0.002239,,,,,True,,,
+P9_event_study,all,et_-3,0.007482,0.005054,0.139002,,,,,1648,0.003668,,,,,True,,,
+P9_event_study,all,et_-2,0.000489,0.006958,0.943996,,,,,1648,0.003668,,,,,True,,,
+P9_event_study,all,et_0,0.003939,0.006299,0.531876,,,,,1648,0.003668,,,,,True,,,
+P9_event_study,all,et_1,-0.001380,0.006306,0.826757,,,,,1648,0.003668,,,,,True,,,
+P9_event_study,all,et_2,-0.002103,0.006343,0.740285,,,,,1648,0.003668,,,,,True,,,
+P9_event_study,all,et_3,-0.001604,0.007243,0.824826,,,,,1648,0.003668,,,,,True,,,
+P9_event_study,all,et_-3,0.000956,0.003377,0.777111,,,,,1648,0.003519,,,,,True,,,
+P9_event_study,all,et_-2,-0.001274,0.003728,0.732705,,,,,1648,0.003519,,,,,True,,,
+P9_event_study,all,et_0,0.001898,0.003788,0.616440,,,,,1648,0.003519,,,,,True,,,
+P9_event_study,all,et_1,0.003228,0.004529,0.476140,,,,,1648,0.003519,,,,,True,,,
+P9_event_study,all,et_2,0.001030,0.004870,0.832554,,,,,1648,0.003519,,,,,True,,,
+P9_event_study,all,et_3,-0.001664,0.004945,0.736544,,,,,1648,0.003519,,,,,True,,,
+T2_changers_wild_bootstrap,all,composite_secularism_norm,0.063071,0.033049,0.064128,*,,,,1195,,,,,,True,,,
+T2_changers_wild_bootstrap_apostasy,all,gri_apostasy_norm,-0.033824,0.011722,0.074148,*,,,,90,,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0338 (index units),
+T2_driscoll_kraay,all,const,0.669886,0.020917,0.000000,***,,,,1648,0.015550,166.000000,,,driscoll_kraay_bw4,True,,,
+T2_driscoll_kraay,all,gri_state_religion_norm,0.006487,0.007852,0.408814,,,,0.012391,1648,0.015550,166.000000,24.000000,0.083923,driscoll_kraay_bw4,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0065 (index units),
+T2_driscoll_kraay,all,gri_gov_favour_norm,0.013855,0.002447,0.000000,***,,,0.027126,1648,0.015550,166.000000,58.000000,0.106143,driscoll_kraay_bw4,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0139 (index units),
+T2_driscoll_kraay,all,gri_religious_law_norm,0.006207,0.002963,0.036358,**,,,0.012537,1648,0.015550,166.000000,91.000000,0.104105,driscoll_kraay_bw4,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0062 (index units),
+T2_driscoll_kraay,all,gri_religious_courts_norm,-0.007270,0.003115,0.019756,**,,,-0.018218,1648,0.015550,166.000000,36.000000,0.175375,driscoll_kraay_bw4,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),
+T2_driscoll_kraay,all,gri_blasphemy_norm,-0.000741,0.001767,0.674808,,,,-0.002596,1648,0.015550,166.000000,64.000000,0.263782,driscoll_kraay_bw4,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0007 (index units),
+T2_driscoll_kraay,all,gri_apostasy_norm,-0.018020,0.005676,0.001531,***,,,-0.042853,1648,0.015550,166.000000,9.000000,0.094152,driscoll_kraay_bw4,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0180 (index units),
+T2_driscoll_kraay,all,v2x_rule_norm,0.006568,0.016962,0.698668,,,,0.015087,1648,0.015550,166.000000,165.000000,0.056354,driscoll_kraay_bw4,True,,,
+T2_driscoll_kraay,all,v2x_civlib_norm,-0.022337,0.014837,0.132401,,,,-0.044328,1648,0.015550,166.000000,165.000000,0.057854,driscoll_kraay_bw4,True,,,
+T2_driscoll_kraay,all,v2x_egal_norm,-0.005808,0.013914,0.676461,,,,-0.010780,1648,0.015550,166.000000,164.000000,0.035720,driscoll_kraay_bw4,True,,,
+T2_driscoll_kraay,all,log_gdppc_norm,0.003766,0.027167,0.889769,,,,0.006952,1648,0.015550,166.000000,164.000000,0.015446,driscoll_kraay_bw4,True,,1-unit change in normalised log-GDP associates with +0.0038 in the outcome (normalised scale),
+T2_mundlak_cre,all,const,0.449661,0.039722,0.000000,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,gri_state_religion_norm,0.006760,0.014049,0.630389,,,,0.012913,1648,0.619515,166.000000,24.000000,0.083923,cluster_entity,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0068 (index units),
+T2_mundlak_cre,all,gri_gov_favour_norm,0.013361,0.009063,0.140452,,,,0.026157,1648,0.619515,166.000000,58.000000,0.106143,cluster_entity,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0134 (index units),
+T2_mundlak_cre,all,gri_religious_law_norm,0.006348,0.006907,0.358045,,,,0.012822,1648,0.619515,166.000000,91.000000,0.104105,cluster_entity,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0063 (index units),
+T2_mundlak_cre,all,gri_religious_courts_norm,-0.007323,0.006540,0.262850,,,,-0.018350,1648,0.619515,166.000000,36.000000,0.175375,cluster_entity,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0073 (index units),
+T2_mundlak_cre,all,gri_blasphemy_norm,-0.001004,0.003350,0.764406,,,,-0.003516,1648,0.619515,166.000000,64.000000,0.263782,cluster_entity,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0010 (index units),
+T2_mundlak_cre,all,gri_apostasy_norm,-0.017776,0.009438,0.059645,*,,,-0.042272,1648,0.619515,166.000000,9.000000,0.094152,cluster_entity,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0178 (index units),
+T2_mundlak_cre,all,v2x_rule_norm,0.004926,0.025960,0.849485,,,,0.011317,1648,0.619515,166.000000,165.000000,0.056354,cluster_entity,True,,,
+T2_mundlak_cre,all,v2x_civlib_norm,-0.020768,0.027641,0.452442,,,,-0.041214,1648,0.619515,166.000000,165.000000,0.057854,cluster_entity,True,,,
+T2_mundlak_cre,all,v2x_egal_norm,-0.004737,0.036892,0.897836,,,,-0.008792,1648,0.619515,166.000000,164.000000,0.035720,cluster_entity,True,,,
+T2_mundlak_cre,all,log_gdppc_norm,-0.003535,0.068646,0.958935,,,,-0.006525,1648,0.619515,166.000000,164.000000,0.015446,cluster_entity,True,,1-unit change in normalised log-GDP associates with -0.0035 in the outcome (normalised scale),
+T2_mundlak_cre,all,yr_2014,0.003486,0.002020,0.084405,*,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,yr_2015,0.009115,0.002222,0.000041,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,yr_2016,0.013481,0.002758,0.000001,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,yr_2017,0.020980,0.003250,0.000000,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,yr_2018,0.026319,0.003576,0.000000,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,yr_2019,0.033485,0.003587,0.000000,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,yr_2020,0.042875,0.004155,0.000000,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,yr_2021,0.048279,0.004952,0.000000,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,yr_2022,0.057959,0.005410,0.000000,***,,,,1648,0.619515,166.000000,,,cluster_entity,True,,,
+T2_mundlak_cre,all,gri_state_religion_norm_cmean,-0.010981,0.040954,0.788603,,,,-0.020974,1648,0.619515,166.000000,24.000000,0.083923,cluster_entity,True,,,
+T2_mundlak_cre,all,gri_gov_favour_norm_cmean,-0.055119,0.032623,0.091111,*,,,-0.107911,1648,0.619515,166.000000,58.000000,0.106143,cluster_entity,True,,,
+T2_mundlak_cre,all,gri_religious_law_norm_cmean,0.080737,0.045040,0.073045,*,,,0.163067,1648,0.619515,166.000000,91.000000,0.104105,cluster_entity,True,,,
+T2_mundlak_cre,all,gri_religious_courts_norm_cmean,0.041815,0.022706,0.065537,*,,,0.104783,1648,0.619515,166.000000,36.000000,0.175375,cluster_entity,True,,,
+T2_mundlak_cre,all,gri_blasphemy_norm_cmean,-0.043999,0.019042,0.020856,**,,,-0.154063,1648,0.619515,166.000000,64.000000,0.263782,cluster_entity,True,,,
+T2_mundlak_cre,all,gri_apostasy_norm_cmean,-0.127119,0.038663,0.001010,***,,,-0.302300,1648,0.619515,166.000000,9.000000,0.094152,cluster_entity,True,,,
+T2_mundlak_cre,all,v2x_rule_norm_cmean,0.062251,0.060544,0.303860,,,,0.143007,1648,0.619515,166.000000,165.000000,0.056354,cluster_entity,True,,,
+T2_mundlak_cre,all,v2x_civlib_norm_cmean,0.070276,0.070657,0.319924,,,,0.139464,1648,0.619515,166.000000,165.000000,0.057854,cluster_entity,True,,,
+T2_mundlak_cre,all,v2x_egal_norm_cmean,0.102778,0.065084,0.114301,,,,0.190777,1648,0.619515,166.000000,164.000000,0.035720,cluster_entity,True,,,
+T2_mundlak_cre,all,log_gdppc_norm_cmean,0.175947,0.083346,0.034769,**,,,0.324823,1648,0.619515,166.000000,164.000000,0.015446,cluster_entity,True,,,
+P9_male_composite_placebo,all,const,0.577754,0.073869,0.000000,***,,,,1639,0.020365,,,,,True,,,Male welfare index (placebo DV)
+P9_male_composite_placebo,all,gri_state_religion_norm,-0.018496,0.012726,0.146319,,,,,1639,0.020365,,,,,True,,moving gri_state_religion_norm from 0 to 1 decreases the outcome by 0.0185 (index units),Male welfare index (placebo DV)
+P9_male_composite_placebo,all,gri_gov_favour_norm,-0.001658,0.012645,0.895703,,,,,1639,0.020365,,,,,True,,moving gri_gov_favour_norm from 0 to 1 decreases the outcome by 0.0017 (index units),Male welfare index (placebo DV)
+P9_male_composite_placebo,all,gri_religious_law_norm,0.016514,0.010354,0.110924,,,,,1639,0.020365,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0165 (index units),Male welfare index (placebo DV)
+P9_male_composite_placebo,all,gri_religious_courts_norm,0.007161,0.006519,0.272184,,,,,1639,0.020365,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0072 (index units),Male welfare index (placebo DV)
+P9_male_composite_placebo,all,gri_blasphemy_norm,0.004253,0.003842,0.268428,,,,,1639,0.020365,,,,,True,,moving gri_blasphemy_norm from 0 to 1 increases the outcome by 0.0043 (index units),Male welfare index (placebo DV)
+P9_male_composite_placebo,all,gri_apostasy_norm,-0.005334,0.011042,0.629125,,,,,1639,0.020365,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0053 (index units),Male welfare index (placebo DV)
+P9_male_composite_placebo,all,v2x_rule_norm,-0.039672,0.043694,0.364063,,,,,1639,0.020365,,,,,True,,,Male welfare index (placebo DV)
+P9_male_composite_placebo,all,v2x_civlib_norm,0.031088,0.040835,0.446592,,,,,1639,0.020365,,,,,True,,,Male welfare index (placebo DV)
+P9_male_composite_placebo,all,v2x_egal_norm,0.095461,0.061936,0.123464,,,,,1639,0.020365,,,,,True,,,Male welfare index (placebo DV)
+P9_male_composite_placebo,all,log_gdppc_norm,0.076674,0.138007,0.578580,,,,,1639,0.020365,,,,,True,,1-unit change in normalised log-GDP associates with +0.0767 in the outcome (normalised scale),Male welfare index (placebo DV)
+P10_courts_x_mena,all,gri_state_religion_norm,0.004311,0.014307,0.763191,,,,,1648,0.025814,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0043 (index units),
+P10_courts_x_mena,all,gri_gov_favour_norm,0.012565,0.009749,0.197633,,,,,1648,0.025814,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0126 (index units),
+P10_courts_x_mena,all,gri_religious_law_norm,0.005943,0.007187,0.408411,,,,,1648,0.025814,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0059 (index units),
+P10_courts_x_mena,all,gri_religious_courts_norm,0.000367,0.004365,0.933018,,,,,1648,0.025814,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0004 (index units),
+P10_courts_x_mena,all,gri_blasphemy_norm,-0.000608,0.003499,0.862073,,,,,1648,0.025814,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0006 (index units),
+P10_courts_x_mena,all,gri_apostasy_norm,-0.016153,0.009591,0.092366,*,,,,1648,0.025814,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0162 (index units),
+P10_courts_x_mena,all,v2x_rule_norm,0.005440,0.027136,0.841144,,,,,1648,0.025814,,,,,True,,,
+P10_courts_x_mena,all,v2x_civlib_norm,-0.023719,0.028352,0.402962,,,,,1648,0.025814,,,,,True,,,
+P10_courts_x_mena,all,v2x_egal_norm,0.000313,0.038313,0.993474,,,,,1648,0.025814,,,,,True,,,
+P10_courts_x_mena,all,log_gdppc_norm,-0.005660,0.072841,0.938071,,,,,1648,0.025814,,,,,True,,1-unit change in normalised log-GDP associates with -0.0057 in the outcome (normalised scale),
+P10_courts_x_mena,all,courts_x_mena,-0.037255,0.023536,0.113664,,,,,1648,0.025814,,,,,True,,,
+P10_mena_only,all,const,0.218462,0.261608,0.405031,,,,,185,0.139502,,,,,True,,,
+P10_mena_only,all,gri_state_religion_norm,0.061438,0.050815,0.228585,,,,,185,0.139502,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0614 (index units),
+P10_mena_only,all,gri_gov_favour_norm,0.016271,0.079545,0.838209,,,,,185,0.139502,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0163 (index units),
+P10_mena_only,all,gri_religious_law_norm,0.059717,0.037436,0.112823,,,,,185,0.139502,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0597 (index units),
+P10_mena_only,all,gri_religious_courts_norm,-0.028525,0.024478,0.245772,,,,,185,0.139502,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0285 (index units),
+P10_mena_only,all,gri_blasphemy_norm,-0.004106,0.010154,0.686552,,,,,185,0.139502,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0041 (index units),
+P10_mena_only,all,gri_apostasy_norm,-0.009076,0.016201,0.576176,,,,,185,0.139502,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0091 (index units),
+P10_mena_only,all,v2x_rule_norm,0.371914,0.203092,0.069086,*,,,,185,0.139502,,,,,True,,,
+P10_mena_only,all,v2x_civlib_norm,-0.128276,0.235151,0.586232,,,,,185,0.139502,,,,,True,,,
+P10_mena_only,all,v2x_egal_norm,-0.180030,0.224870,0.424657,,,,,185,0.139502,,,,,True,,,
+P10_mena_only,all,log_gdppc_norm,0.392829,0.366693,0.285802,,,,,185,0.139502,,,,,True,,1-unit change in normalised log-GDP associates with +0.3928 in the outcome (normalised scale),
+P10_non_mena_only,all,const,0.699913,0.044150,0.000000,***,,,,1463,0.014655,,,,,True,,,
+P10_non_mena_only,all,gri_state_religion_norm,0.001061,0.016415,0.948463,,,,,1463,0.014655,,,,,True,,moving gri_state_religion_norm from 0 to 1 increases the outcome by 0.0011 (index units),
+P10_non_mena_only,all,gri_gov_favour_norm,0.016248,0.009429,0.085103,*,,,,1463,0.014655,,,,,True,,moving gri_gov_favour_norm from 0 to 1 increases the outcome by 0.0162 (index units),
+P10_non_mena_only,all,gri_religious_law_norm,0.000436,0.007102,0.951102,,,,,1463,0.014655,,,,,True,,moving gri_religious_law_norm from 0 to 1 increases the outcome by 0.0004 (index units),
+P10_non_mena_only,all,gri_religious_courts_norm,0.000005,0.004499,0.999153,,,,,1463,0.014655,,,,,True,,moving gri_religious_courts_norm from 0 to 1 increases the outcome by 0.0000 (index units),
+P10_non_mena_only,all,gri_blasphemy_norm,-0.000425,0.003565,0.905222,,,,,1463,0.014655,,,,,True,,moving gri_blasphemy_norm from 0 to 1 decreases the outcome by 0.0004 (index units),
+P10_non_mena_only,all,gri_apostasy_norm,-0.004791,0.025001,0.848063,,,,,1463,0.014655,,,,,True,,moving gri_apostasy_norm from 0 to 1 decreases the outcome by 0.0048 (index units),
+P10_non_mena_only,all,v2x_rule_norm,-0.017822,0.027455,0.516377,,,,,1463,0.014655,,,,,True,,,
+P10_non_mena_only,all,v2x_civlib_norm,-0.026326,0.028343,0.353150,,,,,1463,0.014655,,,,,True,,,
+P10_non_mena_only,all,v2x_egal_norm,0.030336,0.037009,0.412534,,,,,1463,0.014655,,,,,True,,,
+P10_non_mena_only,all,log_gdppc_norm,-0.033232,0.084538,0.694312,,,,,1463,0.014655,,,,,True,,1-unit change in normalised log-GDP associates with -0.0332 in the outcome (normalised scale),
+P10_gdi_panel,all,const,0.687913,0.047088,0.000000,***,,,,1710,0.003210,,,,,True,,,
+P10_gdi_panel,all,gri_religious_courts_norm,-0.001135,0.009343,0.903367,,,,,1710,0.003210,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0011 (index units),
+P10_gdi_panel,all,log_gdppc_norm,0.125978,0.097001,0.194231,,,,,1710,0.003210,,,,,True,,1-unit change in normalised log-GDP associates with +0.1260 in the outcome (normalised scale),
+P10_wef_panel,all,const,0.459343,0.126163,0.000284,***,,,,1307,0.007285,,,,,True,,,
+P10_wef_panel,all,gri_religious_courts_norm,-0.020379,0.009757,0.036965,**,,,,1307,0.007285,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0204 (index units),
+P10_wef_panel,all,log_gdppc_norm,0.128881,0.252698,0.610136,,,,,1307,0.007285,,,,,True,,1-unit change in normalised log-GDP associates with +0.1289 in the outcome (normalised scale),
+P10_gap_lifeexp,all,const,6.845099,0.764158,0.000000,***,,,,1788,0.013449,,,,,True,,,
+P10_gap_lifeexp,all,gri_religious_courts_norm,-0.074441,0.078623,0.343881,,,,,1788,0.013449,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.0744 (index units),
+P10_gap_lifeexp,all,log_gdppc_norm,-3.432052,1.616968,0.033947,**,,,,1788,0.013449,,,,,True,,1-unit change in normalised log-GDP associates with -3.4321 in the outcome (normalised scale),
+P10_gap_lfp,all,const,-20.675697,2.912430,0.000000,***,,,,1707,0.005001,,,,,True,,,
+P10_gap_lfp,all,gri_religious_courts_norm,-0.559935,0.351808,0.111684,,,,,1707,0.005001,,,,,True,,moving gri_religious_courts_norm from 0 to 1 decreases the outcome by 0.5599 (index units),
+P10_gap_lfp,all,log_gdppc_norm,1.557437,6.143607,0.799912,,,,,1707,0.005001,,,,,True,,1-unit change in normalised log-GDP associates with +1.5574 in the outcome (normalised scale),

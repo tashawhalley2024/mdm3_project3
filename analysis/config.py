@@ -26,12 +26,20 @@ EPR_CSV = EPR_DIR / "EPR-2021.csv"
 YEAR_MIN = 2007
 YEAR_MAX = 2022
 
-FOCAL_PRED   = "gri_religious_courts_norm"
-FOCAL_PRED_2 = "gri_apostasy_norm"
+# Item 2 (2026-04-15): composite becomes headline. Legacy courts and the
+# PCA variant are preserved as parallel robustness focals via explicit calls
+# in run_analysis.main(). See TODO.md open item 2 and the
+# eager-plotting-pinwheel plan for context.
+FOCAL_PRED        = "composite_secularism_norm"        # equal-weight z-score, headline
+FOCAL_PRED_2      = "gri_apostasy_norm"                 # strongest sub-item, secondary
+FOCAL_PRED_PCA    = "composite_secularism_pca_norm"    # PCA variant, robustness
+FOCAL_PRED_LEGACY = "gri_religious_courts_norm"        # prior headline, preserved
 
 # Presentation palette — semantic colours used consistently across all figures
 PALETTE = {
-    "courts":        "#7F8C8D",   # slate grey — the null predictor
+    "composite":     "#2C3E50",   # deep navy — the new headline
+    "composite_pca": "#8E44AD",   # purple — PCA robustness variant
+    "courts":        "#7F8C8D",   # slate grey — prior headline, legacy robustness
     "apostasy":      "#C0392B",   # deep red — the signal predictor
     "sig_high":      "#C0392B",   # p < 0.01
     "sig_med":       "#E67E22",   # p < 0.05
@@ -112,7 +120,7 @@ REGION_MAP = {
     "MNG": "Asia-Pacific", "MYS": "Asia-Pacific", "NPL": "Asia-Pacific",
     "NRU": "Asia-Pacific", "NZL": "Asia-Pacific", "PAK": "Asia-Pacific",
     "PHL": "Asia-Pacific", "PLW": "Asia-Pacific", "PNG": "Asia-Pacific",
-    "PRK": "Asia-Pacific", "SAM": "Asia-Pacific", "SGP": "Asia-Pacific",
+    "PRK": "Asia-Pacific", "SGP": "Asia-Pacific",
     "SLB": "Asia-Pacific", "THA": "Asia-Pacific", "TLS": "Asia-Pacific",
     "TON": "Asia-Pacific", "TUV": "Asia-Pacific", "VNM": "Asia-Pacific",
     "VUT": "Asia-Pacific", "WSM": "Asia-Pacific",
