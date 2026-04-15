@@ -176,6 +176,20 @@ No single domain produces a strong within-country coefficient on the composite. 
 
 ---
 
+## Figure 11: The decade-change check on the within-country null
+
+[insert 13_long_difference graph here]
+
+The panel and Mundlak models both identify the within-country effect off year-to-year movement. Two things get into that year-to-year movement that probably aren't real: short-term noise, and the behavioural component of the composite, which is based on World Values Survey items that are linearly filled in between survey waves. If the within-country null were mostly driven by those two sources, a decade-change regression would filter them out and recover a cross-sectionally-consistent negative sign.
+
+What the long-difference regression does is collapse the panel to one observation per country: the change in the outcome from 2013 to 2022 against the change in the composite over the same window. No annual observations, no interpolation contamination, just endpoint-to-endpoint movement.
+
+The decade-change coefficient on the composite is +0.082, not significant (p = 0.28) across 163 countries. The PCA and real-WVS-only variants drop closer to zero still. The one focal with the correct negative sign is apostasy at −0.042, but it is identified off only nine countries that actually passed or repealed an apostasy law across the decade, so the sign is direction-consistent with the cross-section but diagnostically fragile. Five-year sub-windows (2013–2017 and 2017–2022) give larger positive point estimates than the full decade, with the 2013–2017 window reaching p = 0.06 — we flag that openly rather than folding it into the overall null.
+
+The decade-change result corroborates rather than resolves the within-country null. If annual noise or WVS interpolation had been doing the damage, the long-difference would have shown a sign-correct estimate. It does not. The structural cross-country reading of the paper is the load-bearing finding, and the within-country null persists at whatever horizon the 2013–2022 data can identify.
+
+---
+
 ## What this all adds up to
 
 The composite secularism index is strongly negatively associated with women's welfare across countries. The 2020 cross-section coefficient is about −0.23 with p < 0.001, and the Mundlak between-country decomposition gives about −0.28 with p < 0.001. More religious countries have systematically worse outcomes for women, and the association is large, precisely estimated, and robust to single-country drops and to the choice of aggregation method (the PCA robustness variant gives a similar headline).

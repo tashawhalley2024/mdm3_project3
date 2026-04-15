@@ -35,6 +35,18 @@ FOCAL_PRED_2      = "gri_apostasy_norm"                 # strongest sub-item, se
 FOCAL_PRED_PCA    = "composite_secularism_pca_norm"    # PCA variant, robustness
 FOCAL_PRED_LEGACY = "gri_religious_courts_norm"        # prior headline, preserved
 
+# Item 3 (2026-04-15): focals the T5 long-difference tier runs across.
+# Order is documentary — see tier5_long_difference in run_analysis.py.
+FOCAL_PREDS_T5 = [
+    FOCAL_PRED,
+    FOCAL_PRED_PCA,
+    "composite_secularism_real_norm",
+    "composite_secularism_instonly_norm",
+    "composite_secularism_covwt_norm",
+    FOCAL_PRED_2,
+    FOCAL_PRED_LEGACY,
+]
+
 # Presentation palette — semantic colours used consistently across all figures
 PALETTE = {
     "composite":     "#2C3E50",   # deep navy — the new headline

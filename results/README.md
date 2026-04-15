@@ -32,7 +32,7 @@ LOO jackknife: 166 country-drop runs, range [-0.0069, +0.0036], **1 sign reversa
 
 | File | Contents | Rows | Key columns |
 |---|---|---|---|
-| `results.csv` | All model tiers (T1-T4, P3-P10) -- WBL index | ~384 | `tier`, `predictor`, `coef`, `se`, `pval`, `n` |
+| `results.csv` | All model tiers (T1-T5, P3-P10) -- WBL index | ~1055 | `tier`, `predictor`, `coef`, `se`, `pval`, `n`, `n_clusters`, `n_changers`, `within_sd`, `valid`, `invalid_reason` |
 | `results_wbl_groups.csv` | WBL group-level panel FE | ~110 | `tier`, `predictor`, `coef`, `pval` |
 | `loo_jackknife.csv` | LOO jackknife -- one row per dropped country | 168 | `iso3`, `coef`, `se`, `pval` |
 | `placebo.csv` | Placebo tests -- courts on male/non-gendered outcomes | ~6 | `predictor`, `dv_label`, `coef`, `pval` |

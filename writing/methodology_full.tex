@@ -102,7 +102,7 @@ The estimation sample varies by specification. The cross-sectional models in 201
 
 \section{Empirical Strategy: Tiered Identification}
 
-The four estimators are not parallel alternatives. They form an escalating identification strategy: each tier addresses a threat to validity that its predecessor cannot. Throughout, $W_{it}$ denotes the women's treatment index for country $i$ in year $t$, $S_{it}$ the composite secularism predictor, $\mathbf{X}_{it}$ the V-Dem governance controls and (where included) log GDP per capita, $\alpha_i$ time-invariant country effects, $\lambda_t$ year effects, and $\varepsilon_{it}$ an idiosyncratic error.
+The five estimators are not parallel alternatives. They form an escalating identification strategy: each tier addresses a threat to validity that its predecessor cannot. Throughout, $W_{it}$ denotes the women's treatment index for country $i$ in year $t$, $S_{it}$ the composite secularism predictor, $\mathbf{X}_{it}$ the V-Dem governance controls and (where included) log GDP per capita, $\alpha_i$ time-invariant country effects, $\lambda_t$ year effects, and $\varepsilon_{it}$ an idiosyncratic error.
 
 \subsection{Tier 1: Cross-Sectional OLS}
 
@@ -202,11 +202,11 @@ Long-differencing is standard in comparative-development empirics when short ann
 
 \subsection{Headline Coefficients}
 
-Table~\ref{tab:headline} reports the coefficient on the composite secularism predictor across the four tiers, with the equal-weight and PCA variants side by side. Apostasy and religious courts are reported as sub-item robustness entries. All coefficients are on the $[0, 1]$ welfare scale, so a coefficient of $-0.226$ corresponds to a $0.226$-point drop in the women's treatment index for a one-point increase in the (also $[0, 1]$-scaled) composite predictor.
+Table~\ref{tab:headline} reports the coefficient on the composite secularism predictor across the five tiers, with the equal-weight and PCA variants side by side. Apostasy and religious courts are reported as sub-item robustness entries. All coefficients are on the $[0, 1]$ welfare scale, so a coefficient of $-0.226$ corresponds to a $0.226$-point drop in the women's treatment index for a one-point increase in the (also $[0, 1]$-scaled) composite predictor.
 
 \begin{table}[H]
 \centering
-\caption{Headline coefficients across the four tiers. T1 reports the with-GDP cross-section in 2020. T2 reports the with-GDP TWFE panel ($n = 1{,}648$). T3 reports the system-GMM result with the diagnostic-failure caveat ($n = 1{,}316$). T4 reports the within and between components from the Mundlak correlated random-effects model ($n = 1{,}648$). Standard errors in parentheses. The composite (equal-weight) is the headline focal predictor; the composite (PCA) is a robustness variant. Apostasy is retained as the strongest individual sub-item robustness; religious courts is the legacy null predictor from earlier versions of this analysis. Source: \texttt{results/headline\_table.csv}.}
+\caption{Headline coefficients across the five tiers. T1 reports the with-GDP cross-section in 2020. T2 reports the with-GDP TWFE panel ($n = 1{,}648$). T5 reports the long-difference regression over 2013--2022 with GDP ($n = 163$, one observation per country). T4 reports the within and between components from the Mundlak correlated random-effects model ($n = 1{,}648$). Standard errors in parentheses. T3 system-GMM ($n = 1{,}316$) is reported in the main text but not in this table because it violates the Roodman bounds check. The composite (equal-weight) is the headline focal predictor; the composite (PCA) is a robustness variant. Apostasy is retained as the strongest individual sub-item robustness; religious courts is the legacy null predictor from earlier versions of this analysis. Source: \texttt{results/headline\_table.csv}.}
 \label{tab:headline}
 \begin{tabular}{lcccc}
 \toprule

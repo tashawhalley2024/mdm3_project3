@@ -87,6 +87,7 @@ Cross-national panel, up to 198 countries, 2007–2022 (WBL outcome available 20
 | T2 | Two-way Fixed-Effects panel (country + year FE, clustered SEs, 2007–2022) | **Implemented** | `analysis/run_analysis.py` |
 | T3 | System-GMM (Blundell-Bond dynamic panel) | **Implemented** (fails Roodman bounds — see below) | `analysis/run_analysis.py` |
 | T4 | Mundlak RE-FE hybrid (between + within decomposition) | **Implemented** | `analysis/run_analysis.py` |
+| T5 | Long-difference regression (decade-change, one obs per country, HC3 SEs) | **Implemented** (Item 3, 2026-04-15) | `analysis/run_analysis.py` |
 
 ### How to run (current implemented models)
 
@@ -127,7 +128,7 @@ Robustness checks (implemented):
 Both T3 and T4 are implemented. Both append results to `results/results.csv` in the existing tidy format (`tier, year, predictor, coef, se, pval, n, r2, dv_label, sig`).
 
 The full methodological justification for both models (with literature review and bibliography) is in:
-- `writing/methodology_full.tex` — unified LaTeX write-up for all four tiers
+- `writing/methodology_full.tex` — unified LaTeX write-up for all five tiers
 - `writing/references_full.bib` — 30-entry bibliography
 - `writing/literature_review_gmm.tex` — GMM-specific extended section
 

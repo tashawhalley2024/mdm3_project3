@@ -132,19 +132,32 @@ Outcome: `wbl_treatment_index` — composite women's welfare index built by `sco
 
 ---
 
+## 13_long_difference.png — medium-run within-country check
+
+**What it shows.** Two panels for the new Tier 5 long-difference regression, which collapses the panel to one observation per country by decade-endpoint subtraction (Δ = value in 2022 − value in 2013). **Left:** forest plot of the T5 coefficient and 95% confidence interval across seven focal variants at 2013→2022 with GDP. Apostasy is greyed and flagged *invalid* because only nine countries record any apostasy-law movement over the window (below the n_changers ≥ 10 validity threshold); courts carries a *low-power* warning with 19 changers. **Right:** the decade-change scatter for the headline equal-weight composite — one point per country, coloured by region, with OLS fit and 95% confidence band.
+
+**Why it's here.** The Tier 2 TWFE and Tier 4 Mundlak within coefficients identify the within-country effect off annual movement, a share of which is short-term noise and, for the behavioural dimension of the composite, WVS linear-interpolation arithmetic between survey waves. Long-differencing throws away the annual variation and keeps only the endpoint change, so if the within-country null at T2/T4 were driven by noise or interpolation, the LD design would recover a sign-correct estimate. This is the canonical fallback in comparative-development empirics (Acemoglu, Johnson, Robinson & Yared 2008; Besley & Persson 2011).
+
+**What the result means.** **Composite 2013→2022 with GDP:** β = +0.082 (p = 0.28, N = 163, 158 changers) — wrong-signed for the prior, small, not significant. **PCA and real-WVS-only variants** collapse further toward zero (−0.015 and +0.020 respectively). **Apostasy:** β = −0.042, correct sign, but identified off only nine changer countries and flagged invalid. The within-country null persists at the decade horizon rather than resolving at it: annual noise and WVS interpolation cannot be the binding explanation for the T2/T4 within null, and the structural cross-country reading of the paper therefore survives a medium-run within-country check rather than being rescued by it. The 2013→2017 5-year sub-window returns β = +0.162 (p = 0.06), marginally wrong-signed for the prior and worth acknowledging explicitly.
+
+*(Literature: Acemoglu, Johnson, Robinson & Yared 2008; Besley & Persson 2011.)*
+
+---
+
 ## Suggested slide order
 
-If you have ~10 slides:
+If you have ~11 slides:
 
 1. **00 map** — geography of composite secularism (sets the scene).
 2. **01 scatter** — raw bivariate contrast (the cross-section headline visually).
 3. **02 coefplot** — the formal result, T1 cross-section and T2 panel FE side by side.
 4. **12 mundlak (HERO)** — *why* the effect is structural, not temporal.
-5. **05 LOO** — robustness: not driven by any one country.
-6. **07 spec ladder** — robustness: stable across specifications.
-7. **09 Oster** — robustness: apostasy survives extreme OVB.
-8. **06 placebo** — mechanism: apostasy is gendered, not generic.
-9. **10 alt outcomes** — external validity across outcome indices.
-10. **11 WBL groups** — domain-by-domain null check on the within-country coefficient.
+5. **13 long-difference** — the within-country null is not an artefact of annual noise or WVS interpolation; it persists at the decade horizon.
+6. **05 LOO** — robustness: not driven by any one country.
+7. **07 spec ladder** — robustness: stable across specifications.
+8. **09 Oster** — robustness: apostasy survives extreme OVB.
+9. **06 placebo** — mechanism: apostasy is gendered, not generic.
+10. **10 alt outcomes** — external validity across outcome indices.
+11. **11 WBL groups** — domain-by-domain null check on the within-country coefficient.
 
 Closing: the composite secularism–women's welfare association is strong cross-country and small or wrong-signed within-country over a decade; apostasy is the strongest individual sub-item and the only one with a real within-country signal; religious courts is a power-limited null, retained for legacy comparison.

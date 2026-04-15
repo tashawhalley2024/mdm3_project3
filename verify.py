@@ -189,6 +189,26 @@ try:
     except Exception as e:
         failures.append(f"FAIL: Key regression check failed: {e}")
 
+    # ── 3b. T5 long-difference headline (Item 3, 2026-04-15) ───────────────────
+    print("\n=== 3b. T5 long-difference headline ===")
+    try:
+        results_path = os.path.join(ROOT, "results/results.csv")
+        df_all = pd.read_csv(results_path)
+        t5_row = df_all[
+            (df_all["tier"] == "T5_long_diff_2013_2022_with_gdp") &
+            (df_all["predictor"] == "composite_secularism_norm")
+        ]
+        check(len(t5_row) == 1,
+              "T5_long_diff_2013_2022_with_gdp composite row is unique")
+        if len(t5_row) == 1:
+            coef = float(t5_row.iloc[0]["coef"])
+            check(abs(coef - 0.082415) < 0.001,
+                  f"T5 composite 2013-2022 with_gdp coef = {coef:.6f} (expected ~+0.082)")
+            check(bool(t5_row.iloc[0]["valid"]),
+                  "T5 composite 2013-2022 with_gdp row is valid (not invalid)")
+    except Exception as e:
+        failures.append(f"FAIL: T5 key regression check failed: {e}")
+
 except ImportError:
     failures.append("FAIL: pandas not installed -- run: pip install -r requirements.txt")
     print("  SKIP: CSV/regression checks require pandas")
@@ -206,6 +226,7 @@ FIGURES = [
     "figures/10_alt_outcomes.png",
     "figures/11_wbl_groups.png",
     "figures/12_mundlak_decomposition.png",
+    "figures/13_long_difference.png",
 ]
 MIN_PNG_BYTES = 50_000
 for fig in FIGURES:
