@@ -202,8 +202,8 @@ try:
               "T5_long_diff_2013_2022_with_gdp composite row is unique")
         if len(t5_row) == 1:
             coef = float(t5_row.iloc[0]["coef"])
-            check(abs(coef - 0.082415) < 0.001,
-                  f"T5 composite 2013-2022 with_gdp coef = {coef:.6f} (expected ~+0.082)")
+            check(abs(coef - 0.053334) < 0.001,
+                  f"T5 composite 2013-2022 with_gdp coef = {coef:.6f} (expected ~+0.053)")
             check(bool(t5_row.iloc[0]["valid"]),
                   "T5 composite 2013-2022 with_gdp row is valid (not invalid)")
     except Exception as e:

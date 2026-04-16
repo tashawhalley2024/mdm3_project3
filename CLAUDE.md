@@ -79,8 +79,8 @@ LaTeX write-up alone. Always open the relevant `.py` file(s) and verify.
   `_grifull` companion spec for GRI sub-item focals. Three-tier validity:
   `valid=False` if n_changers <10, `valid=True` with `low_power` warning
   if 10–24, `valid=True` no flag if ≥25. Composite 2013→2022 with_gdp:
-  β=+0.082 (p=0.28, N=163) — wrong-signed null, corroborates T2/T4 within
-  rather than resolving it. Apostasy (9 changers) flagged invalid; courts
+  β=+0.053 (p=0.17, N=163) — wrong-signed null, corroborates T2/T4 within
+  rather than resolving it (updated 2026-04-16 after 7-input rebuild). Apostasy (9 changers) flagged invalid; courts
   (19) low_power. **The paper treats T5 as a robustness complement to T2/T4
   rather than a fifth tier**: tab:headline shows one "Long-difference
   (2013–2022)" row below T4, §5.8 is a two-paragraph robustness subsection,
