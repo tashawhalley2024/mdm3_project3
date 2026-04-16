@@ -36,7 +36,7 @@ Outcome: `wbl_treatment_index` — composite women's welfare index built by `sco
 
 **Why it's here.** Before introducing fixed effects, panel data, or any controls, *what does the raw cross-sectional correlation look like?* This is the simplest possible question — and the contrast is the visual headline for the deck.
 
-**What the result means.** **Composite panel (left):** strong downward slope, β ≈ −0.23 in the 2020 cross-section (p < 0.001) once GDP is controlled. Countries higher on the composite score systematically lower on women's welfare. **Apostasy panel (right):** same direction, β ≈ −0.12 (p < 0.01) with GDP; the underlying variable is binary so the dots form two columns. The cross-section reading is consistent across both: more secular countries have better women's welfare, on average.
+**What the result means.** **Composite panel (left):** downward slope, β ≈ −0.10 in the 2020 cross-section (p = 0.017) once GDP is controlled. Countries higher on the composite score systematically lower on women's welfare. **Apostasy panel (right):** same direction, β ≈ −0.12 (p < 0.01) with GDP; the underlying variable is binary so the dots form two columns. The cross-section reading is consistent across both: more secular countries have better women's welfare, on average.
 
 ---
 
