@@ -93,21 +93,39 @@ LaTeX write-up alone. Always open the relevant `.py` file(s) and verify.
 - Outcome label depends on which file is being used: `wbl_treatment_index`
   (WBL-based, primary) vs the earlier composite in `data/outcome_composite.csv`.
   Check `OUTCOME` and `WOMEN_PATH` at the top of `run_analysis.py`.
-- **`FOCAL_PRED` is `composite_secularism_norm`** (Item 2, 2026-04-15).
-  This is an equal-weight z-score over 6 GRI + v2clrelig (sign-flipped) + 4 WVS
-  inputs, built at load time inside `analysis/utils.py:build_secularism_composite`
-  and attached to `df` inside `run_analysis.py:load_and_merge`. It is NOT stored
-  on disk. `FOCAL_PRED_PCA = composite_secularism_pca_norm` is the PCA
-  robustness variant (column-mean imputation degenerates PCA toward the
-  fully-covered inputs; see caveat in `predictors_README.md` sub-group 4).
-  `FOCAL_PRED_LEGACY = gri_religious_courts_norm` is preserved as a robustness
-  focal; its outputs land in `results/*_religious_courts.csv`. `FOCAL_PRED_2 =
-  gri_apostasy_norm` remains the strongest sub-item focal, also preserved.
+- **`FOCAL_PRED` is `composite_secularism_norm`** (Item 2 redux, rebuilt
+  2026-04-16). This is an equal-weight z-score over **7 inputs** across **two
+  dimensions**: 3 *structural* GRI items (`gri_state_religion_norm`,
+  `gri_religious_law_norm`, `gri_religious_courts_norm`) and 4 WVS items
+  (`wvs_imprel_norm`, `wvs_godimp_norm`, `wvs_godbel_norm`, `wvs_confch_norm`).
+  Built at load time inside `analysis/utils.py:build_secularism_composite`
+  and attached to `df` inside `run_analysis.py:load_and_merge`. NOT stored on
+  disk. The prior (2026-04-15) version had 11 inputs across 3 dimensions; four
+  items (`gri_apostasy_norm`, `gri_blasphemy_norm`, `gri_gov_favour_norm`,
+  `v2clrelig_norm`) were removed from the composite on circularity grounds
+  (they measure how the state treats people on religious grounds, which
+  overlaps mechanically with the outcome). Those items remain as standalone
+  sub-item focals via the unchanged 6-item `GRI_PANEL_COLS` decomposition
+  plus a standalone `v2clrelig_norm` row. Rationale and full before/after
+  numbers in `reviews/2026-04-16_secularism-composite-rebuild.md`.
+  `FOCAL_PRED_PCA = composite_secularism_pca_norm` is the PCA variant
+  (EM-imputed, built on the same 7 inputs); `FOCAL_PRED_LEGACY =
+  gri_religious_courts_norm` is the prior pre-composite headline, preserved;
+  `FOCAL_PRED_2 = gri_apostasy_norm` is the strongest sub-item focal.
 - For the composite, **`n_changers` saturates at ≈ `n_clusters`** (continuous
   by construction) and loses diagnostic value; use `within_sd` instead.
   `analysis.log` additionally emits composite changer counts restricted to
   `wvs_interpolated == 0` — that is the real-movement count purged of WVS
   linear-interpolation arithmetic.
+- **The rebuilt composite's cross-section signal is WVS-driven.** From
+  `results/rebuild_comparison.csv`: the institutional-only variant
+  (3 structural GRI items alone) gives T1 2014 β=−0.045 (p=0.20, NS), while
+  the behavioural-only variant (4 WVS items alone) gives T1 2014 β=−0.131
+  (p=0.006). The composite's significant cross-section is carried primarily
+  by the WVS dimension; the structural-GRI dimension alone is not
+  significant. When interpreting the composite β, surface this decomposition
+  honestly rather than treating the composite as a unitary structural
+  construct.
 - The README's "Current results summary" table is a snapshot and can lag the
   current `results/results.csv`. If a user asks about a specific coefficient,
   read `results/results.csv`, not the README.

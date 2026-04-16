@@ -11,7 +11,7 @@ A talking-points companion for each figure in the deck. Each entry has three sec
 The narrative arc the deck tells: **composite secularism is strongly associated with women's welfare cross-country; within-country over the 2013–2022 panel the signal is null or wrong-signed; the Mundlak decomposition confirms this is a structural, not within-panel, mechanism. Apostasy laws are the strongest individual sub-item and the only one with a real within-country signal; religious courts is retained as a legacy null.**
 
 Focal predictor and sub-items:
-- `composite_secularism_norm` — equal-weighted z-score composite across three dimensions (six GRI sub-items; V-Dem religious freedom, sign-flipped; four WVS religious-intensity items), robust min-max scaled to [0,1]. Higher = more religious.
+- `composite_secularism_norm` — equal-weighted z-score composite across two dimensions (three *structural* GRI sub-items — state religion, religious law, religious courts; four WVS religious-intensity items), robust min-max scaled to [0,1]. Higher = more religious. Four treatment items (apostasy, blasphemy, gov favouritism, V-Dem religious freedom) were removed from the composite on 2026-04-16 and now appear only as standalone sub-item focals in the decomposition regressions.
 - `composite_secularism_pca_norm` — PCA-first-component variant, robustness only.
 - `gri_apostasy_norm` — Pew GRI apostasy laws (0/1). Strongest individual sub-item.
 - `gri_religious_courts_norm` — Pew GRI religious courts (0/1). Legacy null predictor.

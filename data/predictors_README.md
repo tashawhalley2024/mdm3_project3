@@ -59,22 +59,36 @@ Flagged in `wvs_interpolated`.
 Source: Pew Global Restrictions on Religion dataset 2007-2022 (sub-questions).
 Annual coverage 2007-2022. Higher = more religion embedded in state structures.
 
-| Column | What it measures |
-|--------|-----------------|
-| `gri_state_religion_norm` | Official or preferred state religion (GRI Q1) |
-| `gri_gov_favour_norm` | Government favouritism toward specific religion(s) (GRI Q2) |
-| `gri_religious_law_norm` | Religious law applied in the legal system (GRI Q3) |
-| `gri_religious_courts_norm` | Govt-recognised religious courts exist (GRI Q15) |
-| `gri_blasphemy_norm` | Blasphemy laws in effect (GRX22) |
-| `gri_apostasy_norm` | Apostasy laws in effect (GRX22) |
+Items are classified here as either **structural** (state-of-being
+arrangements for how religion sits inside the state) or **treatment**
+(policies that act on individuals on religious grounds). The distinction
+is load-bearing: only the structural items enter the composite secularism
+index (sub-group 4); the treatment items are retained in the analysis as
+**standalone sub-item focals** via `GRI_PANEL_COLS` in the T1/T2/T4
+decomposition regressions, but are excluded from the composite to avoid
+partial mechanical overlap with the outcome (`wbl_treatment_index`, which
+is itself a policy-treatment variable at the country level).
 
-**Historical note (2026-04-15)**: `gri_gov_favour_norm` was present in
-`predictors.csv` from the start but silently absent from `GRI_PANEL_COLS`
-in pre-77417d9 analysis versions, with no deliberate exclusion documented.
-Restored on 2026-04-15 as part of the Item 2 composite rebuild. Empirical
-sensitivity (excluding vs including the column from the composite)
-reported in `results/gov_favour_sensitivity.csv`: shifts T1 2020 with-GDP
-by -4.7%, T4 Mundlak between by -9.1%, T4 within by -27.6%.
+| Column | What it measures | Role |
+|--------|-----------------|------|
+| `gri_state_religion_norm` | Official or preferred state religion (GRI Q1) | Structural — in composite |
+| `gri_religious_law_norm` | Religious law applied in the legal system (GRI Q3) | Structural — in composite |
+| `gri_religious_courts_norm` | Govt-recognised religious courts exist (GRI Q15) | Structural — in composite |
+| `gri_gov_favour_norm` | Government favouritism toward specific religion(s) (GRI Q2) | Treatment — standalone focal only |
+| `gri_blasphemy_norm` | Blasphemy laws in effect (GRX22) | Treatment — standalone focal only |
+| `gri_apostasy_norm` | Apostasy laws in effect (GRX22) | Treatment — standalone focal only |
+
+**History**: `gri_gov_favour_norm` (GRI Q2) was present in `predictors.csv`
+from the start but silently absent from `GRI_PANEL_COLS` in
+pre-`77417d9` analysis versions. It was restored to `GRI_PANEL_COLS` on
+2026-04-15 as part of the Item 2 composite rebuild, and added to the
+composite's institutional dimension at the same time. On 2026-04-16 the
+composite was rebuilt again (Item 2 redux, see
+`reviews/2026-04-16_secularism-composite-rebuild.md`) to remove
+`gri_gov_favour_norm`, `gri_blasphemy_norm`, `gri_apostasy_norm`, and
+`v2clrelig_norm` from the composite on circularity grounds. These four
+items stay in the analysis as standalone sub-item focals — only their
+role inside the composite has changed.
 
 ---
 
@@ -84,9 +98,16 @@ Source: V-Dem Core v15, annual 2007-2022.
 **NOTE: direction is OPPOSITE to other vars** -- higher = MORE freedom of religion
 (more secular tolerance).
 
-| Column | What it measures |
-|--------|-----------------|
-| `v2clrelig_norm` | Freedom to practise religion (V-Dem v2clrelig) |
+| Column | What it measures | Role |
+|--------|-----------------|------|
+| `v2clrelig_norm` | Freedom to practise religion (V-Dem v2clrelig) | Treatment — standalone focal only |
+
+`v2clrelig_norm` measures how the state treats individuals on religious
+grounds (freedom to practise), which overlaps conceptually with the
+outcome (`wbl_treatment_index`, how the state treats women on legal
+grounds). As of 2026-04-16 it is therefore excluded from the composite
+secularism index and enters the analysis only as a standalone sub-item
+focal in the T1/T2 decomposition.
 
 ---
 
@@ -100,49 +121,54 @@ Pre-built here so analysis scripts need not load raw QoG separately.
 
 ## Sub-group 4: Composite secularism index (derived, in-memory)
 
-Added 2026-04-15 as part of TODO Item 2. Two variants are built at load
-time by `analysis.utils.build_secularism_composite(df)` and attached to
-the working dataframe; they are NOT stored on disk.
+Added 2026-04-15 as part of TODO Item 2; rebuilt 2026-04-16 (Item 2
+redux, see `reviews/2026-04-16_secularism-composite-rebuild.md`) to
+remove treatment items on circularity grounds. Variants are built at
+load time by `analysis.utils.build_secularism_composite(df)` and
+attached to the working dataframe; they are NOT stored on disk.
 
 | Column | Construction |
 |--------|-------------|
-| `composite_secularism_norm` | Equal-weight z-score of three dimensions; primary headline |
-| `composite_secularism_pca_norm` | First principal component over the 11 inputs (EM-imputed); robustness variant |
+| `composite_secularism_norm` | Equal-weight z-score of two dimensions over 7 inputs; primary headline |
+| `composite_secularism_pca_norm` | First principal component over the 7 inputs (EM-imputed); robustness variant |
 | `composite_secularism_real_norm` | Equal-weight z-score with WVS columns masked to NaN on `wvs_interpolated == 1` rows; robustness variant that purges interpolator arithmetic from the behavioural dimension |
+| `composite_secularism_instonly_norm` | Institutional-only variant — z-score mean of the 3 structural GRI items alone |
+| `composite_secularism_covwt_norm` | Coverage-weighted variant — each dimension weighted by its panel-wide non-null row fraction |
 
 **Dimensions and orientation** (all set to "higher = more religion / less secular"):
-- **Institutional** — 6 GRI sub-items (state religion, gov favouritism,
-  religious law, religious courts, blasphemy, apostasy).
-- **Attitudinal** — `v2clrelig_norm`, **sign-flipped before aggregation**
-  because its native orientation in this file is opposite (see Sub-group 3a).
+- **Institutional** — 3 *structural* GRI sub-items (state religion,
+  religious law, religious courts).
 - **Behavioural** — 4 WVS intensity items (imprel, godimp, godbel, confch).
 
-**Equal-weight**: each dimension is z-scored (NaN-aware); the three
+Four items (`gri_apostasy_norm`, `gri_blasphemy_norm`, `gri_gov_favour_norm`,
+`v2clrelig_norm`) were previously included in the composite but were
+removed on 2026-04-16 because each measures how the state treats people
+on religious grounds, which overlaps mechanically with the outcome
+(`wbl_treatment_index`) and inflates the cross-sectional coefficient
+beyond what ``religiosity as a state of being'' explains. These items
+remain in the analysis as standalone sub-item focals via
+`GRI_PANEL_COLS` (for the three GRI items) and as a standalone
+`v2clrelig_norm` row in the T1/T2 decomposition.
+
+**Equal-weight**: each dimension is z-scored (NaN-aware); the two
 z-scores are row-averaged. **Dimension-fallback**: if one dimension is
-entirely NaN for a row, the composite uses the mean of the remaining two.
+entirely NaN for a row, the composite equals the observed dimension.
 After averaging, the composite is passed through robust_minmax to [0, 1].
 
 **PCA variant**: each input column is imputed, then standardised.
-First PC of the 11 standardised columns; sign-aligned so that the loading
+First PC of the 7 standardised columns; sign-aligned so that the loading
 on `gri_state_religion_norm` is positive; then robust_minmax to [0, 1].
 Three imputation strategies are computed and compared in
-`results/pca_loadings_comparison.csv`: column-mean imputation (legacy),
-listwise deletion (complete-case only, N=874 on the outcome-merged
-frame), and iterative EM imputation via sklearn's `IterativeImputer`
-(preserves N=2,057). EM is the primary variant attached to the working
-dataframe as `composite_secularism_pca_norm`. Pairwise loading
-differences across the three imputations are ≤ 0.02 per input — all
-three recover essentially the same first-component direction. What
-differs is sample size and the first PC's explained-variance ratio:
-about 47% under EM, 40% under listwise, and 39% under mean imputation.
-The EM-vs-mean gap is mechanical — mean imputation injects zero-variance
-values on imputed rows, inflating the expvar denominator with noise no
-PC can explain — rather than evidence that EM finds a better latent
-factor. Loadings are highest on the behavioural WVS items (~0.34–0.42)
-and v2clrelig (~0.33), with GRI sub-items spread across ~0.08–0.32;
-listwise emphasises behavioural items most strongly. The PCA variant
-is a cross-check on the equal-weight composite rather than an
-independent methodological alternative.
+`results/pca_loadings_comparison.csv`: column-mean imputation, listwise
+deletion (complete-case only), and iterative EM imputation via
+sklearn's `IterativeImputer`. EM is the primary variant attached to the
+working dataframe as `composite_secularism_pca_norm`. First PC loadings
+are highest on the behavioural WVS items and lower on the structural
+GRI items, mirroring the equal-weight composite's implicit weighting.
+The PCA variant is a cross-check on the equal-weight composite rather
+than an independent methodological alternative. Exact explained-variance
+ratios and loadings are reported in the analysis log alongside each
+pipeline run.
 
 **Diagnostic note for the composite**: `n_changers` saturates at ≈
 `n_clusters` because the composite is continuous by construction, so it
@@ -151,11 +177,6 @@ diagnostic for whether the composite has meaningful within-country
 variation. The analysis log additionally reports `n_changers` restricted
 to `wvs_interpolated == 0` rows — this is the "real movement" count,
 purged of WVS interpolator arithmetic.
-
-**New in GRI_PANEL_COLS (2026-04-15)**: `gri_gov_favour_norm` (GRI Q2) —
-previously in this file but silently dropped from every regression.
-Now active with 4 distinct values and 77/198 changer countries; T4 Mundlak
-_mean count goes from 9 to 10 regressors as a result.
 
 ---
 

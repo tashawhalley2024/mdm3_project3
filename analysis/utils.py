@@ -41,20 +41,20 @@ def robust_minmax(s: pd.Series, winsor: bool = True) -> pd.Series:
     return (s - lo) / (hi - lo)
 
 
-# Dimension memberships for the composite secularism index (Item 2).
-# Orientation after construction: higher = more religion / less secular.
-# v2clrelig_norm has OPPOSITE orientation in predictors.csv (higher = more
-# secular freedom per predictors_README.md sub-group 3a), so it is sign-flipped
-# before entering the composite.
+# Dimension memberships for the composite secularism index (Item 2 redux,
+# 2026-04-16 rebuild). Orientation after construction: higher = more religion
+# / less secular. The institutional dimension holds only structural
+# state-religion arrangements. Four prior inputs (gri_apostasy_norm,
+# gri_blasphemy_norm, gri_gov_favour_norm, v2clrelig_norm) were removed from
+# the composite on circularity grounds (they measure how the state treats
+# people on religious grounds, which overlaps mechanically with the outcome)
+# and now appear as standalone sub-item focals. See
+# reviews/2026-04-16_secularism-composite-rebuild.md.
 COMPOSITE_INSTITUTIONAL_COLS = [
     "gri_state_religion_norm",
-    "gri_gov_favour_norm",
     "gri_religious_law_norm",
     "gri_religious_courts_norm",
-    "gri_blasphemy_norm",
-    "gri_apostasy_norm",
 ]
-COMPOSITE_ATTITUDINAL_COLS = ["v2clrelig_norm"]   # sign-flipped
 COMPOSITE_BEHAVIOURAL_COLS = [
     "wvs_imprel_norm",
     "wvs_godimp_norm",
@@ -77,21 +77,15 @@ def _prepare_composite_inputs(
     *,
     drop_interpolated_wvs: bool = False,
 ) -> pd.DataFrame:
-    """Return the 11-col prepared frame for composite construction.
+    """Return the 7-col prepared frame for composite construction.
 
-    v2clrelig is sign-flipped (stored as v2clrelig_norm_flipped). If
-    drop_interpolated_wvs is True, the 4 WVS cols are masked to NaN on
-    rows where wvs_interpolated == 1.
+    Three structural institutional GRI items plus four WVS behavioural
+    items. If drop_interpolated_wvs is True, the 4 WVS cols are masked to
+    NaN on rows where wvs_interpolated == 1.
     """
-    if "v2clrelig_norm" in df.columns:
-        v_flipped = 1.0 - df["v2clrelig_norm"]
-    else:
-        v_flipped = pd.Series(np.nan, index=df.index)
-
     prepared = pd.DataFrame(index=df.index)
     for c in COMPOSITE_INSTITUTIONAL_COLS:
         prepared[c] = df[c] if c in df.columns else np.nan
-    prepared["v2clrelig_norm_flipped"] = v_flipped
     for c in COMPOSITE_BEHAVIOURAL_COLS:
         prepared[c] = df[c] if c in df.columns else np.nan
 
@@ -107,7 +101,7 @@ def _prepare_composite_inputs(
 def _compute_coverage_weights(df: pd.DataFrame) -> tuple:
     """Panel-wide non-null row fractions per dimension.
 
-    Returns (w_inst, w_att, w_beh). WVS coverage uses wvs_interpolated == 0
+    Returns (w_inst, w_beh). WVS coverage uses wvs_interpolated == 0
     (pre-interpolation wave years only) when that column is present, so the
     coverage variant remains meaningful even when the main composite is
     built post-interpolation.
@@ -117,11 +111,6 @@ def _compute_coverage_weights(df: pd.DataFrame) -> tuple:
         w_inst = float(df[inst_cols].notna().all(axis=1).mean())
     else:
         w_inst = 0.0
-
-    if "v2clrelig_norm" in df.columns:
-        w_att = float(df["v2clrelig_norm"].notna().mean())
-    else:
-        w_att = 0.0
 
     beh_cols = [c for c in COMPOSITE_BEHAVIOURAL_COLS if c in df.columns]
     if beh_cols:
@@ -134,7 +123,7 @@ def _compute_coverage_weights(df: pd.DataFrame) -> tuple:
     else:
         w_beh = 0.0
 
-    return w_inst, w_att, w_beh
+    return w_inst, w_beh
 
 
 def _build_equal_weight(
@@ -144,11 +133,11 @@ def _build_equal_weight(
     coverage_weights: tuple = None,
     sign_align_series: pd.Series = None,
 ) -> pd.Series:
-    """Build the equal/instonly/covwt composite from prepared 11-col frame.
+    """Build the equal/instonly/covwt composite from prepared 7-col frame.
 
     weighting:
-      'equal'             -- row-mean of (inst_z, att_z, beh_z), dimension-fallback.
-      'institutional_only' -- return inst_z only; att/beh dropped.
+      'equal'             -- row-mean of (inst_z, beh_z), dimension-fallback.
+      'institutional_only' -- return inst_z only; beh dropped.
       'coverage'          -- weighted sum by coverage_weights (from the
                              original df), renormalised over observed
                              dimensions per row.
@@ -161,23 +150,20 @@ def _build_equal_weight(
 
     inst_z = (sum(_zscore_nan(prepared[c]) for c in inst_cols) / len(inst_cols)
               if inst_cols else pd.Series(np.nan, index=prepared.index))
-    att_z = (_zscore_nan(prepared["v2clrelig_norm_flipped"])
-             if "v2clrelig_norm_flipped" in prepared.columns
-             else pd.Series(np.nan, index=prepared.index))
     beh_z = (sum(_zscore_nan(prepared[c]) for c in beh_cols) / len(beh_cols)
              if beh_cols else pd.Series(np.nan, index=prepared.index))
 
     if weighting == "equal":
-        dims = pd.DataFrame({"inst": inst_z, "att": att_z, "beh": beh_z})
+        dims = pd.DataFrame({"inst": inst_z, "beh": beh_z})
         composite_raw = dims.mean(axis=1, skipna=True)
     elif weighting == "institutional_only":
         composite_raw = inst_z
     elif weighting == "coverage":
         if coverage_weights is None:
             raise ValueError("coverage_weights required for weighting='coverage'")
-        w_inst, w_att, w_beh = coverage_weights
-        dims = pd.DataFrame({"inst": inst_z, "att": att_z, "beh": beh_z})
-        weights = pd.Series({"inst": w_inst, "att": w_att, "beh": w_beh})
+        w_inst, w_beh = coverage_weights
+        dims = pd.DataFrame({"inst": inst_z, "beh": beh_z})
+        weights = pd.Series({"inst": w_inst, "beh": w_beh})
         dims_mask = dims.notna().astype(float)
         weighted_sum = (dims.fillna(0.0) * weights).sum(axis=1)
         denom = (dims_mask * weights).sum(axis=1)
@@ -208,7 +194,7 @@ def _build_pca(
     sign_align_series: pd.Series = None,
     seed: int = 42,
 ) -> tuple:
-    """Build PCA composite from the prepared 11-col frame.
+    """Build PCA composite from the prepared 7-col frame.
 
     imputation:
       'mean'     -- column-mean impute (legacy; biased toward high-coverage cols).
@@ -299,10 +285,18 @@ def build_secularism_composite(
 ) -> pd.DataFrame:
     """Attach composite secularism columns to df.
 
-    Three dimensions, all oriented so higher = more religion / less secular:
-      institutional: 6 GRI cols (incl. gri_gov_favour_norm)
-      attitudinal:   v2clrelig_norm (SIGN-FLIPPED before z-scoring)
+    Two dimensions, all oriented so higher = more religion / less secular:
+      institutional: 3 structural GRI cols (state religion, religious law,
+                     religious courts)
       behavioural:   4 WVS cols (imprel, godimp, godbel, confch)
+
+    Four prior composite inputs (gri_apostasy_norm, gri_blasphemy_norm,
+    gri_gov_favour_norm, v2clrelig_norm) were removed in the 2026-04-16
+    rebuild (Item 2 redux) on circularity grounds: they measure how the
+    state treats people on religious grounds, which overlaps mechanically
+    with the outcome (wbl_treatment_index) and inflates the cross-section
+    coefficient beyond what "religiosity as a state of being" explains.
+    Those items remain available as standalone sub-item focals.
 
     Parameters
     ----------
@@ -310,9 +304,9 @@ def build_secularism_composite(
         If True, mask the 4 WVS cols to NaN on rows with wvs_interpolated == 1
         before building the behavioural dimension. Produces the 'real' variant.
     weighting : {'equal', 'institutional_only', 'coverage'}
-        'equal' (default) -- row-mean of the three dimension z-scores, with
+        'equal' (default) -- row-mean of the two dimension z-scores, with
         pandas dimension-fallback if one dimension is NaN for a row.
-        'institutional_only' -- drop att/beh dimensions; composite = inst_z.
+        'institutional_only' -- drop behavioural dimension; composite = inst_z.
         'coverage' -- weight each dimension by its panel-wide non-null row
         fraction. WVS weight uses pre-interpolation coverage
         (wvs_interpolated == 0), so the variant is meaningful even when the
