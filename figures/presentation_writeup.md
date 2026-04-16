@@ -30,7 +30,7 @@ The pattern lines up with common priors. The darkest cluster runs across the Mid
 
 Before doing any modelling, what does the simplest picture look like? Each country becomes one dot. The y-axis is the women's treatment index. On the left we plot it against the composite secularism index. On the right we plot it against the apostasy sub-item.
 
-The left panel slopes downwards sharply. Countries scoring higher on composite secularism score systematically lower on women's welfare, and the relationship is tight: the slope is around −0.23 in 2020 once GDP is controlled, with p-values well below 0.001. This is the cross-sectional headline of the paper.
+The left panel slopes downwards. Countries scoring higher on composite secularism score systematically lower on women's welfare: the slope is around −0.10 in 2020 once GDP is controlled (p = 0.017). This is the cross-sectional headline of the paper.
 
 The right panel shows the same direction for apostasy laws — countries with apostasy laws score lower on women's welfare on average, by around −0.12 points. Because apostasy is a yes/no variable, the dots form two columns; the slope is the average vertical gap between them.
 
@@ -50,7 +50,7 @@ The right panel uses panel fixed effects across 2013 to 2022. That's a much toug
 
 The composite and apostasy sit at the top of each panel; the other predictors (state religion, religious law, religious courts, blasphemy, rule of law, civil liberties, egalitarianism) sit below as context. GDP is shown last in italic grey because it's a control, not something we're testing.
 
-In the cross-section (left) the composite comes out strongly negative: about −0.23 at p < 0.001. In the panel (right) it comes out small and marginal, around +0.06 with p ≈ 0.07, with the opposite sign. Apostasy runs negatively in both panels: about −0.12 in the cross-section and about −0.02 in the panel (p ≈ 0.07, tightening to p ≈ 0.006 under a different standard-error calculation). Courts is null in both panels.
+In the cross-section (left) the composite comes out negative: about −0.10 at p = 0.017. In the panel (right) it comes out small and marginal, around +0.02 with p ≈ 0.09, with the opposite sign. Apostasy runs negatively in both panels: about −0.12 in the cross-section and about −0.02 in the panel (p ≈ 0.07, tightening to p ≈ 0.006 under a different standard-error calculation). Courts is null in both panels.
 
 The sign flip between the two panels for the composite is the main empirical puzzle in the paper and the reason we lean on the next figure for interpretation.
 
