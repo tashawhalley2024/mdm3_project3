@@ -1,6 +1,6 @@
 tier,year,predictor,dv_label,coef,se,pval,n,r2,sig
-P6_placebo_wdi_lifexpf_norm,all,gri_apostasy_norm,Female life expectancy (female DV),0.002741,0.008822,0.756105,1648,0.022168,
-P6_placebo_wdi_lfpf_norm,all,gri_apostasy_norm,Female LFP rate (female DV),0.022692,0.010427,0.029700,1637,0.060500,**
-P6_placebo_wbl_treatment_index,all,gri_apostasy_norm,Women's treatment index (female DV),-0.018020,0.009838,0.067203,1648,0.015550,*
-P6_placebo_lifexpm_norm,all,gri_apostasy_norm,Male life expectancy (placebo DV),0.001425,0.007098,0.840892,1648,0.017609,
-P6_placebo_lfpm_norm,all,gri_apostasy_norm,Male LFP rate (placebo DV),-0.013664,0.010991,0.214002,1637,0.037146,
+P6_placebo_wdi_lifexpf_norm,all,gri_apostasy_norm,Female life expectancy (female DV),0.003009,0.008360,0.718953,1639,0.036548,
+P6_placebo_wdi_lfpf_norm,all,gri_apostasy_norm,Female LFP rate (female DV),0.024819,0.010189,0.014977,1628,0.081818,**
+P6_placebo_wbl_treatment_index,all,gri_apostasy_norm,Women's treatment index (female DV),-0.013977,0.010030,0.163648,1639,0.031657,
+P6_placebo_lifexpm_norm,all,gri_apostasy_norm,Male life expectancy (placebo DV),0.000348,0.006635,0.958148,1639,0.024818,
+P6_placebo_lfpm_norm,all,gri_apostasy_norm,Male LFP rate (placebo DV),-0.017677,0.010974,0.107462,1628,0.046851,

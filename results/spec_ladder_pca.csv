@@ -1,3 +1,3 @@
 spec,coef,se,pval,r2,n_obs,delta_Rmax_=_2.2,delta_Rmax_=_1.0
-Bivariate (composite_secularism_pca_norm),0.025013,0.017536,0.153985,0.002444,1648,,
-Full model (GDP-controlled),0.022492,0.017352,0.195099,0.003950,1648,2.835968,0.013496
+Bivariate (composite_secularism_pca_norm),0.024960,0.017531,0.154730,0.002443,1639,,
+Full model (GDP-controlled),0.018737,0.017578,0.286629,0.019547,1639,2.195538,0.052526

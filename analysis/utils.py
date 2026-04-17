@@ -85,8 +85,12 @@ def _prepare_composite_inputs(
     """
     prepared = pd.DataFrame(index=df.index)
     for c in COMPOSITE_INSTITUTIONAL_COLS:
+        if c not in df.columns:
+            print(f"  WARNING: composite input '{c}' missing from dataframe")
         prepared[c] = df[c] if c in df.columns else np.nan
     for c in COMPOSITE_BEHAVIOURAL_COLS:
+        if c not in df.columns:
+            print(f"  WARNING: composite input '{c}' missing from dataframe")
         prepared[c] = df[c] if c in df.columns else np.nan
 
     if drop_interpolated_wvs and "wvs_interpolated" in df.columns:

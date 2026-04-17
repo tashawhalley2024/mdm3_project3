@@ -5,9 +5,9 @@ Compares panel analysis results between:
   - Composite index  (women_treatment_index): 13-component outcome from V-Dem/WDI/governance
   - WBL index        (wbl_treatment_index):   WBL 2024 legal domains + health outcomes
 
-Outputs:
-  data/processed/index_comparison.csv   -- side-by-side coefficients for key tiers
-  data/processed/index_comparison.md    -- plain-English interpretation
+Outputs (written at repo root, not data/processed/):
+  results/index_comparison.csv   -- side-by-side coefficients for key tiers
+  results/index_comparison.md    -- plain-English interpretation
 """
 
 import pandas as pd

@@ -48,6 +48,11 @@ def scoring(group, weights=None, fixed_bounds=None):
         weights = {col: 1 for col in indicator_cols}
 
     weight_sum = sum(weights.values())
+    if weight_sum == 0:
+        raise ValueError(
+            "scoring(): sum of weights is 0; cannot compute weighted average. "
+            f"Weights passed: {weights}"
+        )
 
     # Weighted average
     df["score"] = sum(df[col] * weights[col] for col in indicator_cols) / weight_sum
@@ -55,9 +60,15 @@ def scoring(group, weights=None, fixed_bounds=None):
     return df[id_cols + ["score"]]
 
 
-def apply_two_layer_weighting(df):
-    """Two-layer weighting: de_jure (8 legal groups) and de_facto (2 outcome groups),
-    combined with equal 50/50 weight."""
+def apply_two_layer_weighting(df, w_dejure: float = 0.5, w_defacto: float = 0.5):
+    """Two-layer weighting: de_jure (8 legal groups) and de_facto (2 outcome
+    groups), combined with `w_dejure` / `w_defacto` weights (must sum to 1).
+    Default 50/50; sensitivity runner can pass other weights.
+    """
+    if abs((w_dejure + w_defacto) - 1.0) > 1e-9:
+        raise ValueError(
+            f"Weights must sum to 1 (got {w_dejure}+{w_defacto}={w_dejure+w_defacto})")
+
     de_jure_cols = [
         "assets",
         "econ_rights",
@@ -78,10 +89,10 @@ def apply_two_layer_weighting(df):
     df["de_jure_score"] = df[de_jure_cols].mean(axis=1)
     df["de_facto_score"] = df[de_facto_cols].mean(axis=1)
 
-    # Second layer: combine de jure and de facto with equal weight
+    # Second layer: combine de jure and de facto with the requested weights
     df["overall_score"] = (
-        0.5 * df["de_jure_score"] +
-        0.5 * df["de_facto_score"]
+        w_dejure  * df["de_jure_score"] +
+        w_defacto * df["de_facto_score"]
     )
 
     return df

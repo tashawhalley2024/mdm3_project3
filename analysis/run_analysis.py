@@ -78,8 +78,8 @@ OSTER_SENS_PATH_PCA    = os.path.join(ROOT, "results/oster_sensitivity_pca.csv")
 # ── Column groups ──────────────────────────────────────────────────────────────
 # Item 2 (2026-04-15): added gri_gov_favour_norm (Pew GRI Q2, 77/198 changer
 # countries, 4 distinct values — was silently dropped from every regression
-# previously). T4 Mundlak _mean count is therefore 10, not 9; update the
-# Mundlak presentation slide (see TODO Item 7) to match.
+# previously). After the 2026-04-17 controls upgrade, T4 Mundlak decomposes
+# 12 regressors (6 GRI + 5 controls + log_gdppc_norm); each gets a _mean.
 GRI_PANEL_COLS = [
     "gri_state_religion_norm", "gri_gov_favour_norm",
     "gri_religious_law_norm", "gri_religious_courts_norm",
@@ -90,8 +90,10 @@ GRI_PANEL_COLS = [
 # coverage), so NOT included in GRI_PANEL_COLS by default — would crash T2
 # samples. Available to T1 2020 cross-section and to the composite builder.
 COMPOSITION_COLS = ["pct_unaffiliated_norm", "pct_other_norm"]
-CONTROLS        = ["v2x_rule_norm", "v2x_civlib_norm", "v2x_egal_norm"]
-CONTROLS_GDP    = CONTROLS + ["log_gdppc_norm"]   # Phase 2: GDP-extended controls
+CONTROLS        = ["v2x_rule_norm", "v2x_corr_norm", "education_norm", "rurality_norm", "conflict_norm"]
+CONTROLS_GDP    = CONTROLS + ["log_gdppc_norm"]
+CONTROLS_LEGACY     = ["v2x_rule_norm", "v2x_civlib_norm", "v2x_egal_norm"]
+CONTROLS_LEGACY_GDP = CONTROLS_LEGACY + ["log_gdppc_norm"]
 OUTCOME         = "wbl_treatment_index"
 
 LO_PATH    = os.path.join(ROOT, "data/raw/legal_origins/legal_origins_laporta.csv")
@@ -224,7 +226,7 @@ def load_and_merge() -> pd.DataFrame:
     # Auxiliary columns that live in the old women_secularism file — merge them in
     # if they are not already present (e.g. when WOMEN_PATH is the WBL-based index)
     aux_cols = [
-        "v2x_rule_norm", "v2x_civlib_norm", "v2x_egal_norm",  # V-Dem governance controls
+        "v2x_rule_norm", "v2x_civlib_norm", "v2x_egal_norm",  # V-Dem aux (legacy controls for robustness)
         "cedaw_years_since_norm",                               # Phase 7 CEDAW control
         "wdi_lifexpf_norm", "wdi_lfpf_norm",                   # Phase 6 placebo female DVs
     ]
@@ -340,6 +342,17 @@ def load_and_merge() -> pd.DataFrame:
         print(f"\n  Legal origins merged: {n_lo} countries ({earliest_year})")
     else:
         print(f"\n  WARNING: {LO_PATH} not found -- LO-based checks will be skipped")
+
+    # ── New controls (corruption, education, rurality, conflict) ─────────
+    ctrl_path = os.path.join(ROOT, "data/controls_additional.csv")
+    if os.path.exists(ctrl_path):
+        ctrl_add = pd.read_csv(ctrl_path)
+        merged = merged.merge(ctrl_add, on=["iso3", "year"], how="left")
+        for c in ["v2x_corr_norm", "education_norm", "rurality_norm", "conflict_norm"]:
+            n = merged[c].notna().sum()
+            print(f"  {c} obs (non-NA): {n:,}")
+    else:
+        print(f"  WARNING: {ctrl_path} not found; new controls will be missing")
 
     # Deduplicate: some countries have duplicate iso3-year rows after merge
     n_before = len(merged)
@@ -607,7 +620,7 @@ def tier4_mundlak_re(df: pd.DataFrame) -> list[dict]:
     required  = [OUTCOME, "iso3", "year"] + pred_cols
     sub       = df[required].dropna(subset=[OUTCOME] + pred_cols).copy()
 
-    # Mundlak device: country means of all 9 time-varying predictors
+    # Mundlak device: country means of all time-varying predictors
     cmean_cols = []
     for col in pred_cols:
         mc = col + "_mean"
@@ -1117,7 +1130,8 @@ def phase3_sub_outcomes(df: pd.DataFrame) -> list[dict]:
     # Guard: sub-outcome columns only exist in the old 13-component index
     missing_sub = [c for cols in SUB_OUTCOMES.values() for c in cols if c not in df.columns]
     if missing_sub:
-        print("  PHASE 3 skipped: sub-outcome columns not present in current dataset")
+        print("  PHASE 3 skipped: sub-outcome columns are from the old composite index.")
+        print("  WBL sub-outcome decomposition is handled by phase_wbl_groups() instead.")
         return results
 
     # Prepare sub-indices
@@ -2279,6 +2293,7 @@ def phase7_cedaw_and_subsamples(df: pd.DataFrame) -> list[dict]:
     base = df[required].dropna(subset=[OUTCOME] + pred_cols).copy()
 
     courts_sd   = base.groupby("iso3")[FOCAL_PRED_LEGACY].std().fillna(0)
+    # SD > 0.02 ≈ at least one discrete movement on the Pew coding scale after normalisation
     changers    = courts_sd[courts_sd > 0.02].index.tolist()
     non_changers = courts_sd[courts_sd <= 0.02].index.tolist()
 
@@ -3539,7 +3554,11 @@ class _Tee:
         self.files = files
     def write(self, obj):
         for f in self.files:
-            f.write(obj)
+            try:
+                f.write(obj)
+            except UnicodeEncodeError:
+                safe = obj.encode("ascii", errors="replace").decode("ascii")
+                f.write(safe)
     def flush(self):
         for f in self.files:
             f.flush()
@@ -3592,10 +3611,19 @@ def phase_wbl_groups() -> pd.DataFrame:
     # Pull in governance controls from outcome_composite if not already present
     ctrl_path = os.path.join(ROOT, "data/outcome_composite.csv")
     if os.path.exists(ctrl_path):
-        ctrl_cols = ["iso3", "year"] + [c for c in CONTROLS if c not in merged.columns]
+        avail = pd.read_csv(ctrl_path, nrows=0).columns.tolist()
+        ctrl_cols = ["iso3", "year"] + [c for c in CONTROLS if c not in merged.columns and c in avail]
         if len(ctrl_cols) > 2:
             ctrl = pd.read_csv(ctrl_path)[ctrl_cols]
             merged = merged.merge(ctrl, on=["iso3", "year"], how="left")
+
+    # Pull in additional controls (corruption, education, rurality, conflict)
+    ctrl_add_path = os.path.join(ROOT, "data/controls_additional.csv")
+    if os.path.exists(ctrl_add_path):
+        ctrl_add_cols = ["iso3", "year"] + [c for c in CONTROLS if c not in merged.columns]
+        if len(ctrl_add_cols) > 2:
+            ctrl_add = pd.read_csv(ctrl_add_path)[ctrl_add_cols]
+            merged = merged.merge(ctrl_add, on=["iso3", "year"], how="left")
 
     # Overlap period: GRI goes to 2022, WBL starts 2013
     merged = merged[(merged["year"] >= 2013) & (merged["year"] <= 2022)]
@@ -3965,6 +3993,134 @@ def phase_power_analysis(df: pd.DataFrame) -> None:
     print(f"    and only {n_changers}/{n_countries} countries show meaningful changes.")
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# LEGACY CONTROLS ROBUSTNESS — re-run T2 + T4 with old 3-variable controls
+# ═══════════════════════════════════════════════════════════════════════════════
+def legacy_controls_robustness(df: pd.DataFrame) -> list[dict]:
+    """Re-run T2 panel FE and T4 Mundlak with the pre-upgrade control set
+    (v2x_rule_norm, v2x_civlib_norm, v2x_egal_norm + log_gdppc_norm).
+    Allows direct comparison of results under old vs new controls.
+    """
+    print(f"\n{'='*60}")
+    print("LEGACY CONTROLS ROBUSTNESS (old 3-variable control set)")
+    print(f"{'='*60}")
+
+    results = []
+    focals = [FOCAL_PRED, FOCAL_PRED_2, FOCAL_PRED_LEGACY]
+
+    # ── T2 panel FE with legacy controls ────────────────────────────────
+    for focal in focals:
+        pred_cols = [focal] + CONTROLS_LEGACY_GDP
+        required = [OUTCOME, "iso3", "year"] + pred_cols
+        sub = df[required].dropna(subset=[OUTCOME] + pred_cols).copy()
+
+        print(f"\n  T2 legacy [{focal}]: N={len(sub):,}, "
+              f"{sub['iso3'].nunique()} countries")
+
+        sub_flat = sub.copy()
+        sub_idx = sub.set_index(["iso3", "year"])
+        y = sub_idx[OUTCOME]
+        X = sm.add_constant(sub_idx[pred_cols])
+
+        model = PanelOLS(y, X, entity_effects=True, time_effects=True)
+        res = model.fit(cov_type="clustered", cluster_entity=True)
+
+        for var in res.params.index:
+            if var in pred_cols:
+                diag = _panel_diagnostics(sub_flat, var)
+                std_c = _std_coef(res.params[var], sub_flat[var], sub_flat[OUTCOME])
+            else:
+                diag = {"n_clusters": int(sub_flat["iso3"].nunique()),
+                        "n_changers": np.nan, "within_sd": np.nan}
+                std_c = np.nan
+            results.append({
+                "tier": "T2_legacy_controls_with_gdp",
+                "year": "all",
+                "predictor": var,
+                "coef": res.params[var],
+                "se": res.std_errors[var],
+                "pval": res.pvalues[var],
+                "n": res.nobs,
+                "r2": res.rsquared,
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd": diag["within_sd"],
+                "std_coef": std_c,
+                "se_type": "cluster_entity",
+                "valid": True,
+                "invalid_reason": "",
+            })
+
+        print(f"    {focal}: coef={res.params[focal]:.5f}, "
+              f"p={res.pvalues[focal]:.4f}")
+
+    # ── T4 Mundlak RE with legacy controls ──────────────────────────────
+    for focal in focals:
+        pred_cols = [focal] + CONTROLS_LEGACY_GDP
+        required = [OUTCOME, "iso3", "year"] + pred_cols
+        sub = df[required].dropna(subset=[OUTCOME] + pred_cols).copy()
+
+        cmean_cols = []
+        for col in pred_cols:
+            mc = col + "_mean"
+            sub[mc] = sub.groupby("iso3")[col].transform("mean")
+            cmean_cols.append(mc)
+        cmean_cols = [c for c in cmean_cols if sub[c].std() > 1e-8]
+
+        year_dummies = pd.get_dummies(sub["year"], prefix="yr",
+                                       drop_first=True).astype(float)
+        sub = pd.concat([sub.reset_index(drop=True),
+                         year_dummies.reset_index(drop=True)], axis=1)
+        yr_cols = list(year_dummies.columns)
+
+        print(f"\n  T4 legacy [{focal}]: N={len(sub):,}, "
+              f"{sub['iso3'].nunique()} countries, "
+              f"{len(pred_cols)} + {len(cmean_cols)} means")
+
+        sub_flat = sub.copy()
+        sub_set = sub.set_index(["iso3", "year"])
+        y = sub_set[OUTCOME]
+        X = sm.add_constant(sub_set[pred_cols + cmean_cols + yr_cols])
+
+        model = RandomEffects(y, X)
+        res = model.fit(cov_type="clustered", cluster_entity=True)
+
+        for var in res.params.index:
+            parent = var[:-5] if var.endswith("_mean") else var
+            if parent in pred_cols:
+                diag = _panel_diagnostics(sub_flat, parent)
+                std_c = _std_coef(res.params[var], sub_flat[parent],
+                                  sub_flat[OUTCOME])
+            else:
+                diag = {"n_clusters": int(sub_flat["iso3"].nunique()),
+                        "n_changers": np.nan, "within_sd": np.nan}
+                std_c = np.nan
+            results.append({
+                "tier": "T4_legacy_controls_mundlak_re",
+                "year": "all",
+                "predictor": var,
+                "coef": res.params[var],
+                "se": res.std_errors[var],
+                "pval": res.pvalues[var],
+                "n": res.nobs,
+                "r2": res.rsquared,
+                "n_clusters": diag["n_clusters"],
+                "n_changers": diag["n_changers"],
+                "within_sd": diag["within_sd"],
+                "std_coef": std_c,
+                "se_type": "cluster_entity",
+                "valid": True,
+                "invalid_reason": "",
+            })
+
+        print(f"    {focal}: within={res.params[focal]:.5f} "
+              f"(p={res.pvalues[focal]:.4f}), "
+              f"between={res.params.get(focal+'_mean', np.nan):.5f} "
+              f"(p={res.pvalues.get(focal+'_mean', np.nan):.4f})")
+
+    return results
+
+
 def main():
     with open(LOG_PATH, "w", encoding="utf-8") as log_file:
         tee = _Tee(sys.stdout, log_file)
@@ -4129,6 +4285,9 @@ def main():
 
             # WBL group score analysis (scoring pipeline)
             phase_wbl_groups()
+
+            # Legacy controls robustness (old 3-variable set for comparison)
+            all_results.extend(legacy_controls_robustness(df))
 
             print(f"\n{'='*60}")
             print("RESULTS SUMMARY")

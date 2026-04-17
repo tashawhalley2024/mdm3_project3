@@ -1,6 +1,6 @@
 tier,year,predictor,dv_label,coef,se,pval,n,r2,sig
-P6_placebo_wdi_lifexpf_norm,all,composite_secularism_pca_norm,Female life expectancy (female DV),0.003484,0.027721,0.900014,1648,0.003418,
-P6_placebo_wdi_lfpf_norm,all,composite_secularism_pca_norm,Female LFP rate (female DV),0.019985,0.017635,0.257308,1637,0.025509,
-P6_placebo_wbl_treatment_index,all,composite_secularism_pca_norm,Women's treatment index (female DV),0.022492,0.017352,0.195099,1648,0.003950,
-P6_placebo_lifexpm_norm,all,composite_secularism_pca_norm,Male life expectancy (placebo DV),0.004450,0.020459,0.827835,1648,0.002062,
-P6_placebo_lfpm_norm,all,composite_secularism_pca_norm,Male LFP rate (placebo DV),-0.000686,0.031238,0.982494,1637,0.031808,
+P6_placebo_wdi_lifexpf_norm,all,composite_secularism_pca_norm,Female life expectancy (female DV),0.002022,0.025993,0.938004,1639,0.019040,
+P6_placebo_wdi_lfpf_norm,all,composite_secularism_pca_norm,Female LFP rate (female DV),0.010156,0.016904,0.548073,1628,0.045371,
+P6_placebo_wbl_treatment_index,all,composite_secularism_pca_norm,Women's treatment index (female DV),0.018737,0.017578,0.286629,1639,0.019547,
+P6_placebo_lifexpm_norm,all,composite_secularism_pca_norm,Male life expectancy (placebo DV),0.005337,0.018301,0.770610,1639,0.012208,
+P6_placebo_lfpm_norm,all,composite_secularism_pca_norm,Male LFP rate (placebo DV),-0.000289,0.028509,0.991922,1628,0.040219,

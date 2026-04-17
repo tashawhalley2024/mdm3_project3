@@ -1,6 +1,6 @@
 # MDM3 Group Project — Treatment of Women
 
-Cross-national study of women's treatment and welfare, covering 202 countries, 2013–2023.
+Cross-national study of women's treatment and welfare, covering 187 countries, 2013–2023.
 
 This repo contains two components:
 
@@ -77,7 +77,7 @@ python scoring.py        # scores groups → output/overall_score.csv
 
 **Research question:** Does institutional secularism improve the welfare and treatment of women?
 
-Cross-national panel, up to 198 countries, 2007–2022 (WBL outcome available 2013 onwards). Focal predictor: `gri_religious_courts_norm` (Pew GRI religious courts score, normalised). Key finding: `gri_apostasy_norm` is the most consistently significant GRI predictor across all specifications.
+Cross-national panel, up to 198 countries, 2007–2022 (WBL outcome available 2013 onwards). Focal predictor: `composite_secularism_norm` — an equal-weight z-score composite over 7 inputs across 2 dimensions (3 structural GRI items + 4 WVS religious-intensity items), rebuilt 2026-04-16. Secondary focal: `gri_apostasy_norm` (strongest individual sub-item). See `reviews/2026-04-16_secularism-composite-rebuild.md` for rationale.
 
 ### Analysis status
 
@@ -97,22 +97,25 @@ python analysis/run_plots.py       # figures → figures/
 python verify.py                   # integrity check
 ```
 
-### Current results summary
+### Current results summary (post-controls-upgrade, 2026-04-17)
 
-| Model | gri_religious_courts coef | p-value | gri_apostasy coef | p-value |
+| Model | composite_secularism coef | p-value | gri_apostasy coef | p-value |
 |---|---|---|---|---|
-| T1 OLS (2020, no GDP) | +0.023 | 0.222 | −0.121 | <0.001 |
-| T2 TWFE (no GDP) | −0.007 | 0.289 | −0.018 | 0.033 |
-| T2 TWFE (with GDP) | −0.007 | 0.312 | −0.020 | 0.035 |
-| T4 Mundlak within | −0.007 | 0.288 | −0.020 | 0.027 |
-| T4 Mundlak between | +0.042 | 0.064 | −0.122 | 0.001 |
+| T1 OLS (2020, with GDP) | −0.108 | 0.008 | −0.124 | 0.001 |
+| T1 OLS (2014, with GDP) | −0.118 | 0.005 | −0.159 | <0.001 |
+| T2 TWFE (with GDP) | +0.023 | 0.136 | −0.014 | 0.164 |
+| T4 Mundlak within | +0.023 | 0.116 | −0.014 | 0.143 |
+| T4 Mundlak between | −0.138 | 0.003 | −0.140 | <0.001 |
+| T5 Long-diff (2013–2022) | +0.048 | 0.182 | — | invalid (9 changers) |
+
+Controls (2026-04-17): v2x_rule, v2x_corr, education, rurality, conflict (+ GDP where noted). Replaced earlier v2x_civlib and v2x_egal on circularity grounds.
 
 Robustness checks (implemented):
 - LOO jackknife: 166 country-drop runs
 - Pre-trend test: event-study F-test
 - Oster sensitivity: delta statistic
 - Lagged GRI predictors (L1, L2)
-- Sub-outcome analysis (political, economic, safety, health)
+- WBL group decomposition (10 thematic groups)
 - Alternative outcomes: SIGI 2019, GII
 - Regional heterogeneity
 - Legal origins controls

@@ -9,8 +9,8 @@ Python scripts for the secularism-women panel analysis. All scripts resolve path
 | Script | What it does | Inputs | Outputs |
 |---|---|---|---|
 | `run_analysis.py` | Runs all regressions (T1 cross-section, T2 panel FE, T4 Mundlak, Phases 3–10) | `data/outcome_wbl.csv`, `data/predictors.csv`, `data/robustness_outcomes.csv` | `results/results.csv` + robustness CSVs |
-| `run_plots.py` | Generates 10 publication figures | `results/results.csv`, `data/predictors.csv`, `data/outcome_composite.csv` | `figures/01_scatter.png` … `figures/10_alt_outcomes.png` |
-| `compare_indices.py` | Compares composite vs WBL index coefficients | `results/results_composite.csv`, `results/results_wbl.csv` | `results/index_comparison.csv`, `results/index_comparison.md` |
+| `run_plots.py` | Generates the presentation figure set (currently 00, 01, 02, 05, 06, 07, 09, 10, 11, 12 — see `figures/README.md` for why 03/04/08 are removed) | `results/results.csv`, `data/predictors.csv`, `data/outcome_composite.csv` | `figures/00_map.png` … `figures/12_mundlak_decomposition.png` |
+| `compare_indices.py` | *(Deprecated legacy — kept for audit trail only. Reads `results/results_wbl.csv`, which is no longer produced by the main pipeline; running the script as-is will error.)* Compares composite vs WBL index coefficients | `results/results_composite.csv`, `results/results_wbl.csv` *(removed 2026-04-17)* | `results/index_comparison.csv`, `results/index_comparison.md` |
 | `sanity_check.py` | Validates WBL index against composite baseline | `sanity_check/baseline.csv`, `sanity_check/actual.csv` *(not in repo — intermediate files)* | `sanity_check/overlap_comparison.csv`, `sanity_check/comparison_scatter.png` |
 
 | `utils.py` | Shared utilities (`robust_minmax` normalisation) | — | — |

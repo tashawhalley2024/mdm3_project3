@@ -94,7 +94,7 @@ def _narrative_title(ax_or_fig, punchline: str, subtitle: str = "", fig_level=Fa
 # ── Paths ──────────────────────────────────────────────────────────────────────
 RESULTS_PATH = os.path.join(ROOT, "results/results.csv")
 COMP_PATH    = os.path.join(ROOT, "data/predictors.csv")
-WOMEN_PATH   = os.path.join(ROOT, "data/outcome_composite.csv")
+WOMEN_PATH   = os.path.join(ROOT, "data/outcome_wbl.csv")
 OUT_COEF     = os.path.join(ROOT, "figures/02_coefplot.png")
 OUT_SCATTER  = os.path.join(ROOT, "figures/01_scatter.png")
 OUT_LOO      = os.path.join(ROOT, "figures/05_loo_jackknife.png")
@@ -114,7 +114,6 @@ OSTER_SENS_CSV = os.path.join(ROOT, "results/oster_sensitivity_apostasy.csv")
 OSTER_SENS_PNG = os.path.join(ROOT, "figures/09_oster_sensitivity.png")
 
 # Phase 10 paths
-WBL_RESULTS_CSV = os.path.join(ROOT, "results/results_wbl.csv")
 OUT_ALT_OUTCOMES = os.path.join(ROOT, "figures/10_alt_outcomes.png")
 
 OUT_MUNDLAK = os.path.join(ROOT, "figures/12_mundlak_decomposition.png")
@@ -154,6 +153,10 @@ LABELS = {
     "v2x_rule_norm":           "Rule of law",
     "v2x_civlib_norm":         "Civil liberties",
     "v2x_egal_norm":           "Egalitarianism",
+    "v2x_corr_norm":           "Corruption",
+    "education_norm":          "Education (yrs schooling)",
+    "rurality_norm":           "Rurality (% rural pop.)",
+    "conflict_norm":           "Pol. stability",
     "const":                   "Intercept",
     # GDP
     "log_gdppc_norm":          "GDP p.c. (log, norm)",
@@ -171,7 +174,7 @@ def plot_scatter(df: pd.DataFrame):
     Regions colour the points; a handful of anchor countries are labelled
     so the viewer can see where the signal lives.
     """
-    OUTCOME = "women_treatment_index"
+    OUTCOME = "wbl_treatment_index"
     cols = ["iso3", FOCAL_PRED, FOCAL_PRED_2, OUTCOME]
     snap = df[df["year"] == 2020][cols].dropna()
     if snap.empty:
@@ -286,7 +289,7 @@ def plot_coefplot():
     focal_preds = [FOCAL_PRED_2, FOCAL_PRED]
     context_preds = [
         "gri_state_religion_norm", "gri_religious_law_norm", "gri_blasphemy_norm",
-        "v2x_rule_norm", "v2x_civlib_norm", "v2x_egal_norm",
+        "v2x_rule_norm", "v2x_corr_norm", "education_norm", "rurality_norm", "conflict_norm",
     ]
     control_preds = ["log_gdppc_norm"]
 
@@ -563,7 +566,6 @@ def plot_placebo():
 
     label_map = {
         "P6_placebo_wbl_treatment_index": "Women's\ntreatment index",
-        "P6_placebo_women_treatment_index": "Women's\ntreatment index",
         "P6_placebo_wdi_lifexpf_norm": "Female life\nexpectancy",
         "P6_placebo_wdi_lfpf_norm":    "Female labour\nforce part.",
         "P6_placebo_lifexpm_norm":     "Male life\nexpectancy",
@@ -577,7 +579,6 @@ def plot_placebo():
     # confound for a 30-second placebo slide.
     female_order = [
         "P6_placebo_wbl_treatment_index",
-        "P6_placebo_women_treatment_index",
         "P6_placebo_wdi_lifexpf_norm",
     ]
     male_order = ["P6_placebo_lifexpm_norm"]
@@ -893,7 +894,6 @@ def plot_alternative_outcomes():
       - Composite (primary): RESULTS_CSV, tier T2_with_gdp
       - WEF GGG, GDI:        RESULTS_CSV, tiers P10_wef_panel, P10_gdi_panel
       - LFP gap:             RESULTS_CSV, tier P10_gap_lfp
-      - WBL index:           WBL_RESULTS_CSV, tier T2_with_gdp
       - GII:                 RESULTS_CSV, tier P5_B2_GII_panel_fe (if present)
     """
     if not os.path.exists(RESULTS_CSV):
@@ -937,23 +937,6 @@ def plot_alternative_outcomes():
 
     # LFP gap excluded: reported in percentage points (not [0,1]),
     # so including it stretches the x-axis and makes the other rows unreadable.
-
-    # WBL legal rights index (from separate CSV)
-    if os.path.exists(WBL_RESULTS_CSV):
-        wbl_df = pd.read_csv(WBL_RESULTS_CSV)
-        wbl_focal = wbl_df[wbl_df["predictor"] == FOCAL_PRED]
-        sub = wbl_focal[wbl_focal["tier"] == "T2_with_gdp"]
-        if not sub.empty:
-            r = sub.iloc[0]
-            rows.append({
-                "label": "WBL legal rights index",
-                "coef":  float(r["coef"]),
-                "se":    float(r["se"]),
-                "pval":  float(r["pval"]),
-                "n":     int(r["n"]),
-                "unit":  "[0,1]",
-                "group": "external",
-            })
 
     if not rows:
         print("  No alternative outcome data found -- skipping.")
@@ -1217,6 +1200,10 @@ LABELS_SHORT = {
     "v2x_rule_norm":           "Rule of law",
     "v2x_civlib_norm":         "Civil liberties",
     "v2x_egal_norm":           "Egalitarianism",
+    "v2x_corr_norm":           "Corruption",
+    "education_norm":          "Education",
+    "rurality_norm":           "Rurality",
+    "conflict_norm":           "Pol. stability",
     "log_gdppc_norm":          "Log GDP p.c.",
 }
 

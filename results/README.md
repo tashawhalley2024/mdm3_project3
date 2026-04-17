@@ -4,27 +4,26 @@ Regression outputs and robustness tables from the secularism-women panel analysi
 
 ---
 
-## Key Finding
+## Key Finding (post-controls-upgrade, 2026-04-17)
 
-**Focal predictor:** `gri_religious_courts_norm` — Pew GRI separate religious courts score (normalised 0-1).
+**Focal predictor:** `composite_secularism_norm` — equal-weight z-score composite over 7 inputs (3 structural GRI + 4 WVS items), normalised to [0,1]. Higher = more religious.
 
-Religious courts are **not significant** across any specification. The most consistently significant GRI predictor is `gri_apostasy_norm`.
+The composite is **significant between countries** (cross-section and Mundlak between) but **null within countries** (TWFE and Mundlak within). Apostasy is the strongest individual sub-item. Religious courts (`gri_religious_courts_norm`) is a legacy null.
 
-| Model | Courts coef | Courts p | Apostasy coef | Apostasy p | N |
+| Model | Composite coef | Composite p | Apostasy coef | Apostasy p | N |
 |---|---|---|---|---|---|
-| T1 OLS 2020 (no GDP) | +0.023 | 0.222 | -0.121 | <0.001 | 170 |
-| T2 panel FE, no GDP | -0.007 | 0.289 | -0.018 | 0.033 | 1,700 |
-| T2 panel FE, with GDP | -0.007 | 0.312 | -0.020 | 0.035 | 1,648 |
-| T4 Mundlak within | -0.007 | 0.288 | -0.020 | 0.027 | 1,648 |
-| T4 Mundlak between | +0.042 | 0.064 | -0.122 | 0.001 | 1,648 |
-| Wild cluster bootstrap | -0.004 | 0.743 | -- | -- | 355 |
-| Driscoll-Kraay HAC | -0.007 | 0.026 | -- | -- | 1,648 |
+| T1 OLS 2020 (with GDP) | -0.108 | 0.008 | -0.124 | 0.001 | 163 |
+| T2 panel FE, with GDP | +0.023 | 0.136 | -0.014 | 0.164 | 1,639 |
+| T4 Mundlak within | +0.023 | 0.116 | -0.014 | 0.143 | 1,639 |
+| T4 Mundlak between | -0.138 | 0.003 | -0.140 | <0.001 | 1,639 |
+| T5 Long-diff (2013-2022) | +0.048 | 0.182 | -- | invalid | 162 |
+| Driscoll-Kraay HAC | +0.023 | 0.041 | -0.014 | 0.005 | 1,639 |
 
-Entity-clustered SEs are the primary inference. Driscoll-Kraay with bandwidth=4 produces a smaller SE because it does not capture the full within-country autocorrelation of slow-moving GRI variables. With N=168 and T=16, cluster-robust is the preferred SE per Cameron & Miller (2015); the DK row is reported for transparency.
+Entity-clustered SEs are the primary inference. Driscoll-Kraay with bandwidth=2 produces a smaller SE because it does not capture the full within-country autocorrelation of slow-moving GRI variables. Cluster-robust is the preferred SE per Cameron & Miller (2015); the DK row is reported for transparency.
 
 T3 System-GMM was implemented but fails the Roodman bounds diagnostic (explosive rho = 1.215 > rho_OLS = 0.982). T3 results are excluded from substantive conclusions.
 
-LOO jackknife: 166 country-drop runs, range [-0.0069, +0.0036], **1 sign reversal (Saudi Arabia), all 166 runs non-significant (p > 0.05)**.
+LOO jackknife (composite): 166 country-drop runs, coef range [+0.018, +0.027], **0 sign flips**.
 
 ---
 
