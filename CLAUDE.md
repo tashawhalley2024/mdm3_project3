@@ -129,6 +129,21 @@ LaTeX write-up alone. Always open the relevant `.py` file(s) and verify.
 - The README's "Current results summary" table is a snapshot and can lag the
   current `results/results.csv`. If a user asks about a specific coefficient,
   read `results/results.csv`, not the README.
+- **2026-04-18** — new hero figure `figures/03_between_within.png` replaces
+  `12_mundlak_decomposition` as the main-deck between-vs-within visual.
+  Geometric: country panel-means 2013–2022 with quartile staircase and
+  thin grey 2013→2022 arrows. `analysis/run_plots.py:plot_between_within`
+  builds it at load-time from the merged df (no new CSV). Figure 12 is
+  retained as the formal numerical appendix companion. Figure 01's
+  annotation now reports the full-controls T1_with_gdp β (matches
+  `results/headline_table.csv` exactly; the fit uses the same
+  `[composite] + CONTROLS_GDP` spec for the composite panel and
+  `GRI_PANEL_COLS + CONTROLS_GDP` for the apostasy panel). Figure 02's
+  Tier 2 subtitle corrected to 2013–2022. `main()` step counter
+  normalised to `/12` across all twelve figures. Doc references in
+  `figures/figure_guide.md`, `figures/presentation_writeup.md`, and
+  `figures/README.md` reworked to promote figure 03 as hero and demote
+  figure 12 to appendix.
 
 ## Depth over speed — this is the most important rule
 

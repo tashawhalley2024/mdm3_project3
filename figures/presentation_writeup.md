@@ -1,6 +1,6 @@
 # Secularism and Women's Welfare: A Figure Walkthrough
 
-This is a plain-English walk through the ten figures in the deck. Each one answers a specific question. The headline finding is that more religious societies tend to have worse outcomes for women — the association is large and statistically strong at the cross-country level. Within countries over the 2013–2022 window, though, we don't see the same signal: countries that become slightly more or less religious over this period don't show their women's welfare moving in the expected direction. We read this as evidence that secularism's association with women's welfare is a structural cross-country difference rather than something a country can change in a decade. Apostasy laws are the one specific institutional marker where the within-country signal does survive, and religious courts — the predictor we used in earlier versions of this analysis — is a null result we now keep for comparison.
+This is a plain-English walk through the ten figures in the deck. Each one answers a specific question. The headline finding is that more religious societies tend to have worse outcomes for women. The association is large and statistically strong at the cross-country level. Within countries over the 2013–2022 window, though, we don't see the same signal. Countries that become slightly more or less religious over this period don't show their women's welfare moving in the expected direction. We read this as evidence that secularism's association with women's welfare is a structural cross-country difference rather than something a country can change in a decade. The new Figure 4 in this deck shows that reading geometrically, with a quartile staircase across countries and short within-country arrows. The older Mundlak decomposition figure (now in the appendix) gives the formal numbers behind the same picture. Apostasy laws are the one specific institutional marker where the within-country signal does survive, and religious courts, the predictor we used in earlier versions of this analysis, is a null result we now keep for comparison.
 
 A few quick definitions before we start.
 
@@ -56,11 +56,29 @@ The sign flip between the two panels for the composite is the main empirical puz
 
 ---
 
-## Figure 4 (the hero): The decomposition that explains the sign flip
+## Figure 4 (the hero): The between-vs-within picture
+
+[insert 03_between_within graph here]
+
+This is the headline visual of the deck. Each small dot is one country's 2013-to-2022 average, plotted against its average composite secularism score over the same window. Countries are coloured by region. Behind each dot is a thin grey arrow from where the country sat in 2013 to where it sat in 2022. On top of the dots are four large navy markers joined by a thick line. These are the averages of each quartile of the composite: Q1 is the most secular quarter of countries, Q4 is the most religious quarter.
+
+The quartile line tells the between-country story. It runs downward from left to right overall. Q1 through Q3 sit at broadly similar women's-welfare levels (around 0.66 to 0.70 on a 0-to-1 scale). Q4, the most-religious quartile, drops sharply to about 0.57. So the structural gap between countries is real, but it's concentrated at the top of the composite distribution. It's a cliff more than a smooth staircase.
+
+The arrows tell the within-country story. They are short. Most countries barely move on the composite in a decade, and those that do move don't systematically move toward higher women's welfare. The few longer arrows point in different directions, not toward a common pattern.
+
+The corner box gives the formal T4 Mundlak numbers behind the geometry. The between-country effect is −0.138 at p = 0.003, the within-country effect is +0.023 at p = 0.12, and the magnitudes differ by about six times, in opposite directions. This is the same pattern the formal decomposition figure (now in the appendix) reports with confidence-interval forest bars. The geometric version is the main-deck visual because most audiences read shape faster than forest plots.
+
+The reading for the paper: more secular countries have better women's welfare, by a meaningful amount, and the gap lives in how the most-religious quartile differs from the rest rather than in gradual movement across the composite. Within-country movement over a decade does not shift women's welfare in the expected direction, for reasons we think are mostly about the time horizon and about how little the legal sub-items move within countries in ten years.
+
+---
+
+## Appendix: The formal within-vs-between decomposition
 
 [insert 12_mundlak_decomposition graph here]
 
-This is the most important figure in the deck. It splits each predictor's effect into two pieces.
+This figure is the numerical companion to Figure 4. It shows the same between-country and within-country effects as coefficient-and-confidence-interval bars rather than as geometry. Kept in the appendix because the geometric version is easier for an audience; shown on request if a reviewer asks for the full forest with every sub-item.
+
+It splits each predictor's effect into two pieces.
 
 The left panel asks: when a country changes its score on this predictor over time, does its women's treatment index move? That's the within-country effect.
 
