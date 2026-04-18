@@ -8,7 +8,7 @@ A talking-points companion for each figure in the deck. Each entry has three sec
 - **Why it's here** — what question it answers in the analysis.
 - **What the result means** — the implication for the storyline.
 
-The narrative arc the deck tells: **composite secularism is strongly associated with women's welfare cross-country; within-country over the 2013–2022 panel the signal is null or wrong-signed; the Mundlak decomposition confirms this is a structural, not within-panel, mechanism. Apostasy laws are the strongest individual sub-item and the only one with a real within-country signal; religious courts is retained as a legacy null.**
+The narrative arc the deck tells: **composite secularism is strongly associated with women's welfare cross-country; within-country over the 2013–2022 panel the signal is null or wrong-signed; figure 03 (between-vs-within hero) shows this geometrically with a quartile staircase and within-country arrows, and figure 12 (Mundlak forest, now in the appendix) is the formal numerical companion. Apostasy laws are the strongest individual sub-item and the only one with a real within-country signal; religious courts is retained as a legacy null.**
 
 Focal predictor and sub-items:
 - `composite_secularism_norm` — equal-weighted z-score composite across two dimensions (three *structural* GRI sub-items — state religion, religious law, religious courts; four WVS religious-intensity items), robust min-max scaled to [0,1]. Higher = more religious. Four treatment items (apostasy, blasphemy, gov favouritism, V-Dem religious freedom) were removed from the composite on 2026-04-16 and now appear only as standalone sub-item focals in the decomposition regressions.
@@ -36,17 +36,27 @@ Outcome: `wbl_treatment_index` — composite women's welfare index built by `sco
 
 **Why it's here.** Before introducing fixed effects, panel data, or any controls, *what does the raw cross-sectional correlation look like?* This is the simplest possible question — and the contrast is the visual headline for the deck.
 
-**What the result means.** **Composite panel (left):** downward slope, β ≈ −0.10 in the 2020 cross-section (p = 0.017) once GDP is controlled. Countries higher on the composite score systematically lower on women's welfare. **Apostasy panel (right):** same direction, β ≈ −0.12 (p < 0.01) with GDP; the underlying variable is binary so the dots form two columns. The cross-section reading is consistent across both: more secular countries have better women's welfare, on average.
+**What the result means.** **Composite panel (left):** downward slope, β ≈ −0.10 in the 2020 cross-section (p = 0.017) under the T1 full-controls spec (rule of law, corruption, education, rurality, political stability, GDP). Countries higher on the composite score systematically lower on women's welfare. **Apostasy panel (right):** same direction, β ≈ −0.12 (p < 0.01) under the same controls; the underlying variable is binary so the dots form two columns. The cross-section reading is consistent across both: more secular countries have better women's welfare, on average.
 
 ---
 
 ## 02_coefplot.png — Coefficient forest plot, T1 and T2
 
-**What it shows.** Two panels: Tier 1 (cross-sectional OLS, 2020 snapshot, GDP-controlled) on the left, Tier 2 (panel fixed effects 2013–2022, country + year FE, clustered SEs, GDP-controlled) on the right. Each panel shows coefficients with 95% CIs for the focal composite, the strongest sub-item (apostasy), the legacy sub-item (courts), and the remaining GRI indicators. GDP is shown last in italic grey as a pure control.
+**What it shows.** Two panels: Tier 1 (cross-sectional OLS, 2020 snapshot, T1 full controls) on the left, Tier 2 (panel fixed effects 2013–2022, country + year FE, clustered SEs, T2 full controls) on the right. Each panel shows coefficients with 95% CIs for the focal composite, the strongest sub-item (apostasy), the legacy sub-item (courts), and the remaining GRI indicators. The control set is rule of law, corruption, education, rurality, political stability, and GDP; GDP is shown last in italic grey as a pure control.
 
 **Why it's here.** The conventional way economists present the headline: cross-section and within-country panel side by side. Two panels because the cross-sectional result and the within-country panel result do not always agree, and the Mundlak decomposition (figure 12) is the natural interpreter of any divergence.
 
-**What the result means.** **Composite:** T1 β = **−0.097 (p = 0.017)**; T2 β = **+0.024 (p = 0.09)**. Significant cross-country signal; within-country mildly positive and marginal under clustered SEs (tightens to p = 0.035 under Driscoll–Kraay HAC with the same point estimate). The sign flip between tiers is the core empirical puzzle and is resolved at figure 12. **Apostasy:** T1 β = −0.119 (p < 0.01); T2 β = −0.018 (p = 0.07, p < 0.01 under DK). Consistent sign across tiers; the only sub-item whose within-country signal survives. **Courts:** T1 β = +0.017 (n.s.); T2 β = −0.007 (n.s.). Null in both. The other GRI variables cluster around zero.
+**What the result means.** **Composite:** T1 β = **−0.097 (p = 0.017)**; T2 β = **+0.024 (p = 0.09)**. Significant cross-country signal; within-country mildly positive and marginal under clustered SEs (tightens to p = 0.035 under Driscoll–Kraay HAC with the same point estimate). The sign flip between tiers is the core empirical puzzle and is resolved at figure 03 (geometric) and figure 12 (formal). **Apostasy:** T1 β = −0.119 (p < 0.01); T2 β = −0.018 (p = 0.07, p < 0.01 under DK). Consistent sign across tiers; the only sub-item whose within-country signal survives. **Courts:** T1 β = +0.017 (n.s.); T2 β = −0.007 (n.s.). Null in both. The other GRI variables cluster around zero.
+
+---
+
+## 03_between_within.png — HERO FIGURE — between-country staircase with within-country arrows
+
+**What it shows.** A single panel of the 2013–2022 composite panel (N = 186 countries with ≥3 non-null years). Country-level panel-means are plotted as small region-coloured dots. Behind them, thin grey arrows run from each country's 2013 (composite, women's welfare) point to its 2022 point — showing within-country movement. Overlaid on top, four large navy markers connected by a thick line trace the mean (composite, women's welfare) of each composite quartile Q1 (most secular) → Q4 (most religious). Anchor labels IRN, USA, NOR, IND, SAU, ZAF mark position on the panel-mean dots. A corner annotation quotes the formal T4 Mundlak numbers (β_between = −0.138, p = 0.003; β_within = +0.023, p = 0.12; ratio ≈ 6×, opposite signs) and points to figure 12 for the numerical companion.
+
+**Why it's here.** This is the visual companion to figure 12's formal decomposition. Audiences read geometry faster than forest plots, and the deck's central claim — *the secularism–women's welfare association lives between countries, not within them, over a decade* — is a shape claim. Showing that shape directly, in (composite, welfare) space, makes the claim legible before the econometric machinery that formalises it.
+
+**What the result means.** Two patterns in the same picture. **Between countries:** the quartile line trends down from Q1 to Q4 overall. Q1–Q3 sit at a broadly similar women's-welfare level (~0.66–0.70); Q4 (the most-religious quartile) drops sharply to ~0.57. The structural gap is real but concentrated at the top of the composite distribution — it's a cliff more than a smooth staircase. **Within countries:** the 2013–2022 arrows are short. Most countries barely move on the composite over a decade, and the few that do move do not systematically move toward higher women's welfare. The geometric reading matches the Mundlak numbers: a meaningful between-country effect, a near-zero within-country effect, and the two in opposite directions.
 
 ---
 
@@ -118,7 +128,9 @@ Outcome: `wbl_treatment_index` — composite women's welfare index built by `sco
 
 ---
 
-## 12_mundlak_decomposition.png — HERO FIGURE — within vs between
+## Appendix — 12_mundlak_decomposition.png — formal between-vs-within forest
+
+*Formal coefficient plot of the between-vs-within decomposition. The geometric version (figure 03) is the deck hero; this figure is the numerical companion, kept in the appendix for readers who want the full T4 Mundlak coefficient-and-confidence-interval table.*
 
 **What it shows.** Two panels using the T4 Mundlak random-effects + fixed-effects hybrid (Bell & Jones 2015 framing). **Left:** the within-country effect for each predictor — how a *change* in the predictor within one country relates to a *change* in women's welfare. **Right:** the between-country effect — how a country's *average level* of the predictor relates to its *average level* of women's welfare. The composite row is highlighted. A large between/within ratio annotation sits in the centre.
 
@@ -151,7 +163,7 @@ If you have ~10 slides:
 1. **00 map** — geography of composite secularism (sets the scene).
 2. **01 scatter** — raw bivariate contrast (the cross-section headline visually).
 3. **02 coefplot** — the formal result, T1 cross-section and T2 panel FE side by side.
-4. **12 mundlak (HERO)** — *why* the effect is structural, not temporal.
+4. **03 between_within (HERO)** — the geometric between-vs-within picture. Audiences read geometry faster than forest plots; this is the deck's central visual.
 5. **05 LOO** — robustness: not driven by any one country.
 6. **07 spec ladder** — robustness: stable across specifications.
 7. **09 Oster** — robustness: apostasy survives extreme OVB.
@@ -159,6 +171,6 @@ If you have ~10 slides:
 9. **10 alt outcomes** — external validity across outcome indices.
 10. **11 WBL groups** — domain-by-domain null check on the within-country coefficient.
 
-Figure 13 (long-difference) is a backup/Q&A figure rather than a slide: it answers the specific question "is the within-country null driven by annual noise or WVS interpolation?" and can be pulled up if a reviewer asks. Keeping it off the main deck keeps the 10-slide structural-cross-country story clean.
+Figures 12 (Mundlak forest) and 13 (long-difference) are appendix/Q&A figures rather than slides. Pull up figure 12 if a reviewer wants the formal between-vs-within numbers and confidence intervals behind figure 03's geometric version. Pull up figure 13 if a reviewer asks whether the within-country null is an annual-noise or WVS-interpolation artefact. Keeping both off the main deck keeps the 10-slide structural-cross-country story clean.
 
 Closing: the composite secularism–women's welfare association is strong cross-country and small or wrong-signed within-country over a decade; apostasy is the strongest individual sub-item and the only one with a real within-country signal; religious courts is a power-limited null, retained for legacy comparison.

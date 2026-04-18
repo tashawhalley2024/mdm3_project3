@@ -120,6 +120,18 @@ OUT_MUNDLAK = os.path.join(ROOT, "figures/12_mundlak_decomposition.png")
 OUT_LONGDIFF = os.path.join(ROOT, "figures/13_long_difference.png")
 WBL_OUTCOME_PATH = os.path.join(ROOT, "data/outcome_wbl.csv")
 
+# Mirror analysis/run_analysis.py:83-94 so plot_scatter can replicate the
+# T1_with_gdp fit that the headline table (and figure_guide.md caption) quotes.
+T1_CONTROLS_GDP = [
+    "v2x_rule_norm", "v2x_corr_norm", "education_norm",
+    "rurality_norm", "conflict_norm", "log_gdppc_norm",
+]
+T1_GRI_PANEL_COLS = [
+    "gri_state_religion_norm", "gri_gov_favour_norm",
+    "gri_religious_law_norm", "gri_religious_courts_norm",
+    "gri_blasphemy_norm", "gri_apostasy_norm",
+]
+
 # FOCAL_PRED and REGION_MAP imported from src.config above
 
 REGION_COLORS = {
@@ -175,7 +187,12 @@ def plot_scatter(df: pd.DataFrame):
     so the viewer can see where the signal lives.
     """
     OUTCOME = "wbl_treatment_index"
-    cols = ["iso3", FOCAL_PRED, FOCAL_PRED_2, OUTCOME]
+    # Columns = union of both panels' T1_with_gdp regressors so the common
+    # sample matches the headline-table rows (n=163 for 2020).
+    cols = list(dict.fromkeys(
+        ["iso3", FOCAL_PRED, FOCAL_PRED_2, OUTCOME,
+         *T1_GRI_PANEL_COLS, *T1_CONTROLS_GDP]
+    ))
     snap = df[df["year"] == 2020][cols].dropna()
     if snap.empty:
         print("  No 2020 data for scatter -- skipping.")
@@ -189,9 +206,14 @@ def plot_scatter(df: pd.DataFrame):
 
     fig, axes = plt.subplots(1, 2, figsize=(13, 6), sharey=True)
 
-    for ax, pred, panel_title in [
-        (axes[0], FOCAL_PRED,   "Composite secularism"),
-        (axes[1], FOCAL_PRED_2, "Apostasy laws"),
+    # Per-panel predictors mirror analysis/run_analysis.py T1_with_gdp:
+    #   composite focal  → [focal] + CONTROLS_GDP (standalone, composite_tier_specs)
+    #   apostasy focal   → GRI_PANEL_COLS + CONTROLS_GDP (joint, tier1_cross_sectional)
+    for ax, pred, panel_title, pred_cols in [
+        (axes[0], FOCAL_PRED,   "Composite secularism",
+         [FOCAL_PRED] + T1_CONTROLS_GDP),
+        (axes[1], FOCAL_PRED_2, "Apostasy laws",
+         T1_GRI_PANEL_COLS + T1_CONTROLS_GDP),
     ]:
         for region, color in REGION_COLORS.items():
             sub = snap[snap["region"] == region]
@@ -200,10 +222,16 @@ def plot_scatter(df: pd.DataFrame):
             ax.scatter(sub[pred], sub[OUTCOME], c=color, label=region,
                        s=55, alpha=0.75, edgecolors="white", linewidth=0.6)
 
-        X  = sm.add_constant(snap[pred])
-        ols = sm.OLS(snap[OUTCOME], X).fit()
+        # Full-controls OLS with HC3 SEs — annotation matches T1_2020_with_gdp row.
+        X   = sm.add_constant(snap[pred_cols])
+        ols = sm.OLS(snap[OUTCOME], X).fit(cov_type="HC3")
+        # Prediction line: vary pred, hold every other regressor at its mean.
         x_grid = np.linspace(snap[pred].min(), snap[pred].max(), 100)
-        X_grid = sm.add_constant(x_grid)
+        means  = snap[pred_cols].mean()
+        X_grid_df = pd.DataFrame(np.tile(means.values, (len(x_grid), 1)),
+                                 columns=pred_cols)
+        X_grid_df[pred] = x_grid
+        X_grid = sm.add_constant(X_grid_df, has_constant="add")
         y_hat  = ols.predict(X_grid)
         ci     = ols.get_prediction(X_grid).conf_int(alpha=0.05)
 
@@ -215,7 +243,7 @@ def plot_scatter(df: pd.DataFrame):
         pval = ols.pvalues[pred]
         stars = _sig_stars(pval) or "n.s."
         ax.annotate(
-            f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\nn = {len(snap)}",
+            f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\nn = {int(ols.nobs)}   (T1 full controls)",
             xy=(0.03, 0.05), xycoords="axes fraction",
             fontsize=11, ha="left", va="bottom",
             bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
@@ -280,7 +308,7 @@ def plot_coefplot():
     tier_order = ["T1_with_gdp", "T2_with_gdp"]
     tier_titles = {
         "T1_with_gdp": "Tier 1 — Cross-sectional OLS (2020)",
-        "T2_with_gdp": "Tier 2 — Panel fixed effects (2007–2022)",
+        "T2_with_gdp": "Tier 2 — Panel fixed effects (2013–2022)",
     }
 
     # Focal predictors rendered at the top; all other GRI/governance rows are
@@ -1189,6 +1217,141 @@ def plot_world_map():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# 11. BETWEEN-VS-WITHIN HERO FIGURE
+# Geometric companion to the Mundlak forest: the quartile staircase shows the
+# between-country structure; grey 2013→2022 arrows show how little countries
+# move within-country. Figure 12 (Mundlak) is the numerical companion.
+# ═══════════════════════════════════════════════════════════════════════════════
+OUT_BETWEEN_WITHIN = os.path.join(ROOT, "figures/03_between_within.png")
+MIN_PANEL_YEARS_FOR_MEAN = 3  # require ≥3 non-null years to include a country's mean
+
+
+def plot_between_within(df: pd.DataFrame):
+    """Quartile staircase (between) + country 2013→2022 arrows (within).
+
+    Deck hero visual; figure 12 is the formal numerical companion.
+    """
+    OUTCOME = "wbl_treatment_index"
+    panel = df[(df["year"] >= 2013) & (df["year"] <= 2022)].copy()
+
+    # Country panel means — require ≥MIN_PANEL_YEARS_FOR_MEAN non-null years
+    # on both composite and wbl so short-history countries don't dominate.
+    clean = panel.dropna(subset=[FOCAL_PRED, OUTCOME])
+    agg = (clean.groupby("iso3")
+                .agg(mean_composite=(FOCAL_PRED, "mean"),
+                     mean_wbl=(OUTCOME, "mean"),
+                     n_years=(FOCAL_PRED, "size"))
+                .reset_index())
+    agg = agg[agg["n_years"] >= MIN_PANEL_YEARS_FOR_MEAN].copy()
+    agg["region"] = agg["iso3"].map(get_region)
+    agg["quartile"] = pd.qcut(agg["mean_composite"], 4,
+                              labels=["Q1", "Q2", "Q3", "Q4"])
+
+    quart_means = (agg.groupby("quartile", observed=True)
+                      [["mean_composite", "mean_wbl"]].mean())
+
+    # 2013→2022 endpoints: countries with both observations on both variables
+    endpoints = (panel[panel["year"].isin([2013, 2022])]
+                      .dropna(subset=[FOCAL_PRED, OUTCOME])
+                      .pivot_table(index="iso3", columns="year",
+                                   values=[FOCAL_PRED, OUTCOME],
+                                   aggfunc="first"))
+    endpoints = endpoints.dropna()
+
+    # Validations — surface if the between-country story is not clean
+    if len(endpoints) < 80:
+        print(f"  WARNING: only {len(endpoints)} countries with 2013+2022 "
+              f"endpoints (expected ≥80)")
+    wbl_by_q = quart_means["mean_wbl"].values
+    monotone = all(wbl_by_q[i] >= wbl_by_q[i + 1] for i in range(len(wbl_by_q) - 1))
+    if not monotone:
+        print(f"  WARNING: quartile mean_wbl not monotone descending: "
+              f"{np.round(wbl_by_q, 3)}")
+
+    fig, ax = plt.subplots(figsize=(10, 7))
+
+    # Background: 2013→2022 arrows
+    for iso3 in endpoints.index:
+        x0 = endpoints.loc[iso3, (FOCAL_PRED, 2013)]
+        y0 = endpoints.loc[iso3, (OUTCOME, 2013)]
+        x1 = endpoints.loc[iso3, (FOCAL_PRED, 2022)]
+        y1 = endpoints.loc[iso3, (OUTCOME, 2022)]
+        ax.annotate("", xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle="->", color="#888",
+                                    alpha=0.35, linewidth=0.7),
+                    zorder=1)
+
+    # Country panel-mean dots coloured by region
+    for region, color in REGION_COLORS.items():
+        sub = agg[agg["region"] == region]
+        if sub.empty:
+            continue
+        ax.scatter(sub["mean_composite"], sub["mean_wbl"],
+                   c=color, s=35, alpha=0.65, edgecolors="white",
+                   linewidth=0.5, label=region, zorder=3)
+
+    # Quartile overlay
+    line_color = PALETTE.get("composite", PALETTE["courts"])
+    ax.plot(quart_means["mean_composite"], quart_means["mean_wbl"],
+            color=line_color, linewidth=2.8, zorder=5)
+    ax.scatter(quart_means["mean_composite"], quart_means["mean_wbl"],
+               s=300, color=line_color, edgecolor="white",
+               linewidth=2, zorder=6)
+    for q, x, y in zip(quart_means.index,
+                       quart_means["mean_composite"],
+                       quart_means["mean_wbl"]):
+        ax.annotate(str(q), xy=(x, y), ha="center", va="center",
+                    fontsize=9, fontweight="bold", color="white", zorder=7)
+
+    # Anchor country labels
+    for iso in ["IRN", "USA", "NOR", "IND", "SAU", "ZAF"]:
+        row = agg[agg["iso3"] == iso]
+        if row.empty:
+            continue
+        ax.annotate(iso,
+                    xy=(row.iloc[0]["mean_composite"],
+                        row.iloc[0]["mean_wbl"]),
+                    xytext=(5, 5), textcoords="offset points",
+                    fontsize=9, color="#222", fontweight="bold", zorder=8)
+
+    ax.set_xlabel("Composite secularism (normalised, higher = more religious)",
+                  fontsize=11)
+    ax.set_ylabel("Women's treatment index", fontsize=11)
+    ax.grid(alpha=0.3, linewidth=0.5)
+    _narrative_title(
+        ax,
+        "Between countries: a clear staircase. Within countries: arrows that barely move.",
+        subtitle="Quartile means (coloured dots, line) vs country-level "
+                 "2013→2022 movement (grey arrows)",
+    )
+
+    # Mundlak annotation — pulled from results/results.csv T4_mundlak_re rows
+    ax.annotate(
+        "T4 Mundlak decomposition:\n"
+        "  Between β = −0.138  (p = 0.003)\n"
+        "  Within  β = +0.023  (p = 0.12)\n"
+        "  Ratio ≈ 6×, opposite signs\n"
+        "See figure 12 (appendix) for the formal plot.",
+        xy=(0.97, 0.03), xycoords="axes fraction",
+        fontsize=9, ha="right", va="bottom",
+        bbox=dict(boxstyle="round,pad=0.5", facecolor="white",
+                  edgecolor=line_color, linewidth=1.2, alpha=0.95),
+        zorder=9,
+    )
+
+    ax.legend(loc="upper right", framealpha=0.92, ncol=2, fontsize=8)
+
+    plt.tight_layout()
+    plt.savefig(OUT_BETWEEN_WITHIN, dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved -> {OUT_BETWEEN_WITHIN}")
+    print(f"    Countries with panel-mean (>= {MIN_PANEL_YEARS_FOR_MEAN}y): "
+          f"{len(agg)}")
+    print(f"    Countries with 2013+2022 endpoints: {len(endpoints)}")
+    print(f"    Quartile mean_wbl (Q1->Q4): {list(np.round(wbl_by_q, 3))}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # 12. MUNDLAK WITHIN-VS-BETWEEN DECOMPOSITION
 # ═══════════════════════════════════════════════════════════════════════════════
 LABELS_SHORT = {
@@ -1534,42 +1697,58 @@ def main():
         comp.drop(columns=["country"], errors="ignore"),
         on=["iso3", "year"], how="left", suffixes=("", "_comp"),
     )
+    # Mirror analysis/run_analysis.py:load_and_merge so plot_scatter sees the
+    # same T1_with_gdp regressors. v2x_rule_norm lives in the old outcome
+    # composite file; the 4 additional controls live in controls_additional.
+    old_path = os.path.join(ROOT, "data/outcome_composite.csv")
+    if os.path.exists(old_path):
+        aux_needed = [c for c in ["v2x_rule_norm"] if c not in df.columns]
+        if aux_needed:
+            aux = pd.read_csv(old_path)[["iso3", "year"] + aux_needed]
+            df = df.merge(aux, on=["iso3", "year"], how="left")
+    ctrl_path = os.path.join(ROOT, "data/controls_additional.csv")
+    if os.path.exists(ctrl_path):
+        ctrl = pd.read_csv(ctrl_path)
+        df = df.merge(ctrl, on=["iso3", "year"], how="left")
     # Item 2 (2026-04-15): build composite in-memory so FOCAL_PRED
     # (composite_secularism_norm) is available to plot_scatter and
     # other plots that reference FOCAL_PRED as a column in df.
     df = build_secularism_composite(df)
 
-    print("\n[1/10] World choropleth map...")
+    print("\n[1/12] World choropleth map...")
     plot_world_map()
 
-    print("\n[2/10] Scatter: courts vs apostasy (2020 dual panel)...")
+    print("\n[2/12] Scatter: courts vs apostasy (2020 dual panel)...")
     plot_scatter(df)
 
-    print("\n[3/10] Coefficient forest plot (slimmed)...")
+    print("\n[3/12] Coefficient forest plot (slimmed)...")
     plot_coefplot()
 
-    print("\n[4/10] WBL group score breakdown...")
+    print("\n[4/12] WBL group score breakdown...")
     plot_wbl_groups()
 
-    print("\n[5/10] LOO jackknife (composite + apostasy 2x2)...")
+    print("\n[5/12] LOO jackknife (composite + apostasy 2x2)...")
     plot_loo()
 
-    print("\n[6/10] Placebo outcomes (gendered mechanism)...")
+    print("\n[6/12] Placebo outcomes (gendered mechanism)...")
     plot_placebo()
 
-    print("\n[7/10] Specification stability (composite + apostasy)...")
+    print("\n[7/12] Specification stability (composite + apostasy)...")
     plot_spec_stability()
 
-    print("\n[8/10] Oster sensitivity (apostasy)...")
+    print("\n[8/12] Oster sensitivity (apostasy)...")
     plot_oster_sensitivity()
 
-    print("\n[9/10] Alternative outcomes comparison...")
+    print("\n[9/12] Alternative outcomes comparison...")
     plot_alternative_outcomes()
 
-    print("\n[10/11] Mundlak within-vs-between decomposition (hero figure)...")
+    print("\n[10/12] Between-vs-within quartile staircase (hero figure)...")
+    plot_between_within(df)
+
+    print("\n[11/12] Mundlak within-vs-between decomposition (appendix)...")
     plot_mundlak_decomposition()
 
-    print("\n[11/11] Long-difference (T5, decade-change 2013->2022)...")
+    print("\n[12/12] Long-difference (T5, decade-change 2013->2022)...")
     plot_long_difference()
 
     print("\nDone. All figures saved to figures/")
