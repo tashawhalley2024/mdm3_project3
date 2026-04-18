@@ -36,13 +36,13 @@ Outcome: `wbl_treatment_index` — composite women's welfare index built by `sco
 
 **Why it's here.** Before introducing fixed effects, panel data, or any controls, *what does the raw cross-sectional correlation look like?* This is the simplest possible question — and the contrast is the visual headline for the deck.
 
-**What the result means.** **Composite panel (left):** downward slope, β ≈ −0.10 in the 2020 cross-section (p = 0.017) once GDP is controlled. Countries higher on the composite score systematically lower on women's welfare. **Apostasy panel (right):** same direction, β ≈ −0.12 (p < 0.01) with GDP; the underlying variable is binary so the dots form two columns. The cross-section reading is consistent across both: more secular countries have better women's welfare, on average.
+**What the result means.** **Composite panel (left):** downward slope, β ≈ −0.10 in the 2020 cross-section (p = 0.017) under the T1 full-controls spec (rule of law, corruption, education, rurality, political stability, GDP). Countries higher on the composite score systematically lower on women's welfare. **Apostasy panel (right):** same direction, β ≈ −0.12 (p < 0.01) under the same controls; the underlying variable is binary so the dots form two columns. The cross-section reading is consistent across both: more secular countries have better women's welfare, on average.
 
 ---
 
 ## 02_coefplot.png — Coefficient forest plot, T1 and T2
 
-**What it shows.** Two panels: Tier 1 (cross-sectional OLS, 2020 snapshot, GDP-controlled) on the left, Tier 2 (panel fixed effects 2013–2022, country + year FE, clustered SEs, GDP-controlled) on the right. Each panel shows coefficients with 95% CIs for the focal composite, the strongest sub-item (apostasy), the legacy sub-item (courts), and the remaining GRI indicators. GDP is shown last in italic grey as a pure control.
+**What it shows.** Two panels: Tier 1 (cross-sectional OLS, 2020 snapshot, T1 full controls) on the left, Tier 2 (panel fixed effects 2013–2022, country + year FE, clustered SEs, T2 full controls) on the right. Each panel shows coefficients with 95% CIs for the focal composite, the strongest sub-item (apostasy), the legacy sub-item (courts), and the remaining GRI indicators. The control set is rule of law, corruption, education, rurality, political stability, and GDP; GDP is shown last in italic grey as a pure control.
 
 **Why it's here.** The conventional way economists present the headline: cross-section and within-country panel side by side. Two panels because the cross-sectional result and the within-country panel result do not always agree, and the Mundlak decomposition (figure 12) is the natural interpreter of any divergence.
 

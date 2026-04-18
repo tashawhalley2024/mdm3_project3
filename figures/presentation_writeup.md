@@ -30,7 +30,7 @@ The pattern lines up with common priors. The darkest cluster runs across the Mid
 
 Before doing any modelling, what does the simplest picture look like? Each country becomes one dot. The y-axis is the women's treatment index. On the left we plot it against the composite secularism index. On the right we plot it against the apostasy sub-item.
 
-The left panel slopes downwards. Countries scoring higher on composite secularism score systematically lower on women's welfare: the slope is around −0.10 in 2020 once GDP is controlled (p = 0.017). This is the cross-sectional headline of the paper.
+The left panel slopes downwards. Countries scoring higher on composite secularism score systematically lower on women's welfare: the slope is around −0.10 in 2020 once we control for rule of law, corruption, education, rurality, political stability, and GDP (p = 0.017). This is the cross-sectional headline of the paper.
 
 The right panel shows the same direction for apostasy laws — countries with apostasy laws score lower on women's welfare on average, by around −0.12 points. Because apostasy is a yes/no variable, the dots form two columns; the slope is the average vertical gap between them.
 
