@@ -308,7 +308,7 @@ def plot_coefplot():
     tier_order = ["T1_with_gdp", "T2_with_gdp"]
     tier_titles = {
         "T1_with_gdp": "Tier 1 — Cross-sectional OLS (2020)",
-        "T2_with_gdp": "Tier 2 — Panel fixed effects (2007–2022)",
+        "T2_with_gdp": "Tier 2 — Panel fixed effects (2013–2022)",
     }
 
     # Focal predictors rendered at the top; all other GRI/governance rows are
