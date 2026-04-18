@@ -26,3 +26,11 @@ desktop.ini
 
 # Test artifacts
 .pytest_cache/
+
+# 2026-04-18 — internal / process / writing content, keep local only
+CLAUDE.md
+TODO.md
+reviews/
+docs/
+writing/
+figures/presentation_writeup.md
