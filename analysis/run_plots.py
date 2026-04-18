@@ -120,6 +120,18 @@ OUT_MUNDLAK = os.path.join(ROOT, "figures/12_mundlak_decomposition.png")
 OUT_LONGDIFF = os.path.join(ROOT, "figures/13_long_difference.png")
 WBL_OUTCOME_PATH = os.path.join(ROOT, "data/outcome_wbl.csv")
 
+# Mirror analysis/run_analysis.py:83-94 so plot_scatter can replicate the
+# T1_with_gdp fit that the headline table (and figure_guide.md caption) quotes.
+T1_CONTROLS_GDP = [
+    "v2x_rule_norm", "v2x_corr_norm", "education_norm",
+    "rurality_norm", "conflict_norm", "log_gdppc_norm",
+]
+T1_GRI_PANEL_COLS = [
+    "gri_state_religion_norm", "gri_gov_favour_norm",
+    "gri_religious_law_norm", "gri_religious_courts_norm",
+    "gri_blasphemy_norm", "gri_apostasy_norm",
+]
+
 # FOCAL_PRED and REGION_MAP imported from src.config above
 
 REGION_COLORS = {
@@ -175,7 +187,12 @@ def plot_scatter(df: pd.DataFrame):
     so the viewer can see where the signal lives.
     """
     OUTCOME = "wbl_treatment_index"
-    cols = ["iso3", FOCAL_PRED, FOCAL_PRED_2, OUTCOME]
+    # Columns = union of both panels' T1_with_gdp regressors so the common
+    # sample matches the headline-table rows (n=163 for 2020).
+    cols = list(dict.fromkeys(
+        ["iso3", FOCAL_PRED, FOCAL_PRED_2, OUTCOME,
+         *T1_GRI_PANEL_COLS, *T1_CONTROLS_GDP]
+    ))
     snap = df[df["year"] == 2020][cols].dropna()
     if snap.empty:
         print("  No 2020 data for scatter -- skipping.")
@@ -189,9 +206,14 @@ def plot_scatter(df: pd.DataFrame):
 
     fig, axes = plt.subplots(1, 2, figsize=(13, 6), sharey=True)
 
-    for ax, pred, panel_title in [
-        (axes[0], FOCAL_PRED,   "Composite secularism"),
-        (axes[1], FOCAL_PRED_2, "Apostasy laws"),
+    # Per-panel predictors mirror analysis/run_analysis.py T1_with_gdp:
+    #   composite focal  → [focal] + CONTROLS_GDP (standalone, composite_tier_specs)
+    #   apostasy focal   → GRI_PANEL_COLS + CONTROLS_GDP (joint, tier1_cross_sectional)
+    for ax, pred, panel_title, pred_cols in [
+        (axes[0], FOCAL_PRED,   "Composite secularism",
+         [FOCAL_PRED] + T1_CONTROLS_GDP),
+        (axes[1], FOCAL_PRED_2, "Apostasy laws",
+         T1_GRI_PANEL_COLS + T1_CONTROLS_GDP),
     ]:
         for region, color in REGION_COLORS.items():
             sub = snap[snap["region"] == region]
@@ -200,10 +222,16 @@ def plot_scatter(df: pd.DataFrame):
             ax.scatter(sub[pred], sub[OUTCOME], c=color, label=region,
                        s=55, alpha=0.75, edgecolors="white", linewidth=0.6)
 
-        X  = sm.add_constant(snap[pred])
-        ols = sm.OLS(snap[OUTCOME], X).fit()
+        # Full-controls OLS with HC3 SEs — annotation matches T1_2020_with_gdp row.
+        X   = sm.add_constant(snap[pred_cols])
+        ols = sm.OLS(snap[OUTCOME], X).fit(cov_type="HC3")
+        # Prediction line: vary pred, hold every other regressor at its mean.
         x_grid = np.linspace(snap[pred].min(), snap[pred].max(), 100)
-        X_grid = sm.add_constant(x_grid)
+        means  = snap[pred_cols].mean()
+        X_grid_df = pd.DataFrame(np.tile(means.values, (len(x_grid), 1)),
+                                 columns=pred_cols)
+        X_grid_df[pred] = x_grid
+        X_grid = sm.add_constant(X_grid_df, has_constant="add")
         y_hat  = ols.predict(X_grid)
         ci     = ols.get_prediction(X_grid).conf_int(alpha=0.05)
 
@@ -215,7 +243,7 @@ def plot_scatter(df: pd.DataFrame):
         pval = ols.pvalues[pred]
         stars = _sig_stars(pval) or "n.s."
         ax.annotate(
-            f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\nn = {len(snap)}",
+            f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\nn = {int(ols.nobs)}   (T1 full controls)",
             xy=(0.03, 0.05), xycoords="axes fraction",
             fontsize=11, ha="left", va="bottom",
             bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
@@ -1534,6 +1562,19 @@ def main():
         comp.drop(columns=["country"], errors="ignore"),
         on=["iso3", "year"], how="left", suffixes=("", "_comp"),
     )
+    # Mirror analysis/run_analysis.py:load_and_merge so plot_scatter sees the
+    # same T1_with_gdp regressors. v2x_rule_norm lives in the old outcome
+    # composite file; the 4 additional controls live in controls_additional.
+    old_path = os.path.join(ROOT, "data/outcome_composite.csv")
+    if os.path.exists(old_path):
+        aux_needed = [c for c in ["v2x_rule_norm"] if c not in df.columns]
+        if aux_needed:
+            aux = pd.read_csv(old_path)[["iso3", "year"] + aux_needed]
+            df = df.merge(aux, on=["iso3", "year"], how="left")
+    ctrl_path = os.path.join(ROOT, "data/controls_additional.csv")
+    if os.path.exists(ctrl_path):
+        ctrl = pd.read_csv(ctrl_path)
+        df = df.merge(ctrl, on=["iso3", "year"], how="left")
     # Item 2 (2026-04-15): build composite in-memory so FOCAL_PRED
     # (composite_secularism_norm) is available to plot_scatter and
     # other plots that reference FOCAL_PRED as a column in df.
