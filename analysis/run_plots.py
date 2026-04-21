@@ -1193,7 +1193,7 @@ def plot_wbl_groups():
         ax.text(-0.02, n - 0.5, "Overall",
                 transform=ax.get_yaxis_transform(),
                 fontsize=9, color="#555", ha="right", va="center")
-        ax.text(-0.02, n - 2.0, "Components",
+        ax.text(-0.02, n - 1.7, "Components",
                 transform=ax.get_yaxis_transform(),
                 fontsize=9, color="#555", ha="right", va="center")
 
@@ -1450,11 +1450,13 @@ def plot_between_within(df: pd.DataFrame):
 # 12. MUNDLAK WITHIN-VS-BETWEEN DECOMPOSITION
 # ═══════════════════════════════════════════════════════════════════════════════
 LABELS_SHORT = {
+    "composite_secularism_norm": "Composite secularism",
     "gri_state_religion_norm": "State religion",
     "gri_religious_law_norm":  "Religious law",
     "gri_blasphemy_norm":      "Blasphemy laws",
     "gri_apostasy_norm":       "Apostasy laws",
     "gri_religious_courts_norm": "Religious courts",
+    "gri_gov_favour_norm":     "Gov favouritism",
     "v2x_rule_norm":           "Rule of law",
     "v2x_civlib_norm":         "Civil liberties",
     "v2x_egal_norm":           "Egalitarianism",
@@ -1578,7 +1580,7 @@ def plot_mundlak_decomposition():
     # Put legend on the right panel (interior, lower-right) where there's
     # room — fig-level legend was wrapping/overlapping with the footer note.
     axes[1].legend(
-        handles=legend_els, loc="lower right",
+        handles=legend_els, loc="lower left",
         framealpha=0.95, fontsize=10, ncol=2, columnspacing=1.5,
     )
 
