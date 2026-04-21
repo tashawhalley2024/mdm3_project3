@@ -65,8 +65,16 @@ def _presentation_style():
     })
 
 
+# Q12 — two-tier palette for the presentation deck; four-tier retained for
+# the writeup. Read from env so run_all.sh and the writeup build can override.
+PRES_MODE = os.environ.get("PLOTS_PRES_MODE", "1") == "1"
+
+
 def _sig_colour(pval: float) -> str:
     """Map a p-value to the palette significance colour."""
+    if PRES_MODE:
+        # Two-tier: anything p<0.05 is 'significant'; otherwise null-grey.
+        return PALETTE["sig_high"] if pval < 0.05 else PALETTE["null"]
     if pval < 0.01:  return PALETTE["sig_high"]
     if pval < 0.05:  return PALETTE["sig_med"]
     if pval < 0.10:  return PALETTE["sig_low"]
@@ -78,6 +86,21 @@ def _sig_stars(pval: float) -> str:
     if pval < 0.05:  return "**"
     if pval < 0.10:  return "*"
     return ""
+
+
+def _sig_legend_handles():
+    """Legend patches that match _sig_colour. Two-tier in PRES_MODE, four-tier in writeup mode."""
+    if PRES_MODE:
+        return [
+            mpatches.Patch(color=PALETTE["sig_high"], label="p < 0.05"),
+            mpatches.Patch(color=PALETTE["null"],     label="Not significant"),
+        ]
+    return [
+        mpatches.Patch(color=PALETTE["sig_high"], label="p < 0.01"),
+        mpatches.Patch(color=PALETTE["sig_med"],  label="p < 0.05"),
+        mpatches.Patch(color=PALETTE["sig_low"],  label="p < 0.10"),
+        mpatches.Patch(color=PALETTE["null"],     label="Not significant"),
+    ]
 
 
 def _narrative_title(ax_or_fig, punchline: str, subtitle: str = "", fig_level=False):
@@ -200,10 +223,6 @@ def plot_scatter(df: pd.DataFrame):
 
     snap["region"] = snap["iso3"].map(get_region)
 
-    # Anchor countries chosen for spread (one high-courts, one mid-outcome,
-    # one low-outcome) without label collisions on the binary x-axis.
-    anchor_iso = ["IRN", "USA", "NOR", "IND"]
-
     fig, axes = plt.subplots(1, 2, figsize=(13, 6), sharey=True)
 
     # Per-panel predictors mirror analysis/run_analysis.py T1_with_gdp:
@@ -215,67 +234,111 @@ def plot_scatter(df: pd.DataFrame):
         (axes[1], FOCAL_PRED_2, "Apostasy laws",
          T1_GRI_PANEL_COLS + T1_CONTROLS_GDP),
     ]:
-        for region, color in REGION_COLORS.items():
-            sub = snap[snap["region"] == region]
-            if sub.empty:
-                continue
-            ax.scatter(sub[pred], sub[OUTCOME], c=color, label=region,
-                       s=55, alpha=0.75, edgecolors="white", linewidth=0.6)
+        line_color = PALETTE["apostasy"] if pred == FOCAL_PRED_2 else PALETTE.get("composite", PALETTE["courts"])
 
-        # Full-controls OLS with HC3 SEs — annotation matches T1_2020_with_gdp row.
+        # Fit the full-controls OLS once per panel regardless of geometry —
+        # both the scatter-with-line composite panel and the violin-strip
+        # apostasy panel show β/p in an annotation box.
         X   = sm.add_constant(snap[pred_cols])
         ols = sm.OLS(snap[OUTCOME], X).fit(cov_type="HC3")
-        # Prediction line: vary pred, hold every other regressor at its mean.
-        x_grid = np.linspace(snap[pred].min(), snap[pred].max(), 100)
-        means  = snap[pred_cols].mean()
-        X_grid_df = pd.DataFrame(np.tile(means.values, (len(x_grid), 1)),
-                                 columns=pred_cols)
-        X_grid_df[pred] = x_grid
-        X_grid = sm.add_constant(X_grid_df, has_constant="add")
-        y_hat  = ols.predict(X_grid)
-        ci     = ols.get_prediction(X_grid).conf_int(alpha=0.05)
-
-        line_color = PALETTE["apostasy"] if pred == FOCAL_PRED_2 else PALETTE.get("composite", PALETTE["courts"])
-        ax.plot(x_grid, y_hat, color=line_color, linewidth=2.4, zorder=5)
-        ax.fill_between(x_grid, ci[:, 0], ci[:, 1], color=line_color, alpha=0.12)
-
         beta = ols.params[pred]
         pval = ols.pvalues[pred]
         stars = _sig_stars(pval) or "n.s."
-        ax.annotate(
-            f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\nn = {int(ols.nobs)}   (T1 full controls)",
-            xy=(0.03, 0.05), xycoords="axes fraction",
-            fontsize=11, ha="left", va="bottom",
-            bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
-                      edgecolor=line_color, linewidth=1.3, alpha=0.95),
-        )
 
-        # Country anchors
-        for iso in anchor_iso:
-            row = snap[snap["iso3"] == iso]
-            if row.empty:
-                continue
-            ax.annotate(iso,
-                        xy=(row.iloc[0][pred], row.iloc[0][OUTCOME]),
-                        xytext=(4, 4), textcoords="offset points",
-                        fontsize=8.5, color="#222", fontweight="bold")
+        if pred == FOCAL_PRED_2:
+            # Right panel — violin + jittered strip. Apostasy is binary-
+            # dominated (0/1 with few intermediate codes), so a violin body
+            # per level shows the outcome distribution clearly; per-country
+            # jittered dots overlay, region-coloured.
+            levels = sorted(snap[pred].unique())
+            groups, positions = [], []
+            for level in levels:
+                vals = snap.loc[snap[pred] == level, OUTCOME].values
+                if len(vals) >= 3:
+                    groups.append(vals)
+                    positions.append(level)
+            if len(groups) >= 2:
+                parts = ax.violinplot(
+                    groups, positions=positions, widths=0.55,
+                    showmeans=False, showmedians=True, showextrema=False,
+                )
+                for pc in parts["bodies"]:
+                    pc.set_facecolor(PALETTE["apostasy"])
+                    pc.set_alpha(0.22)
+                    pc.set_edgecolor(PALETTE["apostasy"])
+            rng = np.random.default_rng(seed=1)
+            for region, color in REGION_COLORS.items():
+                sub = snap[snap["region"] == region]
+                if sub.empty:
+                    continue
+                jitter = rng.uniform(-0.08, 0.08, size=len(sub))
+                ax.scatter(sub[pred] + jitter, sub[OUTCOME],
+                           c=color, label=region, s=36, alpha=0.70,
+                           edgecolors="white", linewidth=0.4)
+            ax.set_xticks([0, 1])
+            ax.set_xticklabels(["No apostasy law", "Apostasy law"])
+            ax.annotate(
+                f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\n"
+                f"n = {int(ols.nobs)}   (T1 full controls)",
+                xy=(0.03, 0.05), xycoords="axes fraction",
+                fontsize=11, ha="left", va="bottom",
+                bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
+                          edgecolor=line_color, linewidth=1.3, alpha=0.95),
+            )
+        else:
+            # Left panel — composite is continuous; keep the scatter, OLS fit
+            # and 95% CI band. Regional colour, no country anchors per Q9.
+            # Region labels are suppressed with a leading underscore so the
+            # composite panel's own legend only lists OLS fit + 95% CI.
+            for region, color in REGION_COLORS.items():
+                sub = snap[snap["region"] == region]
+                if sub.empty:
+                    continue
+                ax.scatter(sub[pred], sub[OUTCOME], c=color, label=f"_{region}",
+                           s=55, alpha=0.75, edgecolors="white", linewidth=0.6)
+            # Prediction line: vary pred, hold every other regressor at its mean.
+            x_grid = np.linspace(snap[pred].min(), snap[pred].max(), 100)
+            means  = snap[pred_cols].mean()
+            X_grid_df = pd.DataFrame(np.tile(means.values, (len(x_grid), 1)),
+                                     columns=pred_cols)
+            X_grid_df[pred] = x_grid
+            X_grid = sm.add_constant(X_grid_df, has_constant="add")
+            y_hat  = ols.predict(X_grid)
+            ci     = ols.get_prediction(X_grid).conf_int(alpha=0.05)
+            ax.plot(x_grid, y_hat, color=line_color, linewidth=2.4,
+                    zorder=5, label="OLS fit (other controls held at their mean)")
+            ax.fill_between(x_grid, ci[:, 0], ci[:, 1], color=line_color,
+                            alpha=0.12, label="95% CI")
+            ax.annotate(
+                f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\n"
+                f"n = {int(ols.nobs)}   (T1 full controls)",
+                xy=(0.03, 0.05), xycoords="axes fraction",
+                fontsize=11, ha="left", va="bottom",
+                bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
+                          edgecolor=line_color, linewidth=1.3, alpha=0.95),
+            )
 
         ax.set_xlabel(f"{panel_title} (GRI, normalised)")
         ax.set_title(panel_title, fontsize=13, fontweight="bold", loc="left", pad=8)
         ax.grid(alpha=0.3, linewidth=0.5)
 
     axes[0].set_ylabel("Women's treatment index")
-    axes[1].legend(loc="lower left", framealpha=0.92, ncol=2, fontsize=8)
+    # Regional legend on the right (apostasy) panel, upper-right to stay
+    # clear of the β/p annotation in lower-left. Composite panel gets its
+    # own legend for the OLS-fit line and 95% CI band, lower-right clear
+    # of the β/p box in lower-left.
+    axes[1].legend(loc="upper right", framealpha=0.92, ncol=2, fontsize=8)
+    axes[0].legend(loc="lower right", fontsize=8.5,
+                   framealpha=0.9, frameon=True)
 
-    # Note the binary structure of the courts variable — placed in upper-right
-    # of the courts panel away from the bottom-left β/p stats box.
-    axes[0].annotate(
-        "Variable is binary-coded (0/1)\nin Pew GRI",
-        xy=(0.97, 0.97), xycoords="axes fraction",
-        fontsize=8.5, ha="right", va="top",
+    # Binary note — moved from axes[0] (the continuous composite panel, where
+    # it was a stale label from the courts era) to axes[1] under the apostasy
+    # violin, as a one-line italic footer.
+    axes[1].annotate(
+        "Binary-coded in Pew GRI (0 = no law, 1 = law)",
+        xy=(0.5, -0.18), xycoords="axes fraction",
+        fontsize=8.5, ha="center", va="top",
         color="#666", style="italic",
-        bbox=dict(boxstyle="round,pad=0.3", facecolor="white",
-                  edgecolor="#ddd", alpha=0.85),
     )
 
     fig.suptitle(
@@ -305,32 +368,39 @@ def plot_coefplot():
     """
     df = pd.read_csv(RESULTS_PATH)
 
+    # Title depends on entity-clustered SEs. If tier is ever switched to DK
+    # (T2_with_gdp_dk), apostasy becomes p~0.003 and the suptitle's
+    # "not within them" claim must change.
     tier_order = ["T1_with_gdp", "T2_with_gdp"]
     tier_titles = {
-        "T1_with_gdp": "Tier 1 — Cross-sectional OLS (2020)",
-        "T2_with_gdp": "Tier 2 — Panel fixed effects (2013–2022)",
+        "T1_with_gdp": "Cross-sectional OLS (2020)",
+        "T2_with_gdp": "Two-way fixed effects panel (2013–2022)",
     }
 
-    # Focal predictors rendered at the top; all other GRI/governance rows are
-    # context. log_gdppc_norm is a pure control (not a hypothesis) and is
-    # listed last so it does not visually compete with the focal predictors.
+    # Focal predictors rendered at the top; the remaining GRI sub-items are
+    # hypothesis context; every CONTROLS_GDP regressor (rule, corruption,
+    # education, rurality, conflict, GDP) renders in the visually-demoted
+    # control block so the viewer reads them as covariates, not hypotheses.
     focal_preds = [FOCAL_PRED_2, FOCAL_PRED]
     context_preds = [
         "gri_state_religion_norm", "gri_religious_law_norm", "gri_blasphemy_norm",
-        "v2x_rule_norm", "v2x_corr_norm", "education_norm", "rurality_norm", "conflict_norm",
     ]
-    control_preds = ["log_gdppc_norm"]
+    control_preds = [
+        "v2x_rule_norm", "v2x_corr_norm", "education_norm",
+        "rurality_norm", "conflict_norm", "log_gdppc_norm",
+    ]
 
     skip_patterns = ["const", "yr_"]
 
-    fig, axes = plt.subplots(1, 2, figsize=(13, 7.5), sharex=False)
+    fig, axes = plt.subplots(1, 2, figsize=(14, 7.5), sharex=False, sharey=True)
     fig.suptitle(
-        "Composite secularism strong cross-country; apostasy survives within-country",
-        fontsize=17, fontweight="bold", y=1.04,
+        "Secularism and apostasy laws predict female treatment "
+        "between countries but not within them",
+        fontsize=16, fontweight="bold", y=1.04,
     )
     fig.text(
         0.5, 0.99,
-        "Coefficient estimates with 95% CIs; GDP-controlled; composite and apostasy highlighted; courts retained as legacy null.",
+        "Coefficient estimates with 95% CIs; GDP-controlled.",
         ha="center", fontsize=10.5, color="#555",
     )
 
@@ -380,6 +450,13 @@ def plot_coefplot():
             if row["focal"]:
                 ax.axhspan(i - 0.5, i + 0.5,
                            color=PALETTE["highlight_bg"], alpha=0.9, zorder=0)
+
+        # Visually demote the control block with a light grey band so viewers
+        # read them as covariates, not hypotheses.
+        ctrl_idx = [i for i, row in plot_rows.iterrows() if row["is_control"]]
+        if ctrl_idx:
+            ax.axhspan(min(ctrl_idx) - 0.5, max(ctrl_idx) + 0.5,
+                       color="#f2f2f2", alpha=0.6, zorder=0)
 
         for i, row in plot_rows.iterrows():
             # Controls render in plain grey regardless of significance — they
@@ -435,13 +512,12 @@ def plot_coefplot():
         ax.set_xlabel("Coefficient")
         ax.grid(axis="x", alpha=0.3, linewidth=0.5)
 
-    legend_handles = [
-        mpatches.Patch(color=PALETTE["sig_high"], label="p < 0.01"),
-        mpatches.Patch(color=PALETTE["sig_med"],  label="p < 0.05"),
-        mpatches.Patch(color=PALETTE["sig_low"],  label="p < 0.10"),
-        mpatches.Patch(color=PALETTE["null"],     label="Not significant"),
-    ]
-    fig.legend(handles=legend_handles, loc="lower center", ncol=4,
+    # Shared y-axis: right panel re-uses the left panel's labels.
+    axes[1].tick_params(labelleft=False)
+
+    legend_handles = _sig_legend_handles()
+    fig.legend(handles=legend_handles, loc="lower center",
+               ncol=len(legend_handles),
                bbox_to_anchor=(0.5, -0.02), frameon=False)
 
     plt.tight_layout(rect=[0, 0.02, 1, 0.93])
@@ -488,9 +564,12 @@ def _render_loo_column(loo, ax_strip, ax_bars, palette_color, label_name):
                      label="Zero (sign-flip threshold)")
 
     # Two-line title: bold predictor name + headline result on next line
+    flip_word = "Zero" if n_flips == 0 else str(n_flips)
+    sig_plural = "run" if n_sig == 1 else "runs"
+    remain_verb = "remains" if n_sig == 1 else "remain"
     headline = (
-        f"{n_sig}/{n_total} LOO runs p < 0.05    •    "
-        f"{n_flips} sign flip{'s' if n_flips != 1 else ''}"
+        f"{flip_word} sign flips across {n_total} country drops; "
+        f"{n_sig} {sig_plural} {remain_verb} p < 0.05."
     )
     ax_strip.set_title(
         f"{label_name}\n{headline}",
@@ -799,22 +878,32 @@ def plot_spec_stability():
                         "Apostasy laws", PALETTE["apostasy"])
 
     fig.suptitle(
-        "Robust across every specification",
+        "Results are robust across specifications: "
+        "results are not driven by noise",
         fontsize=16, fontweight="bold", y=1.00,
     )
     fig.text(
         0.5, 0.95,
-        "Composite within-null and apostasy signal stable across nine specification variants.",
+        "Composite and apostasy coefficients stable across "
+        "nine specification variants.",
         ha="center", fontsize=10.5, color="#555",
     )
 
-    legend_handles = [
-        mpatches.Patch(color=PALETTE["sig_high"], label="p < 0.01"),
-        mpatches.Patch(color=PALETTE["sig_med"],  label="p < 0.05"),
-        mpatches.Patch(color=PALETTE["sig_low"],  label="p < 0.10"),
-        mpatches.Patch(color=PALETTE["null"],     label="Not significant"),
-    ]
-    fig.legend(handles=legend_handles, loc="lower center", ncol=4,
+    # Q11: flag the composite-vs-apostasy spec asymmetry. The composite
+    # side only has Bivariate + Main; the extended specs (CEDAW, pre-COVID,
+    # lag L1/L2, MENA-only, ...) are fitted for apostasy only upstream.
+    if len(composite_rows) < len(apos_rows):
+        axes[0].text(
+            0.98, 0.02,
+            "Extended sensitivity specs fitted for apostasy only",
+            transform=axes[0].transAxes,
+            fontsize=8, ha="right", va="bottom",
+            style="italic", color="#888",
+        )
+
+    legend_handles = _sig_legend_handles()
+    fig.legend(handles=legend_handles, loc="lower center",
+               ncol=len(legend_handles),
                bbox_to_anchor=(0.5, -0.02), frameon=False)
 
     plt.tight_layout(rect=[0, 0.02, 1, 0.93])
@@ -1022,15 +1111,10 @@ def plot_alternative_outcomes():
         fontsize=10, fontweight="normal", color="#555", loc="left", pad=10,
     )
 
-    legend_handles = [
-        mpatches.Patch(color=PALETTE["sig_high"], label="p < 0.01"),
-        mpatches.Patch(color=PALETTE["sig_med"],  label="p < 0.05"),
-        mpatches.Patch(color=PALETTE["sig_low"],  label="p < 0.10"),
-        mpatches.Patch(color=PALETTE["null"],     label="Not significant"),
-    ]
+    legend_handles = _sig_legend_handles()
     ax.legend(handles=legend_handles,
               loc="upper center", bbox_to_anchor=(0.5, -0.18),
-              ncol=4, frameon=False)
+              ncol=len(legend_handles), frameon=False)
     ax.grid(axis="x", alpha=0.3, linewidth=0.5)
 
     plt.tight_layout()
@@ -1067,6 +1151,18 @@ def plot_wbl_groups():
     groups  = focal[focal["group"] != "overall_score"].sort_values("coef")
     focal   = pd.concat([overall, groups], ignore_index=True).reset_index(drop=True)
 
+    # Q5: slide-side label simplifications. "Family & safety" narrows to
+    # "Marriage" for the deck (the underlying WBL taxonomy also covers
+    # divorce and domestic violence). "Economic rights" -> "Entrepreneurship"
+    # and "Assets & Inheritance" -> "Assets" per Phoebe's nomenclature.
+    WBL_GROUP_RENAME = {
+        "Family & safety":      "Marriage",
+        "Economic rights":      "Entrepreneurship",
+        "Assets & Inheritance": "Assets",
+        "Assets & inheritance": "Assets",
+    }
+    focal["group_label"] = focal["group_label"].replace(WBL_GROUP_RENAME)
+
     n = len(focal)
     fig, ax = plt.subplots(figsize=(11, max(5, n * 0.55 + 2)))
 
@@ -1088,9 +1184,18 @@ def plot_wbl_groups():
                     xytext=(8, 0), textcoords="offset points",
                     fontsize=9, va="center", color="#333")
 
-    # Divider between overall and domain scores
+    # Divider between overall and domain scores — thick solid line plus
+    # left-margin "Overall" / "Components" labels so the top row reads as
+    # the headline and the 10 rows below it read as decomposition.
     if len(overall) > 0:
-        ax.axhline(n - 1.5, color="#aaa", linewidth=0.8, linestyle="--", alpha=0.8)
+        ax.axhline(n - 1.5, color="#444", linewidth=1.8,
+                   linestyle="-", alpha=0.8, zorder=1)
+        ax.text(-0.02, n - 0.5, "Overall",
+                transform=ax.get_yaxis_transform(),
+                fontsize=9, color="#555", ha="right", va="center")
+        ax.text(-0.02, n - 2.0, "Components",
+                transform=ax.get_yaxis_transform(),
+                fontsize=9, color="#555", ha="right", va="center")
 
     ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
     ax.set_yticks(range(n))
@@ -1099,32 +1204,22 @@ def plot_wbl_groups():
         fontsize=11,
     )
     ax.set_xlabel(
-        "Coefficient on religious courts (panel FE, country + year FE, GDP-controlled)\n"
+        "Coefficient on composite secularism "
+        "(panel FE, country + year FE, GDP-controlled)\n"
         "Outcomes: WBL group scores  |  Period: 2013–2022",
     )
 
     fig.suptitle(
-        "Within-country null holds across every one of the 10 WBL legal-rights domains",
+        "Within-country null holds on the overall WBL index",
         fontsize=15, fontweight="bold", y=1.00,
     )
     ax.set_title(
-        "Composite secularism coefficient for each WBL legal-rights domain plus the overall WBL index",
-        fontsize=10, fontweight="normal", color="#555", loc="left", pad=10,
+        "Domain breakdown: Health and Entrepreneurship are marginal "
+        "(p < 0.10); every other domain is null.",
+        fontsize=10, fontweight="normal", color="#555",
+        loc="left", pad=10,
     )
 
-    # Every row is non-significant — replace the standard 4-category legend
-    # with a single annotation that reinforces the message rather than adding
-    # unused categories of visual noise.
-    all_pvals = focal["pval"].dropna().values
-    if len(all_pvals) and (all_pvals > 0.10).all():
-        ax.annotate(
-            "All p > 0.10",
-            xy=(0.97, 0.05), xycoords="axes fraction",
-            fontsize=12, ha="right", va="bottom", fontweight="bold",
-            color=PALETTE["null"],
-            bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
-                      edgecolor=PALETTE["null"], linewidth=1.0),
-        )
     ax.grid(axis="x", alpha=0.3, linewidth=0.5)
 
     plt.tight_layout()
@@ -1328,9 +1423,9 @@ def plot_between_within(df: pd.DataFrame):
     # Mundlak annotation — pulled from results/results.csv T4_mundlak_re rows
     ax.annotate(
         "T4 Mundlak decomposition:\n"
-        "  Between β = −0.138  (p = 0.003)\n"
-        "  Within  β = +0.023  (p = 0.12)\n"
-        "  Ratio ≈ 6×, opposite signs\n"
+        "  Between β = −0.120  (p = 0.014)\n"
+        "  Within  β = +0.019  (p = 0.24)\n"
+        "  Ratio ≈ 6.3×, opposite signs\n"
         "See figure 12 (appendix) for the formal plot.",
         xy=(0.97, 0.03), xycoords="axes fraction",
         fontsize=9, ha="right", va="bottom",
@@ -1461,33 +1556,25 @@ def plot_mundlak_decomposition():
         ha="center", fontsize=11, color="#555",
     )
 
-    # Annotate the between/within ratio for FOCAL_PRED (was apostasy-keyed).
+    # Annotate the between/within ratio for FOCAL_PRED as a subtle inset
+    # on the right (between) panel — the huge mid-figure callout was
+    # visually dominant and crowded the two panels.
     ratio_color = PALETTE.get("composite", PALETTE["apostasy"])
     if apostasy_y is not None:
         apo = df_plot.iloc[apostasy_y]
         if apo["within_coef"] != 0:
             ratio = apo["between_coef"] / apo["within_coef"]
-            fig.text(
-                0.5, 0.50,
-                f"{abs(ratio):.1f}×",
-                ha="center", va="center",
-                fontsize=44, fontweight="bold",
-                color=ratio_color,
-            )
-            fig.text(
-                0.5, 0.40,
-                "between-effect\nvs within-effect",
-                ha="center", va="center",
-                fontsize=11, color=ratio_color, fontweight="bold",
+            axes[1].annotate(
+                f"Between/Within = {abs(ratio):.1f}×",
+                xy=(0.97, 0.05), xycoords="axes fraction",
+                fontsize=12, fontweight="bold",
+                ha="right", va="bottom", color=ratio_color,
+                bbox=dict(boxstyle="round,pad=0.35",
+                          facecolor="white",
+                          edgecolor=ratio_color, linewidth=1.0),
             )
 
-    from matplotlib.patches import Patch
-    legend_els = [
-        Patch(facecolor=PALETTE["sig_high"], label="p < 0.01"),
-        Patch(facecolor=PALETTE["sig_med"],  label="p < 0.05"),
-        Patch(facecolor=PALETTE["sig_low"],  label="p < 0.10"),
-        Patch(facecolor=PALETTE["null"],     label="n.s."),
-    ]
+    legend_els = _sig_legend_handles()
     # Put legend on the right panel (interior, lower-right) where there's
     # room — fig-level legend was wrapping/overlapping with the footer note.
     axes[1].legend(
@@ -1630,17 +1717,18 @@ def plot_long_difference():
                  fontweight="bold", loc="left", pad=8)
     ax.grid(axis="x", alpha=0.3, linewidth=0.5)
 
-    # Right: decade-change scatter (headline composite)
+    # Right: decade-change scatter (headline composite). Q17 — uniform
+    # neutral fill so the regional legend no longer competes with the
+    # left forest panel's significance colouring. Q10 — strip stats from
+    # the title; the same β/p/N already appears in the left forest panel.
     ax2 = axes[1]
     if deltas is not None and ols is not None:
-        for region, color in REGION_COLORS.items():
-            sub = deltas[deltas["region"] == region]
-            if sub.empty:
-                continue
-            ax2.scatter(sub["composite_secularism_norm"],
-                        sub["wbl_treatment_index"],
-                        c=color, label=region, s=48, alpha=0.72,
-                        edgecolors="white", linewidth=0.5)
+        ax2.scatter(
+            deltas["composite_secularism_norm"],
+            deltas["wbl_treatment_index"],
+            c="#6c7a89", s=48, alpha=0.72,
+            edgecolors="white", linewidth=0.5,
+        )
         x_grid = np.linspace(
             float(deltas["composite_secularism_norm"].min()),
             float(deltas["composite_secularism_norm"].max()), 100)
@@ -1652,16 +1740,10 @@ def plot_long_difference():
                           color="#444", alpha=0.12, zorder=4)
         ax2.axhline(0, color="grey", linewidth=0.6, linestyle=":", alpha=0.6)
         ax2.axvline(0, color="grey", linewidth=0.6, linestyle=":", alpha=0.6)
-        beta = float(ols.params["composite_secularism_norm"])
-        se   = float(ols.bse["composite_secularism_norm"])
-        pv   = float(ols.pvalues["composite_secularism_norm"])
-        stars = _sig_stars(pv) or "n.s."
         ax2.set_title(
-            f"Δ(WBL) vs Δ(Composite)   β={beta:+.3f}  SE={se:.3f}  "
-            f"p={pv:.3f} {stars}  N={int(ols.nobs)}",
-            fontsize=11, fontweight="bold", loc="left", pad=8)
-        ax2.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0),
-                   frameon=False, fontsize=9)
+            "Δ(WBL) vs Δ(Composite), 2013→2022",
+            fontsize=11, fontweight="bold", loc="left", pad=8,
+        )
     else:
         ax2.text(0.5, 0.5, "Scatter data unavailable", ha="center",
                  va="center", transform=ax2.transAxes, fontsize=11,

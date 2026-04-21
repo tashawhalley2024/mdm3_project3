@@ -1,3 +1,3 @@
 spec,coef,se,pval,r2,n_obs,delta_Rmax_=_2.2,delta_Rmax_=_1.0
-Bivariate (gri_apostasy_norm),-0.021441,0.010337,0.038241,0.006037,1639,,
-Full model (GDP-controlled),-0.013977,0.010030,0.163648,0.031657,1639,1.263014,0.049549
+Bivariate (gri_apostasy_norm),-0.023713,0.012543,0.058896,0.007074,1639,,
+Full model (GDP-controlled),-0.016459,0.012615,0.192196,0.033473,1639,1.491437,0.061983

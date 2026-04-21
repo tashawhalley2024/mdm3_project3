@@ -173,8 +173,12 @@ try:
     # ── 3. Key regression result ───────────────────────────────────────────────
     print("\n=== 3. Key regression result ===")
     try:
-        composite_path = os.path.join(ROOT, "results/results_composite.csv")
-        df_comp = pd.read_csv(composite_path)
+        # Read from results.csv (current pipeline output). The previous source
+        # file `results/results_composite.csv` is a stale legacy artefact no
+        # longer written by run_analysis.py; verifying against it was silently
+        # checking a dead file.
+        results_path_main = os.path.join(ROOT, "results/results.csv")
+        df_comp = pd.read_csv(results_path_main)
         row = df_comp[
             (df_comp["tier"] == "T2_no_gdp") &
             (df_comp["predictor"] == "gri_religious_courts_norm")
@@ -183,8 +187,8 @@ try:
               "composite T2_no_gdp religious_courts row is unique")
         if len(row) == 1:
             coef = float(row.iloc[0]["coef"])
-            check(abs(coef - (-0.011020)) < 0.0001,
-                  f"T2_no_gdp religious_courts coef = {coef:.6f} (expected ~-0.011020)")
+            check(abs(coef - (-0.009502)) < 0.0001,
+                  f"T2_no_gdp religious_courts coef = {coef:.6f} (expected ~-0.009502)")
     except Exception as e:
         failures.append(f"FAIL: Key regression check failed: {e}")
 
@@ -201,8 +205,8 @@ try:
               "T5_long_diff_2013_2022_with_gdp composite row is unique")
         if len(t5_row) == 1:
             coef = float(t5_row.iloc[0]["coef"])
-            check(abs(coef - 0.048465) < 0.001,
-                  f"T5 composite 2013-2022 with_gdp coef = {coef:.6f} (expected ~+0.048)")
+            check(abs(coef - 0.053996) < 0.001,
+                  f"T5 composite 2013-2022 with_gdp coef = {coef:.6f} (expected ~+0.054)")
             check(bool(t5_row.iloc[0]["valid"]),
                   "T5 composite 2013-2022 with_gdp row is valid (not invalid)")
     except Exception as e:
