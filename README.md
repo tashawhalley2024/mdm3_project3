@@ -97,18 +97,19 @@ python analysis/run_plots.py       # figures → figures/
 python verify.py                   # integrity check
 ```
 
-### Current results summary (post-controls-upgrade, 2026-04-17)
+### Current results summary (post-winsorisation, 2026-04-21)
 
 | Model | composite_secularism coef | p-value | gri_apostasy coef | p-value |
 |---|---|---|---|---|
-| T1 OLS (2020, with GDP) | −0.108 | 0.008 | −0.124 | 0.001 |
-| T1 OLS (2014, with GDP) | −0.118 | 0.005 | −0.159 | <0.001 |
-| T2 TWFE (with GDP) | +0.023 | 0.136 | −0.014 | 0.164 |
-| T4 Mundlak within | +0.023 | 0.116 | −0.014 | 0.143 |
-| T4 Mundlak between | −0.138 | 0.003 | −0.140 | <0.001 |
-| T5 Long-diff (2013–2022) | +0.048 | 0.182 | — | invalid (9 changers) |
+| T1 OLS (2020, with GDP) | −0.096 | 0.028 | −0.127 | 0.002 |
+| T1 OLS (2014, with GDP) | −0.104 | 0.021 | −0.174 | <0.001 |
+| T2 TWFE (with GDP) | +0.019 | 0.260 | −0.017 | 0.192 |
+| T4 Mundlak within | +0.019 | 0.236 | −0.017 | 0.170 |
+| T4 Mundlak between | −0.120 | 0.014 | −0.146 | <0.001 |
+| T5 Long-diff (2013–2022) | +0.054 | 0.172 | — | invalid (9 changers) |
 
 Controls (2026-04-17): v2x_rule, v2x_corr, education, rurality, conflict (+ GDP where noted). Replaced earlier v2x_civlib and v2x_egal on circularity grounds.
+Outcome-side normalisation (2026-04-21): the five continuous scoring inputs in `scoring.py` (adolescent_fertility, maternal_mortality, lifeexp_female, lifeexp_total, women_parliament_pct) are now 1/99-winsorised before min-max, matching the predictor-side convention in `analysis/utils.py`. See `data/outcome_wbl_README.md`.
 
 Robustness checks (implemented):
 - LOO jackknife: 166 country-drop runs
@@ -187,7 +188,7 @@ W_it = β₁·X_it + β₂·X̄_i + u_i + ε_it
 - Between and within effects differ for all 5 GRI variables (confirms unobserved heterogeneity; FE warranted)
 - 3 of 9 country means significant at 5% (Mundlak test rejects simple RE)
 
-**Key result:** `gri_apostasy_norm` between-effect (β₂ = −0.122, p = 0.001) is roughly 6.2× the within-effect (β₁ = −0.020, p = 0.027). Secularism matters structurally across countries far more than within-country changes over 2007–2022.
+**Key result:** `gri_apostasy_norm` between-effect (β₂ = −0.146, p < 0.001) is roughly 8.8× the within-effect (β₁ = −0.017, p = 0.170 under entity-clustered SEs, p = 0.003 under Driscoll–Kraay). Secularism matters structurally across countries far more than within-country changes over 2007–2022. The composite headline between-effect is −0.120 (p = 0.014); the composite within-effect is +0.019 (p = 0.236), a ratio of roughly 6.3× in absolute magnitude with opposite signs.
 
 ---
 

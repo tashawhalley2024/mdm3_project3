@@ -4,26 +4,28 @@ Regression outputs and robustness tables from the secularism-women panel analysi
 
 ---
 
-## Key Finding (post-controls-upgrade, 2026-04-17)
+## Key Finding (post-winsorisation, 2026-04-21)
 
 **Focal predictor:** `composite_secularism_norm` — equal-weight z-score composite over 7 inputs (3 structural GRI + 4 WVS items), normalised to [0,1]. Higher = more religious.
 
-The composite is **significant between countries** (cross-section and Mundlak between) but **null within countries** (TWFE and Mundlak within). Apostasy is the strongest individual sub-item. Religious courts (`gri_religious_courts_norm`) is a legacy null.
+The composite is **significant between countries** (cross-section and Mundlak between) but **null within countries** (TWFE and Mundlak within, under both entity-clustered and Driscoll-Kraay SEs post-winsorisation). Apostasy is the strongest individual sub-item. Religious courts (`gri_religious_courts_norm`) is a legacy null.
 
 | Model | Composite coef | Composite p | Apostasy coef | Apostasy p | N |
 |---|---|---|---|---|---|
-| T1 OLS 2020 (with GDP) | -0.108 | 0.008 | -0.124 | 0.001 | 163 |
-| T2 panel FE, with GDP | +0.023 | 0.136 | -0.014 | 0.164 | 1,639 |
-| T4 Mundlak within | +0.023 | 0.116 | -0.014 | 0.143 | 1,639 |
-| T4 Mundlak between | -0.138 | 0.003 | -0.140 | <0.001 | 1,639 |
-| T5 Long-diff (2013-2022) | +0.048 | 0.182 | -- | invalid | 162 |
-| Driscoll-Kraay HAC | +0.023 | 0.041 | -0.014 | 0.005 | 1,639 |
+| T1 OLS 2020 (with GDP) | -0.096 | 0.028 | -0.127 | 0.002 | 163 |
+| T2 panel FE, with GDP | +0.019 | 0.260 | -0.017 | 0.192 | 1,639 |
+| T4 Mundlak within | +0.019 | 0.236 | -0.017 | 0.170 | 1,639 |
+| T4 Mundlak between | -0.120 | 0.014 | -0.146 | <0.001 | 1,639 |
+| T5 Long-diff (2013-2022) | +0.054 | 0.172 | -- | invalid | 162 |
+| Driscoll-Kraay HAC | +0.019 | 0.116 | -0.017 | 0.003 | 1,639 |
 
 Entity-clustered SEs are the primary inference. Driscoll-Kraay with bandwidth=2 produces a smaller SE because it does not capture the full within-country autocorrelation of slow-moving GRI variables. Cluster-robust is the preferred SE per Cameron & Miller (2015); the DK row is reported for transparency.
 
+After the 2026-04-21 outcome-side winsorisation update the composite's DK-significance is gone (was p=0.041, now p=0.116); apostasy's DK-significance tightens slightly (was p=0.005, now p=0.003). The "structural between, null within" reading is therefore more uniform across SE choices for the composite than it was under the pre-winsorisation scale.
+
 T3 System-GMM was implemented but fails the Roodman bounds diagnostic (explosive rho = 1.215 > rho_OLS = 0.982). T3 results are excluded from substantive conclusions.
 
-LOO jackknife (composite): 166 country-drop runs, coef range [+0.018, +0.027], **0 sign flips**.
+LOO jackknife (composite): 166 country-drop runs, coef range [+0.011, +0.024], **0 sign flips**. Apostasy LOO: 166 runs, range [-0.026, -0.009], 0 sign flips, 1 run retains p<0.05 (entity-clustered) — most influential single drop is Nigeria (−0.026, p=0.005).
 
 ---
 
