@@ -1,6 +1,6 @@
 focal_pred,source,n_loo_runs,base_coef,base_se,coef_min,coef_max,coef_mean,coef_sd,n_sign_flips,n_p_ge_05,worst_country,worst_iso3,worst_delta
 gri_religious_courts_norm,loo_jackknife.csv,166,-0.006949,0.006877,-0.008311,-0.001274,-0.006946,0.000540,0,166,Saudi Arabia,SAU,0.005675
-composite_secularism_norm,loo_jackknife.csv,166,0.023127,0.015502,0.017505,0.027422,0.023132,0.001195,0,166,Mali,MLI,-0.005622
-gri_apostasy_norm,loo_jackknife_apostasy.csv,166,-0.013977,0.010030,-0.021399,-0.008137,-0.013970,0.000901,0,165,Nigeria,NGA,-0.007422
-gri_religious_courts_norm,loo_jackknife_religious_courts.csv,166,-0.006877,0.006753,-0.008337,-0.001486,-0.006873,0.000539,0,166,Saudi Arabia,SAU,0.005391
-composite_secularism_pca_norm,loo_jackknife_pca.csv,166,0.018737,0.017578,0.011604,0.024609,0.018747,0.001370,0,166,Saudi Arabia,SAU,-0.007132
+composite_secularism_norm,loo_jackknife.csv,166,0.019138,0.016999,0.010558,0.024344,0.019144,0.001313,0,166,Mali,MLI,-0.008581
+gri_apostasy_norm,loo_jackknife_apostasy.csv,166,-0.016459,0.012615,-0.026276,-0.008511,-0.016451,0.001142,0,165,Nigeria,NGA,-0.009817
+gri_religious_courts_norm,loo_jackknife_religious_courts.csv,166,-0.009191,0.006913,-0.011025,-0.004001,-0.009185,0.000556,0,166,Saudi Arabia,SAU,0.005189
+composite_secularism_pca_norm,loo_jackknife_pca.csv,166,0.021982,0.018623,0.014817,0.027777,0.021993,0.001450,0,166,Bolivia,BOL,-0.007165

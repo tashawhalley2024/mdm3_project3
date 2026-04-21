@@ -94,6 +94,29 @@ For inverted variables:
 
 Missing values are preserved as `NaN` -- they are not imputed.
 
+### WBL scoring pipeline (scoring.py) — continuous inputs winsorised
+
+The `scoring.py` pipeline that produces `wbl_treatment_index` uses the same
+1/99 winsorisation convention as the predictor pipeline
+(`analysis/utils.py:winsorise`). The five continuous inputs in the
+scoring pipeline —
+
+- `adolescent_fertility` (health group)
+- `maternal_mortality` (health group)
+- `lifeexp_female` (health group)
+- `lifeexp_total` (health group)
+- `women_parliament_pct` (political representation group)
+
+— are clipped at their 1st/99th percentiles before min-max scaling within
+each group, so extreme single-country-year values (e.g. Sierra Leone
+maternal mortality ≈1100, Niger adolescent fertility ≈180) no longer
+anchor one endpoint and compress the rest of the panel after inversion.
+The eight WBL legal-rights binaries in every other group are 0/1 series,
+for which 1/99 quantile clipping is a no-op; they are unaffected.
+Fixed-bound goalposts (the `fixed_bounds` branch of `scoring.py`) bypass
+the winsorisation step so UNDP-HDI-style theoretical goalposts do not
+get a sample-quantile clip layered on top.
+
 ---
 
 ## Composite index threshold

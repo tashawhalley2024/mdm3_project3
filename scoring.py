@@ -25,6 +25,18 @@ def scoring(group, weights=None, fixed_bounds=None):
         "maternal_mortality"
     ]
 
+    # Continuous variables — winsorise at 1/99 percentile before min-max,
+    # to match the predictor pipeline (analysis/utils.py:27-41). The other
+    # indicator columns in this pipeline are WBL legal binaries for which
+    # 1/99 clipping is a no-op; gating by continuous_vars is defensive.
+    continuous_vars = [
+        "adolescent_fertility",
+        "maternal_mortality",
+        "lifeexp_female",
+        "lifeexp_total",
+        "women_parliament_pct",
+    ]
+
     # Scale each column
     for col in indicator_cols:
         if fixed_bounds and col in fixed_bounds:
@@ -33,6 +45,10 @@ def scoring(group, weights=None, fixed_bounds=None):
             df[col] = (df[col] - lo) / (hi - lo)
             df[col] = df[col].clip(0, 1)
         else:
+            if col in continuous_vars:
+                q_lo = df[col].quantile(0.01)
+                q_hi = df[col].quantile(0.99)
+                df[col] = df[col].clip(lower=q_lo, upper=q_hi)
             # Data-driven min-max
             min_val = df[col].min()
             max_val = df[col].max()
