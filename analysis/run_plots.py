@@ -243,7 +243,7 @@ def plot_scatter(df: pd.DataFrame):
         ols = sm.OLS(snap[OUTCOME], X).fit(cov_type="HC3")
         beta = ols.params[pred]
         pval = ols.pvalues[pred]
-        stars = _sig_stars(pval) or "n.s."
+        ns_suffix = "   n.s." if pval >= 0.05 else ""
 
         if pred == FOCAL_PRED_2:
             # Right panel — violin + jittered strip. Apostasy is binary-
@@ -274,7 +274,7 @@ def plot_scatter(df: pd.DataFrame):
             ax.set_xticks([0, 1])
             ax.set_xticklabels(["No apostasy law", "Apostasy law"])
             ax.annotate(
-                f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\n"
+                f"β = {beta:+.3f}   p = {pval:.3g}{ns_suffix}\n"
                 f"n = {int(ols.nobs)}   (T1 full controls)",
                 xy=(0.03, 0.05), xycoords="axes fraction",
                 fontsize=11, ha="left", va="bottom",
@@ -302,7 +302,7 @@ def plot_scatter(df: pd.DataFrame):
             ax.fill_between(x_grid, ci[:, 0], ci[:, 1], color=line_color,
                             alpha=0.12, label="95% CI")
             ax.annotate(
-                f"β = {beta:+.3f}   p = {pval:.3g}   {stars}\n"
+                f"β = {beta:+.3f}   p = {pval:.3g}{ns_suffix}\n"
                 f"n = {int(ols.nobs)}   (T1 full controls)",
                 xy=(0.03, 0.05), xycoords="axes fraction",
                 fontsize=11, ha="left", va="bottom",
@@ -391,7 +391,7 @@ def plot_coefplot():
     fig.text(
         0.5, 0.96,
         "Coefficient estimates with 95% CIs; GDP-controlled.",
-        ha="center", fontsize=10.5, color="#555",
+        ha="center", fontsize=10.5, color="black",
     )
 
     for ax, tier in zip(axes, tier_order):
@@ -435,42 +435,45 @@ def plot_coefplot():
         plot_rows = plot_rows.iloc[::-1].reset_index(drop=True)
         ys = np.arange(len(plot_rows))
 
-        # Highlight the focal rows
-        for i, row in plot_rows.iterrows():
-            if row["focal"]:
-                ax.axhspan(i - 0.5, i + 0.5,
-                           color=PALETTE["highlight_bg"], alpha=0.9, zorder=0)
-
         ctrl_idx = [i for i, row in plot_rows.iterrows() if row["is_control"]]
         if ctrl_idx:
             # Horizontal divider between hypothesis rows (above) and controls
-            # (below). Replaces the prior light-grey background band.
-            ax.axhline(max(ctrl_idx) + 0.5, color="#333", linewidth=0.8,
-                       alpha=0.7, zorder=1)
+            # (below). Solid black, no translucency.
+            ax.axhline(max(ctrl_idx) + 0.5, color="black", linewidth=0.8,
+                       zorder=1)
 
+        # Solid pale-amber band behind the top two focal rows (Apostasy law
+        # and Composite secularism) — regardless of significance — to signpost
+        # them as the pre-registered focal predictors. No alpha: the colour
+        # itself (#FDF2E9) is already pale enough.
+        for i, row in plot_rows.iterrows():
+            if row["focal"]:
+                ax.axhspan(i - 0.5, i + 0.5,
+                           color=PALETTE["highlight_bg"], zorder=0)
+
+        # Uniform styling across all rows — same marker size, same line width,
+        # no translucency. The ONLY visual distinction between rows is colour
+        # (red for p<0.05, grey otherwise) via _sig_colour.
         for i, row in plot_rows.iterrows():
             color = _sig_colour(row["pval"])
-            alpha = 1.0 if row["focal"] else 0.45
-            marker_size = 110 if row["focal"] else 60
-            lw = 2.4 if row["focal"] else 1.5
-
             ax.plot([row["coef"] - row["ci95"], row["coef"] + row["ci95"]], [i, i],
-                    color=color, linewidth=lw, alpha=alpha, solid_capstyle="round",
+                    color=color, linewidth=1.8, solid_capstyle="round",
                     zorder=2)
-            ax.scatter(row["coef"], i, color=color, s=marker_size,
-                       edgecolors="white", linewidths=0.8, zorder=3, alpha=alpha)
+            ax.scatter(row["coef"], i, color=color, s=70,
+                       edgecolors="white", linewidths=0.8, zorder=3)
 
             if row["focal"]:
-                stars = _sig_stars(row["pval"]) or "n.s."
+                suffix = "" if row["pval"] < 0.05 else "  n.s."
                 ax.annotate(
-                    f"{row['coef']:+.3f}  {stars}",
+                    f"{row['coef']:+.3f}{suffix}",
                     xy=(row["coef"] + row["ci95"], i),
                     xytext=(8, 0), textcoords="offset points",
-                    fontsize=10, fontweight="bold", va="center",
-                    color="#222",
+                    fontsize=10,
+                    va="center",
+                    color="black",
                 )
 
-        ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
+        ax.axvline(0, color="black", linewidth=0.9, linestyle="--")
         ax.set_yticks(ys)
         tick_labels = []
         for _, r in plot_rows.iterrows():
@@ -479,17 +482,14 @@ def plot_coefplot():
             else:
                 tick_labels.append(r["label"])
         ax.set_yticklabels(tick_labels, fontsize=10)
-        # Bold the focal tick labels; everything else renders in standard grey.
-        for lbl, r in zip(ax.get_yticklabels(), plot_rows.itertuples()):
-            if r.focal:
-                lbl.set_fontweight("bold")
-                lbl.set_color("#222")
-            else:
-                lbl.set_color("#666")
+        # Uniform tick labels: all solid black, no bold differential,
+        # no translucency.
+        for lbl in ax.get_yticklabels():
+            lbl.set_color("black")
 
-        ax.set_title(tier_titles[tier], fontsize=13, fontweight="bold", loc="left", pad=8)
-        ax.set_xlabel("β")
-        ax.grid(axis="x", alpha=0.3, linewidth=0.5)
+        ax.set_title(tier_titles[tier], fontsize=13, fontweight="bold",
+                     loc="left", pad=8, color="black")
+        ax.set_xlabel("β", color="black")
 
     # Shared y-axis: right panel re-uses the left panel's labels.
     axes[1].tick_params(labelleft=False)
@@ -695,16 +695,17 @@ def plot_placebo():
         ax.errorbar(i, coef, yerr=ci, fmt="none",
                     color="#333" if a == 1.0 else "#999",
                     capsize=5, linewidth=1.4)
-        stars = _sig_stars(pval) or "n.s."
+        sig_label = "" if pval < 0.05 else "n.s."
         # Always place the annotation ABOVE zero so it stays inside the plot.
         y_ann = max(coef + ci, 0) + 0.003
-        ax.text(i, y_ann, stars, ha="center", va="bottom",
-                fontsize=13 if a == 1.0 else 10,
-                fontweight="bold", color="#222" if a == 1.0 else "#666")
+        if sig_label:
+            ax.text(i, y_ann, sig_label, ha="center", va="bottom",
+                    fontsize=13 if a == 1.0 else 10,
+                    fontweight="bold", color="#222" if a == 1.0 else "#666")
 
     ax.axhline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
 
-    # Pad y-axis so the "n.s." stars above zero do not collide with the title
+    # Pad y-axis so the "n.s." labels above zero do not collide with the title
     upper = max(np.max(coefs + ci95), 0) + 0.012
     lower = min(np.min(coefs - ci95), 0) - 0.005
     ax.set_ylim(lower, upper)
@@ -1065,9 +1066,12 @@ def plot_alternative_outcomes():
                    edgecolors=color, linewidths=1.5,
                    s=80, zorder=4)
 
-        # Stars + N annotation to the right
-        stars = sig if sig else "n.s."
-        ann   = f"{stars}  N={row['n']:,}"
+        # "n.s." + N annotation to the right (no significance stars).
+        ann_parts = []
+        if not sig:
+            ann_parts.append("n.s.")
+        ann_parts.append(f"N={row['n']:,}")
+        ann = "  ".join(ann_parts)
         if row["unit"] != "[0,1]":
             ann += f"  [{row['unit']}]"
         ax.annotate(ann, xy=(row["coef"] + ci95, i),
@@ -1142,25 +1146,13 @@ def plot_wbl_groups():
     }
     focal["group_label"] = focal["group_label"].replace(WBL_GROUP_RENAME)
 
-    def _sig_colour_wbl(pval):
-        # Three-tier palette used only on this figure: p<0.05, p<0.10
-        # marginal, n.s. Red and grey piggyback on the deck's existing
-        # two-tier palette via _sig_colour; amber is unique to this plot.
-        if pd.isna(pval):
-            return _sig_colour(1.0)
-        if pval < 0.05:
-            return _sig_colour(0.01)
-        if pval < 0.10:
-            return "#e8a33d"
-        return _sig_colour(1.0)
-
     n = len(focal)
     fig, ax = plt.subplots(figsize=(11, max(5, n * 0.55 + 2)))
 
     for j in range(n):
         row   = focal.iloc[j]
         y_pos = n - 1 - j
-        color = _sig_colour_wbl(row["pval"])
+        color = _sig_colour(row["pval"])
         ci95  = 1.96 * row["se"]
 
         ax.plot([row["coef"] - ci95, row["coef"] + ci95], [y_pos, y_pos],
@@ -1204,22 +1196,15 @@ def plot_wbl_groups():
         fontsize=15, fontweight="bold", y=1.00,
     )
     ax.set_title(
-        "Domain breakdown: Health and Entrepreneurship are marginal "
-        "(p < 0.10); every other domain is null.",
+        "Domain breakdown: every WBL component is null at p < 0.05.",
         fontsize=10, fontweight="normal", color="#555",
         loc="left", pad=10,
     )
 
     ax.grid(axis="x", alpha=0.3, linewidth=0.5)
 
-    from matplotlib.patches import Patch
-    legend_handles = [
-        Patch(facecolor=_sig_colour(0.01),  label="p < 0.05"),
-        Patch(facecolor="#e8a33d",          label="p < 0.10 (marginal)"),
-        Patch(facecolor=_sig_colour(1.0),   label="Not significant"),
-    ]
-    ax.legend(handles=legend_handles, loc="lower right", frameon=True,
-              framealpha=0.95, fontsize=9)
+    ax.legend(handles=_sig_legend_handles(), loc="upper right",
+              frameon=True, framealpha=0.95, fontsize=9)
 
     plt.tight_layout()
     plt.savefig(OUT_WBL_GROUPS, dpi=300, bbox_inches="tight")
@@ -1539,13 +1524,8 @@ def plot_mundlak_decomposition():
         ax.tick_params(axis="y", length=0)
         ax.grid(axis="x", alpha=0.3, linewidth=0.5)
 
-        for i, (c, p, se) in enumerate(zip(coefs, pvals, ses)):
-            star = _sig_stars(p)
-            if star:
-                x_off = 1.96 * se + 0.002 if c >= 0 else -(1.96 * se + 0.002)
-                ha = "left" if c >= 0 else "right"
-                ax.text(c + x_off, i, star, va="center", ha=ha,
-                        fontsize=11, fontweight="bold")
+        # Significance stars removed per design direction — colour already
+        # encodes p<0.05 vs not significant via _sig_colour.
 
     fig.suptitle(
         "Secularism's effect is structural: between-country gap dwarfs within-country change",
@@ -1693,8 +1673,10 @@ def plot_long_difference():
                 solid_capstyle="round", zorder=2)
         ax.scatter(r["coef"], i, color=color, s=80, edgecolors="white",
                    linewidths=0.8, zorder=3, alpha=alpha)
-        stars = _sig_stars(r["p"]) or "n.s."
-        note_parts = [f"{r['coef']:+.3f}", stars]
+        sig_label = "" if r["p"] < 0.05 else "n.s."
+        note_parts = [f"{r['coef']:+.3f}"]
+        if sig_label:
+            note_parts.append(sig_label)
         if r["n_changers"] is not None:
             note_parts.append(f"(nΔ={r['n_changers']})")
         if not r["valid"]:
