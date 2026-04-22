@@ -390,7 +390,7 @@ def plot_coefplot():
     )
     fig.text(
         0.5, 0.96,
-        "Coefficient estimates with 95% CIs; GDP-controlled.",
+        "Coefficient estimates with 95% CIs.",
         ha="center", fontsize=10.5, color="black",
     )
 
@@ -788,14 +788,13 @@ def _collect_spec_rows(focal_pred, ladder_csv):
             "n":     int(r["n"]),
         })
 
-    _add("Main (FE + GDP)",       "T2_with_gdp")
+    _add("Main (FE + 6 controls)", "T2_with_gdp")
     _add("+ CEDAW",                "T2_with_cedaw")
     _add("Pre-COVID (2008–2019)",  "T2_subperiod_2008_2019")
     _add("Changers only",          "T2_changers_only")
     _add("Lag L1",                 "P4_panel_fe_L1", source=focal_L1)
     _add("Lag L2",                 "P4_panel_fe_L2", source=focal_L2)
     _add("WEF GGG (alt DV)",       "P10_wef_panel")
-    _add("MENA only",              "P10_mena_only")
 
     return rows
 
@@ -839,7 +838,7 @@ def _render_spec_column(ax, rows, panel_title, focal_color):
 def plot_spec_stability():
     """
     Dual-panel specification ladder: courts (left) vs apostasy (right).
-    Each panel shows the bivariate baseline + 8 sensitivity / subsample specs.
+    Each panel shows the bivariate baseline + 7 sensitivity / subsample specs.
     The main spec is highlighted with a pale background band.
     """
     if not os.path.exists(RESULTS_CSV):
@@ -865,13 +864,13 @@ def plot_spec_stability():
     fig.text(
         0.5, 0.95,
         "Composite and apostasy coefficients stable across "
-        "nine specification variants.",
+        "eight specification variants.",
         ha="center", fontsize=10.5, color="#555",
     )
 
     # Q11: flag the composite-vs-apostasy spec asymmetry. The composite
     # side only has Bivariate + Main; the extended specs (CEDAW, pre-COVID,
-    # lag L1/L2, MENA-only, ...) are fitted for apostasy only upstream.
+    # lag L1/L2, ...) are fitted for apostasy only upstream.
     if len(composite_rows) < len(apos_rows):
         axes[0].text(
             0.98, 0.02,
@@ -1086,7 +1085,7 @@ def plot_alternative_outcomes():
     ax.set_yticks(ys)
     ax.set_yticklabels(df_plot["label"], fontsize=11)
     ax.set_xlabel(
-        "β on composite secularism (panel FE + GDP); all outcomes on [0,1] scale",
+        "β on composite secularism (panel FE + 6 controls); all outcomes on [0,1] scale",
         fontsize=10
     )
     fig.suptitle(
