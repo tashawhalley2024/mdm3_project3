@@ -343,10 +343,10 @@ def plot_scatter(df: pd.DataFrame):
 
     fig.suptitle(
         "Composite secularism and apostasy laws: clear negative correlations with women's welfare.",
-        fontsize=16, fontweight="bold", y=1.04,
+        fontsize=16, fontweight="bold", y=1.06,
     )
     fig.text(
-        0.5, 0.99,
+        0.5, 0.93,
         "2020 cross-section — each point is a country; line is OLS with 95% CI",
         ha="center", fontsize=10.5, color="#555",
     )
@@ -396,10 +396,10 @@ def plot_coefplot():
     fig.suptitle(
         "Secularism and apostasy laws predict female treatment "
         "between countries but not within them",
-        fontsize=16, fontweight="bold", y=1.04,
+        fontsize=16, fontweight="bold", y=1.06,
     )
     fig.text(
-        0.5, 0.99,
+        0.5, 0.96,
         "Coefficient estimates with 95% CIs; GDP-controlled.",
         ha="center", fontsize=10.5, color="#555",
     )
@@ -509,7 +509,7 @@ def plot_coefplot():
                 lbl.set_color("#666")
 
         ax.set_title(tier_titles[tier], fontsize=13, fontweight="bold", loc="left", pad=8)
-        ax.set_xlabel("Coefficient")
+        ax.set_xlabel("β")
         ax.grid(axis="x", alpha=0.3, linewidth=0.5)
 
     # Shared y-axis: right panel re-uses the left panel's labels.
@@ -577,7 +577,7 @@ def _render_loo_column(loo, ax_strip, ax_bars, palette_color, label_name):
         color=palette_color,
     )
 
-    ax_strip.set_xlabel("LOO coefficient")
+    ax_strip.set_xlabel("LOO β")
     ax_strip.set_ylim(-1.0, 1.0)
     ax_strip.set_yticks([])
     ax_strip.legend(loc="upper right", framealpha=0.95, fontsize=9)
@@ -605,7 +605,7 @@ def _render_loo_column(loo, ax_strip, ax_bars, palette_color, label_name):
         [f"{r['iso3']} — {r['country'][:18]}" for _, r in top5.iterrows()],
         fontsize=10,
     )
-    ax_bars.set_xlabel("LOO coefficient")
+    ax_bars.set_xlabel("LOO β")
     ax_bars.set_title("5 most influential countries", fontsize=11,
                       fontweight="normal", color="#555", loc="left", pad=6)
     ax_bars.grid(axis="x", alpha=0.3, linewidth=0.5)
@@ -850,7 +850,7 @@ def _render_spec_column(ax, rows, panel_title, focal_color):
     ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
     ax.set_yticks(ys)
     ax.set_yticklabels(df_plot["label"], fontsize=10)
-    ax.set_xlabel("Coefficient")
+    ax.set_xlabel("β")
     ax.set_title(panel_title, fontsize=13, fontweight="bold", loc="left",
                  pad=8, color=focal_color)
     ax.grid(axis="x", alpha=0.3, linewidth=0.5)
@@ -1099,7 +1099,7 @@ def plot_alternative_outcomes():
     ax.set_yticks(ys)
     ax.set_yticklabels(df_plot["label"], fontsize=11)
     ax.set_xlabel(
-        "Coefficient on composite secularism (panel FE + GDP); all outcomes on [0,1] scale",
+        "β on composite secularism (panel FE + GDP); all outcomes on [0,1] scale",
         fontsize=10
     )
     fig.suptitle(
@@ -1192,10 +1192,12 @@ def plot_wbl_groups():
                    linestyle="-", alpha=0.8, zorder=1)
         ax.text(-0.02, n - 0.5, "Overall",
                 transform=ax.get_yaxis_transform(),
-                fontsize=9, color="#555", ha="right", va="center")
+                fontsize=10, fontweight="bold", color="#333",
+                ha="right", va="center")
         ax.text(-0.02, n - 1.7, "Components",
                 transform=ax.get_yaxis_transform(),
-                fontsize=9, color="#555", ha="right", va="center")
+                fontsize=10, fontweight="bold", color="#333",
+                ha="right", va="center")
 
     ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.6)
     ax.set_yticks(range(n))
@@ -1204,9 +1206,7 @@ def plot_wbl_groups():
         fontsize=11,
     )
     ax.set_xlabel(
-        "Coefficient on composite secularism "
-        "(panel FE, country + year FE, GDP-controlled)\n"
-        "Outcomes: WBL group scores  |  Period: 2013–2022",
+        "β on composite secularism (panel FE, GDP-controlled)",
     )
 
     fig.suptitle(
@@ -1535,7 +1535,7 @@ def plot_mundlak_decomposition():
         ax.axvline(0, color="black", linewidth=0.9, linestyle="--", alpha=0.5)
         ax.set_yticks(y_pos)
         ax.set_yticklabels(df_plot["var"], fontsize=11)
-        ax.set_xlabel("Coefficient (0–1 scale)")
+        ax.set_xlabel("β (0–1 scale)")
         ax.set_title(title, fontsize=12, fontweight="bold", loc="left", pad=8)
         ax.tick_params(axis="y", length=0)
         ax.grid(axis="x", alpha=0.3, linewidth=0.5)
@@ -1584,13 +1584,7 @@ def plot_mundlak_decomposition():
         framealpha=0.95, fontsize=10, ncol=2, columnspacing=1.5,
     )
 
-    fig.text(
-        0.5, 0.01,
-        "Note: x-axis scales differ between panels — that is the point.",
-        ha="center", fontsize=9.5, color="#777", style="italic",
-    )
-
-    plt.tight_layout(rect=[0, 0.04, 1, 0.93])
+    plt.tight_layout(rect=[0, 0.00, 1, 0.93])
     plt.savefig(OUT_MUNDLAK, dpi=300, bbox_inches="tight")
     plt.close()
     print(f"  Saved -> {OUT_MUNDLAK}")
