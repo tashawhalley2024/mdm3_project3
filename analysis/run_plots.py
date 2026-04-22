@@ -332,7 +332,7 @@ def plot_scatter(df: pd.DataFrame):
     )
 
     fig.suptitle(
-        "Composite secularism and apostasy laws: clear negative correlations with female welfare.",
+        "Composite secularism and apostasy laws: clear negative correlations with female welfare",
         fontsize=16, fontweight="bold", y=1.06,
     )
     fig.text(
@@ -930,23 +930,27 @@ def plot_oster_sensitivity():
     ax.axhline(1.0, color="#555", linewidth=1.4, linestyle="--",
                label="Robustness threshold (δ = 1)")
 
-    # Oster benchmark lines — labels at top of plot, away from the curve / annotation box
+    # Oster benchmark lines — labels placed inside the axes (upper strip), with
+    # a white bbox so they stay readable over the grid / green fill. Keeps the
+    # top strip clear for the suptitle + subtitle.
     y_top = df["delta_clipped"].max()
-    label_y = y_top * 1.02
+    label_y = y_top * 0.93
     for xval, lbl in [(1.3, "1.3×"), (2.2, "2.2×")]:
         ax.axvline(xval, color="#999", linewidth=1.0, linestyle=":", alpha=0.8)
         ax.annotate(lbl + " Rmax", xy=(xval, label_y),
-                    xytext=(0, 6), textcoords="offset points",
+                    xytext=(0, 0), textcoords="offset points",
                     fontsize=9, ha="center", color="#666", style="italic",
-                    annotation_clip=False)
+                    bbox=dict(facecolor="white", edgecolor="none",
+                              alpha=0.85, pad=1.5))
 
-    # Headline delta annotation at 2.2x — placed in upper-right of empty area
+    # Headline delta annotation at 2.2x — dropped closer to the curve so the
+    # arrow is short and the upper-right feels balanced.
     d22 = df.loc[(df["rmax_mult"] - 2.2).abs().idxmin()]
     if abs(d22["rmax_mult"] - 2.2) < 0.2:
         x_max = df["rmax_mult"].max()
         # Place box in the empty upper-right region above the curve plateau
         box_x = (2.2 + x_max) / 2
-        box_y = y_top * 0.7
+        box_y = y_top * 0.35
         ax.annotate(
             f"δ = {d22['delta']:.1f} at Rmax = 2.2×\n"
             f"Unobservables would need to be\n"
@@ -1196,7 +1200,7 @@ def plot_wbl_groups():
         fontsize=15, fontweight="bold", y=1.00,
     )
     ax.set_title(
-        "Domain breakdown: every WBL component is null at p < 0.05.",
+        "Domain breakdown: every WBL component is null at p < 0.05",
         fontsize=10, fontweight="normal", color="#555",
         loc="left", pad=10,
     )
@@ -1285,7 +1289,7 @@ def plot_world_map():
         fontsize=16, fontweight="bold", y=0.97,
     )
     ax.set_title(
-        "Equal-weight z-score across institutional, attitudinal, behavioural dimensions. Grey = no data.",
+        "Equal-weight z-score across institutional, attitudinal, behavioural dimensions. Grey = no data",
         fontsize=10, fontweight="normal", color="#555",
     )
 
