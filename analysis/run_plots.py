@@ -267,14 +267,10 @@ def plot_scatter(df: pd.DataFrame):
                     pc.set_alpha(0.22)
                     pc.set_edgecolor(PALETTE["apostasy"])
             rng = np.random.default_rng(seed=1)
-            for region, color in REGION_COLORS.items():
-                sub = snap[snap["region"] == region]
-                if sub.empty:
-                    continue
-                jitter = rng.uniform(-0.08, 0.08, size=len(sub))
-                ax.scatter(sub[pred] + jitter, sub[OUTCOME],
-                           c=color, label=region, s=36, alpha=0.70,
-                           edgecolors="white", linewidth=0.4)
+            jitter = rng.uniform(-0.08, 0.08, size=len(snap))
+            ax.scatter(snap[pred] + jitter, snap[OUTCOME],
+                       c="#6c7a89", s=36, alpha=0.70,
+                       edgecolors="white", linewidth=0.4)
             ax.set_xticks([0, 1])
             ax.set_xticklabels(["No apostasy law", "Apostasy law"])
             ax.annotate(
@@ -287,15 +283,11 @@ def plot_scatter(df: pd.DataFrame):
             )
         else:
             # Left panel — composite is continuous; keep the scatter, OLS fit
-            # and 95% CI band. Regional colour, no country anchors per Q9.
-            # Region labels are suppressed with a leading underscore so the
-            # composite panel's own legend only lists OLS fit + 95% CI.
-            for region, color in REGION_COLORS.items():
-                sub = snap[snap["region"] == region]
-                if sub.empty:
-                    continue
-                ax.scatter(sub[pred], sub[OUTCOME], c=color, label=f"_{region}",
-                           s=55, alpha=0.75, edgecolors="white", linewidth=0.6)
+            # and 95% CI band. Uniform neutral grey dots (no regional colour),
+            # no country anchors per Q9. The composite panel's legend only
+            # lists OLS fit + 95% CI.
+            ax.scatter(snap[pred], snap[OUTCOME], c="#6c7a89", s=55,
+                       alpha=0.75, edgecolors="white", linewidth=0.6)
             # Prediction line: vary pred, hold every other regressor at its mean.
             x_grid = np.linspace(snap[pred].min(), snap[pred].max(), 100)
             means  = snap[pred_cols].mean()
@@ -323,11 +315,9 @@ def plot_scatter(df: pd.DataFrame):
         ax.grid(alpha=0.3, linewidth=0.5)
 
     axes[0].set_ylabel("Women's treatment index")
-    # Regional legend on the right (apostasy) panel, upper-right to stay
-    # clear of the β/p annotation in lower-left. Composite panel gets its
-    # own legend for the OLS-fit line and 95% CI band, lower-right clear
-    # of the β/p box in lower-left.
-    axes[1].legend(loc="upper right", framealpha=0.92, ncol=2, fontsize=8)
+    # Composite panel legend for the OLS-fit line and 95% CI band,
+    # lower-right clear of the β/p box in lower-left. No regional legend on
+    # the apostasy panel — dots are uniform neutral grey now.
     axes[0].legend(loc="lower right", fontsize=8.5,
                    framealpha=0.9, frameon=True)
 
@@ -451,26 +441,18 @@ def plot_coefplot():
                 ax.axhspan(i - 0.5, i + 0.5,
                            color=PALETTE["highlight_bg"], alpha=0.9, zorder=0)
 
-        # Visually demote the control block with a light grey band so viewers
-        # read them as covariates, not hypotheses.
         ctrl_idx = [i for i, row in plot_rows.iterrows() if row["is_control"]]
         if ctrl_idx:
-            ax.axhspan(min(ctrl_idx) - 0.5, max(ctrl_idx) + 0.5,
-                       color="#f2f2f2", alpha=0.6, zorder=0)
+            # Horizontal divider between hypothesis rows (above) and controls
+            # (below). Replaces the prior light-grey background band.
+            ax.axhline(max(ctrl_idx) + 0.5, color="#333", linewidth=0.8,
+                       alpha=0.7, zorder=1)
 
         for i, row in plot_rows.iterrows():
-            # Controls render in plain grey regardless of significance — they
-            # are not predictors of interest.
-            if row["is_control"]:
-                color = "#9aa5a8"
-                alpha = 0.55
-                marker_size = 50
-                lw = 1.2
-            else:
-                color = _sig_colour(row["pval"])
-                alpha = 1.0 if row["focal"] else 0.45
-                marker_size = 110 if row["focal"] else 60
-                lw = 2.4 if row["focal"] else 1.5
+            color = _sig_colour(row["pval"])
+            alpha = 1.0 if row["focal"] else 0.45
+            marker_size = 110 if row["focal"] else 60
+            lw = 2.4 if row["focal"] else 1.5
 
             ax.plot([row["coef"] - row["ci95"], row["coef"] + row["ci95"]], [i, i],
                     color=color, linewidth=lw, alpha=alpha, solid_capstyle="round",
@@ -497,14 +479,11 @@ def plot_coefplot():
             else:
                 tick_labels.append(r["label"])
         ax.set_yticklabels(tick_labels, fontsize=10)
-        # Bold the focal tick labels; lighten the control row label
+        # Bold the focal tick labels; everything else renders in standard grey.
         for lbl, r in zip(ax.get_yticklabels(), plot_rows.itertuples()):
             if r.focal:
                 lbl.set_fontweight("bold")
                 lbl.set_color("#222")
-            elif r.is_control:
-                lbl.set_color("#999")
-                lbl.set_style("italic")
             else:
                 lbl.set_color("#666")
 
@@ -1163,13 +1142,25 @@ def plot_wbl_groups():
     }
     focal["group_label"] = focal["group_label"].replace(WBL_GROUP_RENAME)
 
+    def _sig_colour_wbl(pval):
+        # Three-tier palette used only on this figure: p<0.05, p<0.10
+        # marginal, n.s. Red and grey piggyback on the deck's existing
+        # two-tier palette via _sig_colour; amber is unique to this plot.
+        if pd.isna(pval):
+            return _sig_colour(1.0)
+        if pval < 0.05:
+            return _sig_colour(0.01)
+        if pval < 0.10:
+            return "#e8a33d"
+        return _sig_colour(1.0)
+
     n = len(focal)
     fig, ax = plt.subplots(figsize=(11, max(5, n * 0.55 + 2)))
 
     for j in range(n):
         row   = focal.iloc[j]
         y_pos = n - 1 - j
-        color = _sig_colour(row["pval"])
+        color = _sig_colour_wbl(row["pval"])
         ci95  = 1.96 * row["se"]
 
         ax.plot([row["coef"] - ci95, row["coef"] + ci95], [y_pos, y_pos],
@@ -1178,8 +1169,7 @@ def plot_wbl_groups():
                    color=color, s=90, zorder=4,
                    edgecolors="white", linewidths=0.8)
 
-        stars = _sig_stars(row["pval"]) or "n.s."
-        ann = f"β = {row['coef']:+.3f}   {stars}"
+        ann = f"β = {row['coef']:+.3f}"
         ax.annotate(ann, xy=(row["coef"] + ci95, y_pos),
                     xytext=(8, 0), textcoords="offset points",
                     fontsize=9, va="center", color="#333")
@@ -1221,6 +1211,15 @@ def plot_wbl_groups():
     )
 
     ax.grid(axis="x", alpha=0.3, linewidth=0.5)
+
+    from matplotlib.patches import Patch
+    legend_handles = [
+        Patch(facecolor=_sig_colour(0.01),  label="p < 0.05"),
+        Patch(facecolor="#e8a33d",          label="p < 0.10 (marginal)"),
+        Patch(facecolor=_sig_colour(1.0),   label="Not significant"),
+    ]
+    ax.legend(handles=legend_handles, loc="lower right", frameon=True,
+              framealpha=0.95, fontsize=9)
 
     plt.tight_layout()
     plt.savefig(OUT_WBL_GROUPS, dpi=300, bbox_inches="tight")
@@ -1422,7 +1421,7 @@ def plot_between_within(df: pd.DataFrame):
 
     # Mundlak annotation — pulled from results/results.csv T4_mundlak_re rows
     ax.annotate(
-        "T4 Mundlak decomposition:\n"
+        "Mundlak decomposition:\n"
         "  Between β = −0.120  (p = 0.014)\n"
         "  Within  β = +0.019  (p = 0.24)\n"
         "  Ratio ≈ 6.3×, opposite signs\n"
@@ -1554,7 +1553,7 @@ def plot_mundlak_decomposition():
     )
     fig.text(
         0.5, 0.99,
-        "T4 Mundlak RE-FE hybrid: within-country change (left) vs between-country structural differences (right)",
+        "Mundlak RE-FE hybrid: within-country change (left) vs between-country structural differences (right)",
         ha="center", fontsize=11, color="#555",
     )
 
@@ -1679,7 +1678,7 @@ def plot_long_difference():
     )
     fig.text(
         0.5, 0.97,
-        "T5 long-difference: Δoutcome on Δfocal + Δcontrols, 2013→2022 with GDP, HC3 SEs, one obs per country.",
+        "Long-difference: Δoutcome on Δfocal + Δcontrols, 2013→2022 with GDP, HC3 SEs, one obs per country.",
         ha="center", fontsize=10.5, color="#555",
     )
 
