@@ -314,7 +314,7 @@ def plot_scatter(df: pd.DataFrame):
         ax.set_title(panel_title, fontsize=13, fontweight="bold", loc="left", pad=8)
         ax.grid(alpha=0.3, linewidth=0.5)
 
-    axes[0].set_ylabel("Women's treatment index")
+    axes[0].set_ylabel("Female treatment index")
     # Composite panel legend for the OLS-fit line and 95% CI band,
     # lower-right clear of the β/p box in lower-left. No regional legend on
     # the apostasy panel — dots are uniform neutral grey now.
@@ -332,7 +332,7 @@ def plot_scatter(df: pd.DataFrame):
     )
 
     fig.suptitle(
-        "Composite secularism and apostasy laws: clear negative correlations with women's welfare.",
+        "Composite secularism and apostasy laws: clear negative correlations with female welfare.",
         fontsize=16, fontweight="bold", y=1.06,
     )
     fig.text(
@@ -651,7 +651,7 @@ def plot_placebo():
     df = pd.read_csv(csv)
 
     label_map = {
-        "P6_placebo_wbl_treatment_index": "Women's\ntreatment index",
+        "P6_placebo_wbl_treatment_index": "Female\ntreatment index",
         "P6_placebo_wdi_lifexpf_norm": "Female life\nexpectancy",
         "P6_placebo_wdi_lfpf_norm":    "Female labour\nforce part.",
         "P6_placebo_lifexpm_norm":     "Male life\nexpectancy",
@@ -717,7 +717,7 @@ def plot_placebo():
     ax.set_ylabel("Coefficient on apostasy laws\n(Panel FE, clustered SE)")
 
     fig.suptitle(
-        "Apostasy laws harm women, not men",
+        "Apostasy laws harm females, not males",
         fontsize=16, fontweight="bold", y=1.00,
     )
     ax.set_title(
@@ -950,7 +950,7 @@ def plot_oster_sensitivity():
         ax.annotate(
             f"δ = {d22['delta']:.1f} at Rmax = 2.2×\n"
             f"Unobservables would need to be\n"
-            f"{d22['delta']:.0f}× stronger than all controls",
+            f"{d22['delta']:.1f}× stronger than all controls",
             xy=(d22["rmax_mult"], d22["delta_clipped"]),
             xytext=(box_x, box_y),
             fontsize=11, ha="center", va="center",
@@ -1395,7 +1395,7 @@ def plot_between_within(df: pd.DataFrame):
 
     ax.set_xlabel("Composite secularism (normalised, higher = more religious)",
                   fontsize=11)
-    ax.set_ylabel("Women's treatment index", fontsize=11)
+    ax.set_ylabel("Female treatment index", fontsize=11)
     ax.grid(alpha=0.3, linewidth=0.5)
     _narrative_title(
         ax,
